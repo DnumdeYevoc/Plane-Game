@@ -4,7 +4,7 @@ extends CharacterBody3D
 @export var min_speed := 0.0
 @export var acceleration := 15.5
 @export var deceleration := 10.5
-@export var current_speed := 50.0
+@export var current_speed := 5.0
 
 @export var yaw_speed := 45.0 #deg/s
 @export var pitch_speed := 45.0
@@ -34,7 +34,18 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 	
-	var turn_dir = Vector3(-turn_input.y, -turn_input.x, -roll)
+	var turn_dir = Vector3(turn_input.y, turn_input.x, -roll)
 	apply_rotation(turn_dir,delta)
+	
 func apply_rotation(vector, delta):
-	pass
+	rotate(basis.z.normalized(), vector.z * deg_to_rad(roll_speed) *delta)
+	rotate(basis.x.normalized(), vector.x * deg_to_rad(pitch_speed) *delta)
+	rotate(basis.y.normalized(), vector.y * deg_to_rad(yaw_speed) *delta)
+	
+
+	model.rotation.z = lerp_angle(model.rotation.z, deg_to_rad(45) * vector.y, delta)
+	'''elif: vector.y >0:
+		model.rotation.z = lerp_angle(model.rotation.z, deg_to_rad(45) * vector.y, delta)
+	else:
+		model.rotation.z = lerp_angle(model.rotation.z, 0, delta)
+		'''

@@ -13,12 +13,12 @@ size = Vector3(1, 0.5, 2)
 script = ExtResource("1_s46f0")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03278, 5.74296)
-current = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.72862, 4.7222)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.050369, 0.0429087)
 shape = SubResource("BoxShape3D_dpar4")
 
 [node name="Model" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00805998, -0.0064621)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0267808, -0.0268507)
 mesh = SubResource("BoxMesh_r8t2q")

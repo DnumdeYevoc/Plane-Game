@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://dxk644sdwqkir"]
 
-[ext_resource type="PackedScene" uid="uid://e51tlq7ohecw" path="res://plane.tscn" id="1_80nbo"]
+[ext_resource type="PackedScene" uid="uid://c5ju7cbiir3ig" path="res://PlaneV3.tscn" id="1_e2o6t"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_e2o6t"]
 size = Vector2(50, 50)
@@ -9,10 +9,6 @@ size = Vector2(50, 50)
 size = Vector3(0.5, 20, 0.5)
 
 [node name="Game" type="Node"]
-
-[node name="Plane" parent="." instance=ExtResource("1_80nbo")]
-transform = Transform3D(-0.680606, 0, 0.73265, 0, 1, 0, -0.73265, 0, -0.680606, 0, 0.104086, 0)
-yaw_speed = 60.0
 
 [node name="Test Environment" type="Node3D" parent="."]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0)
@@ -47,5 +43,4 @@ mesh = SubResource("BoxMesh_feb5d")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Test Environment"]
 transform = Transform3D(0.146447, -0.853553, 0.5, 0.5, 0.5, 0.707107, -0.853553, 0.146447, 0.5, 0, 16.6403, 0)
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.659, 155.603)
+[node name="PlaneV3" parent="." instance=ExtResource("1_e2o6t")]
