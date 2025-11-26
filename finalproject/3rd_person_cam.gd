@@ -1,7 +1,7 @@
 extends Node3D
 
 @export var target : Node3D
-@export var movement_sharpness := 3
+@export var movement_sharpness := 6
 
 func _process(delta: float) -> void:
 	

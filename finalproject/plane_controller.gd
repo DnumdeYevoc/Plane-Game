@@ -1,16 +1,24 @@
 extends CharacterBody3D
 
-@export var max_speed := 50.0
-@export var acceleration := 0.1
-@export var deceleration := 0.2
+@export var max_speed := 80.0
+@export var acceleration := 0.6
+@export var deceleration := 0.3
 
 @export var pitch_speed := 1.0
-@export var yaw_speed := 1.0
-@export var roll_speed := 1.0
+@export var yaw_speed := 2.0
+@export var roll_speed := 2.0
 
-@export var sharp_steering := 2
-
+@export var sharp_steering := 6
 @export var three_input_steering := true
+@export var fov := 90.0
+
+@export var turbo:= true
+
+@export var turbo_strength:= 1.5 #your new top speed = top speed * turbo strength
+@export var turbo_max:= 3.0
+@export var turbo_reload_speed:= 1.0
+@export var turbo_cooldown := 100
+
 
 var pitch_input := 0.0
 var yaw_input := 0.0
@@ -18,19 +26,51 @@ var roll_input := 0.0
 
 var cur_speed := 0.0
 
-
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
+@onready var turbo_meter: ProgressBar = $TurboMeter
+@onready var speed_label: Label = $Speed
+
+var t_cooldown := 0
+
+func _ready() -> void:
+	cam.fov = fov
+	max_speed /= 4
+	if turbo:
+		turbo_meter.max_value = turbo_max
+		turbo_meter.size.x= turbo_max*100
+		turbo_meter.value = 0.0
+		t_cooldown = turbo_cooldown
 
 func get_input(delta):
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
-		if cur_speed/20.0 >= 1:
-			cam.fov = lerp(cam.fov, 110.0, acceleration*delta)
 	if Input.is_action_pressed("slow_down"):
 		cur_speed = lerp(cur_speed, 0.0, deceleration *delta)
-		if cur_speed/20.0 <= 1:
-			cam.fov = lerp(cam.fov, 90.0, deceleration*delta)
-
+	
+	#turbo
+	if turbo:
+		if t_cooldown ==0:
+			if Input.is_action_pressed("turbo"):
+					turbo_meter.value -= acceleration*delta
+					print(acceleration*delta)
+					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
+					cam.fov = lerp(cam.fov, fov + 20.0, acceleration*2 *delta)
+					if turbo_meter.value <= 0:
+						t_cooldown = turbo_cooldown
+			elif turbo_meter.value != turbo_meter.max_value:
+				turbo_meter.value += turbo_reload_speed*delta
+	
+	#turbo cooldown
+	if Input.is_action_just_released("turbo"):
+		t_cooldown = turbo_cooldown
+	if t_cooldown:
+		t_cooldown -=1
+		cur_speed = lerp(cur_speed, clamp(max_speed,0,cur_speed), acceleration *delta)
+		cam.fov = lerp(cam.fov, fov, acceleration*4 *delta)
+	if t_cooldown == 1:
+		cur_speed = clamp(max_speed,0,cur_speed)
+		cam.fov = fov
+	
 	pitch_input = lerp(pitch_input, Input.get_action_strength("pitch_up")-Input.get_action_strength("pitch_down"), sharp_steering*delta)
 	yaw_input = lerp(yaw_input, Input.get_action_strength("yaw_left")-Input.get_action_strength("yaw_right"), sharp_steering*delta)
 	if three_input_steering:
@@ -38,10 +78,12 @@ func get_input(delta):
 	else:
 		yaw_speed = 0.4*roll_speed
 		roll_input = yaw_input 
+		
+	
 func _physics_process(delta: float) -> void:
 	#input
 	get_input(delta)
-	
+	speed_label.text = str(int(cur_speed*4))+ "km/h"
 	#rotate
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
 	transform.basis = transform.basis.rotated(transform.basis.x, pitch_input*pitch_speed*delta)
@@ -50,5 +92,5 @@ func _physics_process(delta: float) -> void:
 	
 	#move forward
 	velocity = -transform.basis.z*cur_speed
-	
+
 	move_and_slide()

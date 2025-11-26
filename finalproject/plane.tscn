@@ -34,6 +34,18 @@ script = ExtResource("2_dpar4")
 target = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="3rdPersonCam"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34223, 3.65458)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8195, 6.44303)
 current = true
-fov = 80.0
+fov = 90.0
+
+[node name="TurboMeter" type="ProgressBar" parent="."]
+offset_left = 8.0
+offset_top = 10.0
+offset_right = 434.0
+offset_bottom = 37.0
+
+[node name="Speed" type="Label" parent="."]
+offset_left = 10.0
+offset_top = 50.0
+offset_right = 50.0
+offset_bottom = 73.0
