@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var yaw_speed := 2.0
 @export var roll_speed := 2.0
 
-@export var sharp_steering := 6
+@export var sharp_steering := 8
 @export var three_input_steering := true
 @export var fov := 90.0
 
@@ -19,6 +19,9 @@ extends CharacterBody3D
 @export var turbo_reload_speed:= 1.0
 @export var turbo_cooldown := 100
 
+@export var shot_range := 1000
+@export var shot_delay := 10
+@export var shot_damage := 100
 
 var pitch_input := 0.0
 var yaw_input := 0.0
@@ -29,8 +32,12 @@ var cur_speed := 0.0
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
 @onready var turbo_meter: ProgressBar = $TurboMeter
 @onready var speed_label: Label = $Speed
+@onready var aim_cast: RayCast3D = $AimCast
 
+
+var target : Node3D
 var t_cooldown := 0
+var h_cooldown := 0
 
 func _ready() -> void:
 	cam.fov = fov
@@ -40,6 +47,7 @@ func _ready() -> void:
 		turbo_meter.size.x= turbo_max*100
 		turbo_meter.value = 0.0
 		t_cooldown = turbo_cooldown
+	aim_cast.target_position = Vector3(0,0,-shot_range)
 
 func get_input(delta):
 	if Input.is_action_pressed("speed_up"):
@@ -78,8 +86,21 @@ func get_input(delta):
 	else:
 		yaw_speed = 0.4*roll_speed
 		roll_input = yaw_input 
-		
 	
+	#hit scan shooting
+	#ADD VARIABLE AMOUNTS OF GUNS
+	#ADD A LITTLE AUTO AIM
+	if Input.is_action_just_pressed("shoot"):
+		if aim_cast.is_colliding():
+			target = aim_cast.get_collider()
+			h_cooldown = shot_delay
+	if h_cooldown > 0:
+		h_cooldown -=1
+		
+	if h_cooldown == 1:
+		if target.is_in_group("other_players"):
+				target.hit(shot_damage)
+
 func _physics_process(delta: float) -> void:
 	#input
 	get_input(delta)

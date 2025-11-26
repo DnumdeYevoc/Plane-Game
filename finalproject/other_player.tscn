@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://djt0rltwg8ngs"]
+
+[ext_resource type="Script" uid="uid://wld0nh20bnq3" path="res://other_player.gd" id="1_udq41"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fsqd6"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8mr3g"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lv2yf"]
+material = SubResource("StandardMaterial3D_8mr3g")
+
+[node name="OtherPlayer" type="CharacterBody3D" groups=["other_players"]]
+script = ExtResource("1_udq41")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_fsqd6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_lv2yf")
+skeleton = NodePath("../CollisionShape3D")
