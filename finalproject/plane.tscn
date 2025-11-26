@@ -1,24 +1,39 @@
-[gd_scene load_steps=4 format=3 uid="uid://e51tlq7ohecw"]
+[gd_scene load_steps=6 format=3 uid="uid://b6713dtnbcff"]
 
-[ext_resource type="Script" uid="uid://cd5d6icauqy7v" path="res://PlaneController.gd" id="1_s46f0"]
+[ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://plane_controller.gd" id="1_f3srd"]
+[ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://3rd_person_cam.gd" id="2_dpar4"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_dpar4"]
-margin = 0.4
+[sub_resource type="BoxMesh" id="BoxMesh_5t0eu"]
 size = Vector3(1, 0.5, 2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_r8t2q"]
-size = Vector3(1, 0.5, 2)
+[sub_resource type="BoxMesh" id="BoxMesh_s46f0"]
+size = Vector3(2.5, 0.3, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
+size = Vector3(1, 0.5, 2.07367)
 
 [node name="Plane" type="CharacterBody3D"]
-script = ExtResource("1_s46f0")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.72862, 4.7222)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.050369, 0.0429087)
-shape = SubResource("BoxShape3D_dpar4")
+script = ExtResource("1_f3srd")
 
 [node name="Model" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0267808, -0.0268507)
-mesh = SubResource("BoxMesh_r8t2q")
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.095099)
+mesh = SubResource("BoxMesh_5t0eu")
+
+[node name="Model" type="MeshInstance3D" parent="Model"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("BoxMesh_s46f0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.11734)
+shape = SubResource("BoxShape3D_uw3ql")
+
+[node name="3rdPersonCam" type="Node3D" parent="." node_paths=PackedStringArray("target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0550327, 0)
+top_level = true
+script = ExtResource("2_dpar4")
+target = NodePath("..")
+
+[node name="Camera3D" type="Camera3D" parent="3rdPersonCam"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.34223, 3.65458)
+current = true
+fov = 80.0
