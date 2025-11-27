@@ -1,8 +1,11 @@
 extends CharacterBody3D
 @onready var mesh: MeshInstance3D = $MeshInstance3D
-var material :Material
+var material :StandardMaterial3D
 var d_cooldown := 0
+
 func _ready() -> void:
+	mesh.mesh = BoxMesh.new()
+	mesh.mesh.surface_set_material(0,StandardMaterial3D.new())
 	material = mesh.mesh.surface_get_material(0)
 func hit(damage):
 	#health -= damage

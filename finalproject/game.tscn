@@ -49,3 +49,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
 
 [node name="OtherPlayer" parent="." instance=ExtResource("2_e2o6t")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 19.9806, -20.6267)
+
+[node name="OtherPlayer2" parent="." instance=ExtResource("2_e2o6t")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.2035, 19.9806, -20.6267)
+
+[node name="OtherPlayer3" parent="." instance=ExtResource("2_e2o6t")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -9.90426, 19.9806, -20.6267)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6713dtnbcff"]
+[gd_scene load_steps=7 format=3 uid="uid://b6713dtnbcff"]
 
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://plane_controller.gd" id="1_f3srd"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://3rd_person_cam.gd" id="2_dpar4"]
@@ -11,6 +11,8 @@ size = Vector3(2.5, 0.3, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_dpar4"]
 
 [node name="Plane" type="CharacterBody3D"]
 script = ExtResource("1_f3srd")
@@ -27,8 +29,10 @@ mesh = SubResource("BoxMesh_s46f0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.11734)
 shape = SubResource("BoxShape3D_uw3ql")
 
-[node name="AimCast" type="RayCast3D" parent="."]
-target_position = Vector3(0, 0, -100)
+[node name="AimCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+shape = SubResource("SphereShape3D_dpar4")
+target_position = Vector3(0, 0, 0)
 
 [node name="3rdPersonCam" type="Node3D" parent="." node_paths=PackedStringArray("target")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0550327, 0)

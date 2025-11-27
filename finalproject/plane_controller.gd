@@ -22,6 +22,8 @@ extends CharacterBody3D
 @export var shot_range := 1000
 @export var shot_delay := 10
 @export var shot_damage := 100
+@export var aim_assist_radius := 3
+@export var pivotable_gun := true
 
 var pitch_input := 0.0
 var yaw_input := 0.0
@@ -32,14 +34,16 @@ var cur_speed := 0.0
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
 @onready var turbo_meter: ProgressBar = $TurboMeter
 @onready var speed_label: Label = $Speed
-@onready var aim_cast: RayCast3D = $AimCast
+@onready var aim_cast: = $AimCast
 
 
 var target : Node3D
 var t_cooldown := 0
 var h_cooldown := 0
+var screen_center : Vector2
 
 func _ready() -> void:
+	
 	cam.fov = fov
 	max_speed /= 4
 	if turbo:
@@ -47,8 +51,22 @@ func _ready() -> void:
 		turbo_meter.size.x= turbo_max*100
 		turbo_meter.value = 0.0
 		t_cooldown = turbo_cooldown
-	aim_cast.target_position = Vector3(0,0,-shot_range)
-
+	
+	
+	aim_cast.shape.radius = aim_assist_radius
+	
+	if pivotable_gun:
+		aim_cast.position.z = 0
+	else:
+		aim_cast.position.z = 5
+		aim_cast.target_position = Vector3(0,0,-shot_range)
+		
+	screen_center = cam.get_viewport().size /2.0
+	get_tree().root.size_changed.connect(_on_viewport_size_changed)
+	
+func _on_viewport_size_changed():
+	screen_center = cam.get_viewport().size /2.0
+	
 func get_input(delta):
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
@@ -89,21 +107,25 @@ func get_input(delta):
 	
 	#hit scan shooting
 	#ADD VARIABLE AMOUNTS OF GUNS
-	#ADD A LITTLE AUTO AIM
+	if pivotable_gun:
+		var rel_mouse_pos = (screen_center -get_viewport().get_mouse_position())/screen_center
+		aim_cast.target_position = Vector3(-rel_mouse_pos.x, rel_mouse_pos.y,cam.position.z) 
+		aim_cast.target_position*shot_range
 	if Input.is_action_just_pressed("shoot"):
 		if aim_cast.is_colliding():
-			target = aim_cast.get_collider()
+			target = aim_cast.get_collider(0)
 			h_cooldown = shot_delay
 	if h_cooldown > 0:
 		h_cooldown -=1
 		
 	if h_cooldown == 1:
-		if target.is_in_group("other_players"):
-				target.hit(shot_damage)
+		if target.is_in_group("bullet_collision"):
+			target.hit(shot_damage)
 
 func _physics_process(delta: float) -> void:
 	#input
 	get_input(delta)
+	
 	speed_label.text = str(int(cur_speed*4))+ "km/h"
 	#rotate
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
