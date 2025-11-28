@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=3 format=3 uid="uid://cyiy4vmnkqjxw"]
+
+[ext_resource type="Script" uid="uid://celgfdf3x0i2h" path="res://bullet_template.gd" id="1_v74cf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_l0ul8"]
+
+[resource]
+script = ExtResource("1_v74cf")
+speed = 1
+mesh = SubResource("BoxMesh_l0ul8")
+damage = 10
+explode = false

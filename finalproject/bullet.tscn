@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3 uid="uid://bt1r0eadydri3"]
+
+[ext_resource type="Script" uid="uid://bqgv6pm7pnmb3" path="res://bullet.gd" id="1_v8qja"]
+[ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://bullet.tres" id="2_t4vbm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_rtl8c"]
+
+[node name="Bullet" type="MeshInstance3D"]
+mesh = SubResource("BoxMesh_rtl8c")
+script = ExtResource("1_v8qja")
+resource = ExtResource("2_t4vbm")

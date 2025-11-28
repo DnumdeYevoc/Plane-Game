@@ -19,11 +19,12 @@ extends CharacterBody3D
 @export var turbo_reload_speed:= 1.0
 @export var turbo_cooldown := 100
 
-@export var shot_range := 1000
-@export var shot_delay := 10
+@export var shot_range := 100
+
 @export var shot_damage := 100
 @export var aim_assist_radius := 3
 @export var pivotable_gun := true
+@export var bullet_type : Resource
 
 var pitch_input := 0.0
 var yaw_input := 0.0
@@ -35,13 +36,15 @@ var cur_speed := 0.0
 @onready var turbo_meter: ProgressBar = $TurboMeter
 @onready var speed_label: Label = $Speed
 @onready var aim_cast: = $AimCast
+@onready var projectile_manager: Node3D = $ProjectileManager
 
+@onready var bullet_scene = preload("res://bullet.tscn")
 
 var target : Node3D
 var t_cooldown := 0
 var h_cooldown := 0
 var screen_center : Vector2
-
+var shot_delay := 10
 func _ready() -> void:
 	
 	cam.fov = fov
@@ -58,7 +61,7 @@ func _ready() -> void:
 	if pivotable_gun:
 		aim_cast.position.z = 0
 	else:
-		aim_cast.position.z = 5
+		aim_cast.position.z = -5
 		aim_cast.target_position = Vector3(0,0,-shot_range)
 		
 	screen_center = cam.get_viewport().size /2.0
@@ -78,7 +81,6 @@ func get_input(delta):
 		if t_cooldown ==0:
 			if Input.is_action_pressed("turbo"):
 					turbo_meter.value -= acceleration*delta
-					print(acceleration*delta)
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
 					cam.fov = lerp(cam.fov, fov + 20.0, acceleration*2 *delta)
 					if turbo_meter.value <= 0:
@@ -108,19 +110,28 @@ func get_input(delta):
 	#hit scan shooting
 	#ADD VARIABLE AMOUNTS OF GUNS
 	if pivotable_gun:
+		#FIX DIS
 		var rel_mouse_pos = (screen_center -get_viewport().get_mouse_position())/screen_center
 		aim_cast.target_position = Vector3(-rel_mouse_pos.x, rel_mouse_pos.y,cam.position.z) 
 		aim_cast.target_position*shot_range
+		
 	if Input.is_action_just_pressed("shoot"):
+		#bullet
+		var bullet = bullet_scene.instantiate()
+		bullet.resource = bullet_type
+		bullet.position = position
+		bullet.rotation = rotation
+		bullet.target_pos = to_global(aim_cast.target_position)
+		
 		if aim_cast.is_colliding():
 			target = aim_cast.get_collider(0)
-			h_cooldown = shot_delay
-	if h_cooldown > 0:
-		h_cooldown -=1
 		
-	if h_cooldown == 1:
-		if target.is_in_group("bullet_collision"):
-			target.hit(shot_damage)
+			if target.is_in_group("bullet_collision"):
+				bullet.target_pos = target.position
+				bullet.hit(target)
+				
+		projectile_manager.add_child(bullet)
+
 
 func _physics_process(delta: float) -> void:
 	#input
