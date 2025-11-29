@@ -3,3 +3,4 @@ extends Resource
 @export var mesh : Mesh 
 @export var damage : int
 @export var explode : bool
+@export var homing : bool

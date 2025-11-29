@@ -17,6 +17,8 @@ size = Vector3(1, 0.5, 2.07367)
 
 [node name="Plane" type="CharacterBody3D"]
 script = ExtResource("1_f3srd")
+shot_range = 200
+aim_assist_radius = 5
 pivotable_gun = false
 bullet_type = ExtResource("2_nqs3l")
 

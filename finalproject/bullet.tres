@@ -6,7 +6,8 @@
 
 [resource]
 script = ExtResource("1_v74cf")
-speed = 1
+speed = 300
 mesh = SubResource("BoxMesh_l0ul8")
 damage = 10
 explode = false
+homing = true

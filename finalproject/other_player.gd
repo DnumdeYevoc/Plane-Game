@@ -7,12 +7,18 @@ func _ready() -> void:
 	mesh.mesh = BoxMesh.new()
 	mesh.mesh.surface_set_material(0,StandardMaterial3D.new())
 	material = mesh.mesh.surface_get_material(0)
+	
 func hit(damage):
 	#health -= damage
 	material.albedo_color = Color8(100,0,0,1)
+	
+	#colour delay
 	d_cooldown = 10
 
 func _process(delta: float) -> void:
+	position.z += 15*delta
+	
+	#reset color delay
 	if d_cooldown > 0:
 		d_cooldown -= 1
 	if d_cooldown == 1:

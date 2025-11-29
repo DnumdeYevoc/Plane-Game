@@ -61,7 +61,7 @@ func _ready() -> void:
 	if pivotable_gun:
 		aim_cast.position.z = 0
 	else:
-		aim_cast.position.z = -5
+		aim_cast.position.z = -10
 		aim_cast.target_position = Vector3(0,0,-shot_range)
 		
 	screen_center = cam.get_viewport().size /2.0
@@ -121,13 +121,13 @@ func get_input(delta):
 		bullet.resource = bullet_type
 		bullet.position = position
 		bullet.rotation = rotation
-		bullet.target_pos = to_global(aim_cast.target_position)
+		bullet.end_pos = to_global(aim_cast.target_position)
 		
 		if aim_cast.is_colliding():
 			target = aim_cast.get_collider(0)
 		
 			if target.is_in_group("bullet_collision"):
-				bullet.target_pos = target.position
+				
 				bullet.hit(target)
 				
 		projectile_manager.add_child(bullet)
