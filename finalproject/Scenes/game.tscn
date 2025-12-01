@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dxk644sdwqkir"]
 
-[ext_resource type="PackedScene" uid="uid://b6713dtnbcff" path="res://plane.tscn" id="1_80nbo"]
-[ext_resource type="PackedScene" uid="uid://djt0rltwg8ngs" path="res://other_player.tscn" id="2_e2o6t"]
+[ext_resource type="PackedScene" uid="uid://b6713dtnbcff" path="res://Scenes/plane.tscn" id="1_qxrlw"]
+[ext_resource type="PackedScene" uid="uid://djt0rltwg8ngs" path="res://Scenes/other_player.tscn" id="2_wrm1d"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_e2o6t"]
 size = Vector2(50, 50)
@@ -44,14 +44,14 @@ mesh = SubResource("BoxMesh_feb5d")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Test Environment"]
 transform = Transform3D(0.146447, -0.853553, 0.5, 0.5, 0.5, 0.707107, -0.853553, 0.146447, 0.5, 0, 16.6403, 0)
 
-[node name="PlaneV4" parent="." instance=ExtResource("1_80nbo")]
+[node name="PlaneV4" parent="." instance=ExtResource("1_qxrlw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
 
-[node name="OtherPlayer" parent="." instance=ExtResource("2_e2o6t")]
+[node name="OtherPlayer" parent="." instance=ExtResource("2_wrm1d")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 19.9806, -60.1549)
 
-[node name="OtherPlayer2" parent="." instance=ExtResource("2_e2o6t")]
+[node name="OtherPlayer2" parent="." instance=ExtResource("2_wrm1d")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.2035, 19.9806, -60.1549)
 
-[node name="OtherPlayer3" parent="." instance=ExtResource("2_e2o6t")]
+[node name="OtherPlayer3" parent="." instance=ExtResource("2_wrm1d")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -9.90426, 19.9806, -60.1549)
