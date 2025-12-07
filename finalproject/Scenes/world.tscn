@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://mbpmm2hagsc7"]
+
+[ext_resource type="Script" uid="uid://dbpun3275s1yu" path="res://Scripts/world.gd" id="1_go701"]
+[ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/map_template.tres" id="2_5a7ea"]
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_fj7yv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_go701"]
+albedo_color = Color(0.0431373, 0.145098, 1, 1)
+metallic = 0.27
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_go701"]
+material = SubResource("StandardMaterial3D_go701")
+
+[node name="World" type="StaticBody3D"]
+script = ExtResource("1_go701")
+map_resource = ExtResource("2_5a7ea")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("HeightMapShape3D_fj7yv")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+
+[node name="Water" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_go701")

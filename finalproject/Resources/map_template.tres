@@ -1,0 +1,30 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://2yymn03klern"]
+
+[ext_resource type="Shader" uid="uid://dpiil60lthn21" path="res://land.gdshader" id="1_onvjc"]
+[ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="1_s13g3"]
+
+[sub_resource type="Gradient" id="Gradient_onvjc"]
+offsets = PackedFloat32Array(0.484127, 0.52381)
+colors = PackedColorArray(0.798167, 0.678829, 0.451936, 1, 0, 0.537255, 0.117647, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
+gradient = SubResource("Gradient_onvjc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l273t"]
+render_priority = 0
+shader = ExtResource("1_onvjc")
+shader_parameter/height = 0.0
+shader_parameter/color_gradient = SubResource("GradientTexture1D_l273t")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s13g3"]
+frequency = 0.003
+
+[resource]
+script = ExtResource("1_s13g3")
+noise = SubResource("FastNoiseLite_s13g3")
+material = SubResource("ShaderMaterial_l273t")
+size = Vector2i(1000, 1000)
+resolution = 100
+height_of_details = 100
+mountain_height = 100
+steepness = 0.5

@@ -40,6 +40,7 @@ var cur_speed := 0.0
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
 @onready var turbo_meter: ProgressBar = $TurboMeter
 @onready var speed_label: Label = $Speed
+@onready var fps_label: Label = $FPS
 @onready var aim_cast: = $AimCast
 @onready var projectile_manager: Node3D = $ProjectileManager
 
@@ -176,6 +177,7 @@ func _physics_process(delta: float) -> void:
 	
 	#UI
 	speed_label.text = str(int(cur_speed*4))+ "km/h"
+	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
 	
 	#rotate
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
