@@ -23,7 +23,7 @@ var turbo_max : float
 var turbo_reload_speed: float
 
 #shooting
-var shot_range : int
+
 var pivotable_gun : bool
 var barrel_amount : int
 var barrel_spread : float
@@ -36,6 +36,7 @@ var roll_input := 0.0
 
 var cur_speed := 0.0
 
+@onready var world: Node3D = $"../World"
 #children
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
 @onready var turbo_meter: ProgressBar = $TurboMeter
@@ -71,7 +72,6 @@ func _ready() -> void:
 	turbo_max = plane_type.turbo_max
 	turbo_reload_speed = plane_type.turbo_reload_speed
 	pivotable_gun = plane_type.pivotable_gun
-	shot_range = plane_type.shot_range
 	aim_cast.shape.radius = plane_type.aim_assist_radius
 	barrel_amount = plane_type.barrel_amount
 	barrel_spread = plane_type.barrel_spread
@@ -81,7 +81,7 @@ func _ready() -> void:
 	cam.fov = fov
 	
 	max_speed /= 4
-	
+
 	if turbo:
 		turbo_meter.max_value = turbo_max
 		turbo_meter.size.x= turbo_max*100
@@ -90,7 +90,7 @@ func _ready() -> void:
 	
 	#non-pivotable settings
 	if pivotable_gun == false:
-		aim_cast.target_position = Vector3(0,0,-shot_range)
+		aim_cast.target_position = Vector3(0,0,-1000) #Make Crosshair
 	#pivotable settings
 	
 	
@@ -112,7 +112,7 @@ func get_input(delta):
 			if Input.is_action_pressed("turbo"):
 					turbo_meter.value -= acceleration*delta
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
-					cam.fov = lerp(cam.fov, fov + 20.0, acceleration*2 *delta)
+					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
 					
 					#if empty meter
 					if turbo_meter.value <= 0:
@@ -147,30 +147,25 @@ func get_input(delta):
 	#hit scan shooting
 	if pivotable_gun:
 		#FIX DIS
-		var rel_mouse_pos = (screen_center -get_viewport().get_mouse_position())/screen_center
-		aim_cast.target_position = Vector3(-rel_mouse_pos.x, rel_mouse_pos.y,cam.position.z) 
-		aim_cast.target_position*shot_range
+		pass
 		
 	if Input.is_action_just_pressed("shoot"):
 		#bullet
 		if barrel_amount >0:
 			for barrel in barrel_amount:
 				var bullet = bullet_scene.instantiate()
-				
 				bullet.resource = bullet_type
-				bullet.position = position 
 				bullet.rotation = rotation
-				bullet.position = to_global(to_local(bullet.position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+				bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 				bullet.end_pos =  to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 				bullet.speed = cur_speed
 				
 				if aim_cast.is_colliding():
 					target = aim_cast.get_collider(0)
-					if target.is_in_group("bullet_collision"):
-						bullet.shoot(target)
-						
+					if target:
+						if target.is_in_group("bullet_collision"):
+							bullet.target = target
 				projectile_manager.add_child(bullet)
-
 func _physics_process(delta: float) -> void:
 	#input
 	get_input(delta)
@@ -185,6 +180,15 @@ func _physics_process(delta: float) -> void:
 	transform.basis = transform.basis.rotated(transform.basis.y, yaw_input*yaw_speed*delta)
 	transform.basis = transform.basis.orthonormalized()
 	
+	#border
+	#FIX THIS COME UP WITH CREATIVE SOLUTION
+	if global_position.x > world.size.x*0.75 or global_position.x < -world.size.x*0.75 or global_position.z > world.size.y*0.75 or global_position.z < -world.size.y*0.75:
+		world.sun.light_energy -= delta
+		
+		fov = 80
+	else:
+		world.sun.light_energy = 1
+		
 	#move forward
 	velocity = -transform.basis.z*cur_speed
 	move_and_slide()

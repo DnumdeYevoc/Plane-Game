@@ -6,7 +6,7 @@
 
 [sub_resource type="BoxMesh" id="BoxMesh_lv2yf"]
 
-[node name="OtherPlayer" type="CharacterBody3D" groups=["bullet_collision"]]
+[node name="OtherPlayer" type="Area3D" groups=["bullet_collision"]]
 script = ExtResource("1_udq41")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -15,3 +15,5 @@ shape = SubResource("BoxShape3D_fsqd6")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_lv2yf")
 skeleton = NodePath("../CollisionShape3D")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

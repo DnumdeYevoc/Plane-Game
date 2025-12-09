@@ -4,3 +4,5 @@ extends Resource
 @export var damage : int
 @export var explode : bool
 @export var homing : bool
+@export var lifetime : int
+@export var collision_shape :Shape3D

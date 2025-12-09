@@ -19,11 +19,11 @@ config/icon="res://icon.svg"
 
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=0
 
 [global_group]
 
 bullet_collision=""
+bullets=""
 
 [input]
 

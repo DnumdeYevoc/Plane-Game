@@ -6,11 +6,11 @@
 
 [node name="Game" type="Node"]
 
-[node name="PlaneV4" parent="." instance=ExtResource("1_qxrlw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0)
+[node name="Plane" parent="." instance=ExtResource("1_qxrlw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 413.72, 0)
 
 [node name="OtherPlayer" parent="." instance=ExtResource("2_wrm1d")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 19.9806, -60.1549)
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, 486.944, -60.1549)
 
 [node name="OtherPlayer2" parent="." instance=ExtResource("2_wrm1d")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.2035, 19.9806, -60.1549)
@@ -22,10 +22,3 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -9.90426, 19.9806, -60.1549)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 74.0588, 609.15)
-current = true
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 66.1114, 0)
-light_energy = 2.616
-light_volumetric_fog_energy = 9.404
-light_specular = 2.617

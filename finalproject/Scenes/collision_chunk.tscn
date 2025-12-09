@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://31t3nsodkudo"]
+
+[ext_resource type="Script" uid="uid://bh1dsd1htyl57" path="res://Scripts/collision_chunk.gd" id="1_kx1bf"]
+
+[node name="CollisionChunk" type="CollisionShape3D"]
+script = ExtResource("1_kx1bf")

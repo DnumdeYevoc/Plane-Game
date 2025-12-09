@@ -1,4 +1,4 @@
-extends MeshInstance3D
+extends Area3D
 var vel : Vector3
 
 @export var resource : Resource
@@ -12,44 +12,43 @@ var damage : int
 var homing : bool
 
 var dir : Vector3
-var h_cooldown : int
 var target : Node3D
+var timer : int
+
+@onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+
 func _ready() -> void:
 	speed += resource.speed
-	mesh = resource.mesh
+	mesh.mesh = resource.mesh
 	damage = resource.damage
 	explode = resource.explode
 	homing = resource.homing
-
-func shoot(tar):
-	target = tar
-	target_pos = tar.position
+	timer = resource.lifetime*60
+	collision_shape.shape = resource.collision_shape
 	
 func _process(delta: float) -> void:
+	timer -=1
 	#homing
 	if homing and target != null:
+		#homing
 		dir = position.direction_to(target.global_position)
 	elif target == null:
+		#homing but no target
 		dir = position.direction_to(end_pos)
 	else:
-		#FIX NON HOMING ??
+		#regular
 		dir = position.direction_to(target_pos)
-	
 	vel = dir *speed *delta
 	
-	if target != null:
-		#change this to timer and not distance
-		if (global_position+vel).distance_to(target.global_position)<2:
-			target.hit(damage)
-			end()
-			
-	#change this to timer and not distance for htiscan
-	if (global_position+vel).distance_to(end_pos)<speed/6:
+	if timer <=0:
+		
 		end()
 	
 	position += vel
 
 func end():
+	
 	#add explsoion animation/ particles
 	if explode:
 		#await

@@ -1,25 +1,99 @@
-[gd_scene load_steps=6 format=3 uid="uid://mbpmm2hagsc7"]
+[gd_scene load_steps=9 format=3 uid="uid://mbpmm2hagsc7"]
 
 [ext_resource type="Script" uid="uid://dbpun3275s1yu" path="res://Scripts/world.gd" id="1_go701"]
 [ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/map_template.tres" id="2_5a7ea"]
 
-[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_fj7yv"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go701"]
+sky_top_color = Color(0.158828, 0.416281, 0.88099, 1)
+sky_horizon_color = Color(0.365044, 0.716683, 0.767869, 1)
+ground_bottom_color = Color(0.14833, 0, 0.820082, 1)
+ground_horizon_color = Color(0.267831, 0.376472, 0.952269, 1)
+sun_angle_max = 141.11
+
+[sub_resource type="Sky" id="Sky_3dryh"]
+sky_material = SubResource("ProceduralSkyMaterial_go701")
+
+[sub_resource type="Environment" id="Environment_5a7ea"]
+background_mode = 2
+sky = SubResource("Sky_3dryh")
+ambient_light_energy = 3.39
+glow_intensity = 8.0
+fog_sun_scatter = 0.36
+fog_density = 0.001
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_go701"]
-albedo_color = Color(0.0431373, 0.145098, 1, 1)
+transparency = 1
+albedo_color = Color(0.381151, 0.565647, 1, 0.431373)
 metallic = 0.27
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_go701"]
 material = SubResource("StandardMaterial3D_go701")
 
-[node name="World" type="StaticBody3D"]
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_fj7yv"]
+
+[node name="World" type="Node3D"]
 script = ExtResource("1_go701")
 map_resource = ExtResource("2_5a7ea")
 
-[node name="Collision" type="CollisionShape3D" parent="."]
-shape = SubResource("HeightMapShape3D_fj7yv")
-
 [node name="Mesh" type="MeshInstance3D" parent="."]
 
-[node name="Water" type="MeshInstance3D" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5a7ea")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.939693, 0.34202, 0, -0.34202, -0.939693, 0, 180, 0)
+light_volumetric_fog_energy = 0.0
+light_specular = 0.0
+
+[node name="Water" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Water" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
 mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water2" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 8, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water3" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 7, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water4" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 6, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water5" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 5, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water6" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 4, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water7" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 0, 2, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water8" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 1, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="Water9" type="MeshInstance3D" parent="Water"]
+transform = Transform3D(9, 0, 0, 0, 9, 0, 0, 0, 9, 0, 0, 0)
+mesh = SubResource("PlaneMesh_go701")
+skeleton = NodePath("../..")
+
+[node name="CollsionChunkManager" type="StaticBody3D" parent="."]
+
+[node name="Collision" type="CollisionShape3D" parent="CollsionChunkManager"]
+shape = SubResource("HeightMapShape3D_fj7yv")

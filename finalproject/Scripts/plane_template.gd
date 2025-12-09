@@ -24,7 +24,7 @@ extends Resource
 @export var pivotable_gun : bool
 
 #hitscan
-@export var shot_range : int
+
 @export var aim_assist_radius : int
 
 #projectile
