@@ -15,6 +15,7 @@ var player : CharacterBody3D
 var chunk_size : Vector2i
 
 func _ready() -> void:
+	await player 
 	disabled = true
 	chunk_size = world_size/chunk_amount
 	generate_mesh()
@@ -46,6 +47,7 @@ func generate_mesh():
 
 func _physics_process(delta: float) -> void:
 	#if within chunk + margin
+	if ! player : return
 	if player.global_position.x >= (position.x-chunk_size.x/2) -margin and player.global_position.x <= (position.x + chunk_size.x/2)  + margin and player.global_position.z >= (position.z -chunk_size.y/2) - margin and player.global_position.z<= (position.z + chunk_size.y/2) + margin:
 		disabled = false
 	else:

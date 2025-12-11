@@ -18,6 +18,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 NetworkHandler="*res://Multiplayer/Scripts/network_handler.gd"
+ClientNetworkGlobals="*res://Multiplayer/Scripts/client_network_globals.gd"
+ServerNetworkGlobals="*res://Multiplayer/Scripts/server_network_globals.gd"
 
 [display]
 

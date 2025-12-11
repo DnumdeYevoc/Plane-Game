@@ -1,6 +1,12 @@
 extends CharacterBody3D
 
 @export var plane_type : Resource
+#multiplayer variables
+#whether or not you are server
+var is_authority: bool: 
+	get: return !NetworkHandler.is_server && owner_id == ClientNetworkGlobals.id
+var owner_id: int
+
 #customizable variables by type
 #handling
 var max_speed : float
@@ -55,8 +61,29 @@ var screen_center : Vector2
 
 var t_cooldown := 0
 var h_cooldown := 0
-
+#handle multiplayer
+func _enter_tree() -> void:
+	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
+	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
+	
+func _exit_tree() -> void:
+	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
+	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
+	
+func server_handle_player_position(peer_id:int, player_position: PlayerPosition)->void:
+	if owner_id != peer_id: return
+		
+	global_position = player_position.position
+	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
+	
+func client_handle_player_position(player_position: PlayerPosition)-> void:
+	if is_authority or owner_id != player_position.id : return
+	
+	global_position = player_position.position
+	
 func _ready() -> void:
+	
+	cam.current = true
 	#set variables from resource
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -167,6 +194,8 @@ func get_input(delta):
 							bullet.target = target
 				projectile_manager.add_child(bullet)
 func _physics_process(delta: float) -> void:
+	#multiplayer handling
+	if !is_authority: return
 	#input
 	get_input(delta)
 	
@@ -192,3 +221,5 @@ func _physics_process(delta: float) -> void:
 	#move forward
 	velocity = -transform.basis.z*cur_speed
 	move_and_slide()
+	
+	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
