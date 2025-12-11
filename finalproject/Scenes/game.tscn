@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dxk644sdwqkir"]
+[gd_scene load_steps=5 format=3 uid="uid://dxk644sdwqkir"]
 
 [ext_resource type="PackedScene" uid="uid://djt0rltwg8ngs" path="res://Scenes/other_player.tscn" id="2_wrm1d"]
 [ext_resource type="PackedScene" uid="uid://j56tvlul421h" path="res://Scenes/player_spawner.tscn" id="3_3dryh"]
+[ext_resource type="PackedScene" uid="uid://mbpmm2hagsc7" path="res://Scenes/world.tscn" id="4_3dryh"]
 [ext_resource type="PackedScene" uid="uid://rtr6y61uhb04" path="res://Scenes/network_ui.tscn" id="4_wowpa"]
 
 [node name="Game" type="Node"]
@@ -21,3 +22,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 74.0588, 609.15)
 [node name="player_spawner" parent="." instance=ExtResource("3_3dryh")]
 
 [node name="Network_UI" parent="." instance=ExtResource("4_wowpa")]
+
+[node name="World" parent="." instance=ExtResource("4_3dryh")]

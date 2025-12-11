@@ -42,7 +42,8 @@ var roll_input := 0.0
 
 var cur_speed := 0.0
 
-@onready var world: Node3D = $"../World"
+@onready var world: Node3D = get_node("/root/Game/World")
+
 #children
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
 @onready var turbo_meter: ProgressBar = $TurboMeter

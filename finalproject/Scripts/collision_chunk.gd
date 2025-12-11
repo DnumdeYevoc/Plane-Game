@@ -15,7 +15,7 @@ var player : CharacterBody3D
 var chunk_size : Vector2i
 
 func _ready() -> void:
-	await player 
+	await NetworkHandler.on_peer_connected 
 	disabled = true
 	chunk_size = world_size/chunk_amount
 	generate_mesh()

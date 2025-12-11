@@ -21,7 +21,6 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-
 func _process(delta: float) -> void:
 	if connection == null: return
 	
@@ -33,7 +32,7 @@ func handle_events() -> void:
 	
 	while event_type != ENetConnection.EVENT_NONE:
 		var peer: ENetPacketPeer = packet_event[1]
-		
+		print("loop")
 		match event_type:
 			ENetConnection.EVENT_ERROR:
 				push_warning("package resulted in unknown error")
@@ -54,13 +53,13 @@ func handle_events() -> void:
 					on_server_packet.emit(peer.get_meta("id"), peer.get_packet())
 				else: #client 
 					on_client_packet.emit(peer.get_packet())
-	#call service() again to handle remaining packets in current while loop
-	packet_event = connection.service()
-	event_type = packet_event[0]
+		#call service() again to handle remaining packets in current while loop
+		packet_event = connection.service()
+		event_type = packet_event[0]
 
 
 #CHECK IF YOU NEED TO LOOK UP YOUR IP ADRESS
-func start_server(ip_adress: String = "127.0.0.1", port : int = 42069):
+func start_server(ip_adress: String = "192.168.2.249", port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:
@@ -86,7 +85,7 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(ip_adress: String = "127.0.0.1", port : int = 42069):
+func start_client(ip_adress: String = "192.168.2.249", port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host(1)
 	if error:
@@ -100,7 +99,6 @@ func disconnect_client() -> void: #When player hits disconnect button
 	if is_server: return
 	server_peer.peer_disconnect()
 	#happens automatically if you close, but this is nice if you want main screen again
-	
 
 func connected_to_server() -> void:
 	print("Successfully connected to server")
