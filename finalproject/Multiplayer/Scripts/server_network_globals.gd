@@ -11,22 +11,18 @@ func _ready() -> void:
 
 func on_peer_connected (peer_id: int) -> void:
 	peer_ids.append(peer_id)
-	
-	#send ID data over the network
-	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)
-	
-	
+	#send ID data over the network (from server to all the players)
+	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)	
 	
 func on_peer_disconnected(peer_id : int) -> void:
 	peer_ids.erase(peer_id)
 	
-	#ooptional IDunassignment type and broadcast to still connected players IDK why u want to do that but ig
-
+	#optional ID-unassignment type and broadcast to still connected players that that id isn't there anymore
+	
 func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	var packet_type : int = data.decode_u8(0)
 	match packet_type:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
-			
 		_:
 			push_error("packet type with index", data[0], "unhandled")

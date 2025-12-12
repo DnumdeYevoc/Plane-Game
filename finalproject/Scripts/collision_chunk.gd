@@ -19,7 +19,8 @@ func _ready() -> void:
 	disabled = true
 	chunk_size = world_size/chunk_amount
 	generate_mesh()
-	player =get_node("/root/Game/Plane")
+	#FIX TO BE SPECIFIC TO PLAYER ID
+	#player =get_node("/root/Game/Plane")
 func generate_mesh():
 	#collision mesh
 	var col_plane := PlaneMesh.new()

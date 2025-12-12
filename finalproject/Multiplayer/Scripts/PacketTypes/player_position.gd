@@ -16,16 +16,14 @@ static func create_from_data(data: PackedByteArray) -> PlayerPosition:
 	info.decode(data)
 	return info
 
-
 func encode() -> PackedByteArray:
 	var data: PackedByteArray  = super.encode()
-	data.resize(10)
+	data.resize(14)
 	data.encode_u8(1,id)
 	#floats take 4 btyes of data
 	data.encode_float(2, position.x)
 	data.encode_float(6, position.y)
 	data.encode_float(10, position.z)
-
 	return data
 	
 func decode(data: PackedByteArray) -> void:

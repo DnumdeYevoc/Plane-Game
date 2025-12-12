@@ -1,14 +1,12 @@
-
 class_name PacketInfo
 
 enum PACKET_TYPE {
 	ID_ASSIGNMENT = 0,
-	PLAYER_POSITION = 10,
+	PLAYER_POSITION = 14,
 }
 
 var packet_type: PACKET_TYPE
 var flag :int
-
 
 #override  function in derived classes
 func encode() -> PackedByteArray:
@@ -22,10 +20,8 @@ func encode() -> PackedByteArray:
 func decode(data : PackedByteArray) -> void:
 	packet_type = data.decode_u8(0)
 	
-
 func send(target: ENetPacketPeer) -> void:
 	target.send(0, encode(), flag)
 	
-
 func broadcast(server: ENetConnection) -> void:
 	server.broadcast(0, encode(), flag)

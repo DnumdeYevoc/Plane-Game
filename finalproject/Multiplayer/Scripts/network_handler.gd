@@ -21,9 +21,12 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
+var cur_ip := "192.168.2.249" #home wifi 
+#"172.16.1.243" #school wifi  
+#
+
 func _process(delta: float) -> void:
 	if connection == null: return
-	
 	handle_events() #handle incoming packets
 
 func handle_events() -> void:
@@ -32,7 +35,6 @@ func handle_events() -> void:
 	
 	while event_type != ENetConnection.EVENT_NONE:
 		var peer: ENetPacketPeer = packet_event[1]
-		print("loop")
 		match event_type:
 			ENetConnection.EVENT_ERROR:
 				push_warning("package resulted in unknown error")
@@ -57,9 +59,8 @@ func handle_events() -> void:
 		packet_event = connection.service()
 		event_type = packet_event[0]
 
-
 #CHECK IF YOU NEED TO LOOK UP YOUR IP ADRESS
-func start_server(ip_adress: String = "192.168.2.249", port : int = 42069):
+func start_server(ip_adress: String = cur_ip , port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:
@@ -75,7 +76,7 @@ func peer_connected(peer: ENetPacketPeer) -> void:
 	client_peers[peer_id]= peer
 	
 	print("peer_connected with id:", peer_id)
-	on_peer_connected.emit(peer_id)
+	on_peer_connected.emit(peer_id)#CURRENTLY ONLY CORRECT SPAWN 
 
 func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id : int = peer.get_meta("id")
@@ -85,7 +86,7 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(ip_adress: String = "192.168.2.249", port : int = 42069):
+func start_client(ip_adress: String = cur_ip, port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host(1)
 	if error:
@@ -93,6 +94,7 @@ func start_client(ip_adress: String = "192.168.2.249", port : int = 42069):
 		connection = null
 		return
 	print("client started")
+	#variable for server from perspectove of clients
 	server_peer = connection.connect_to_host(ip_adress, port)
 	
 func disconnect_client() -> void: #When player hits disconnect button

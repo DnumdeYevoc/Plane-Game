@@ -73,18 +73,17 @@ func _exit_tree() -> void:
 	
 func server_handle_player_position(peer_id:int, player_position: PlayerPosition)->void:
 	if owner_id != peer_id: return
-		
+	
 	global_position = player_position.position
 	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
 	
 func client_handle_player_position(player_position: PlayerPosition)-> void:
-	if is_authority or owner_id != player_position.id : return
-	
+	if is_authority || owner_id != player_position.id : return
+	#movement for planes other than yours
+	print(owner_id)
 	global_position = player_position.position
 	
 func _ready() -> void:
-	
-	cam.current = true
 	#set variables from resource
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -125,9 +124,11 @@ func _ready() -> void:
 	#set screen_center
 	screen_center = cam.get_viewport().size /2.0
 	get_tree().root.size_changed.connect(_on_viewport_size_changed)
+	
 func _on_viewport_size_changed():
 	screen_center = cam.get_viewport().size /2.0
-	
+
+
 func get_input(delta):
 	#speed
 	if Input.is_action_pressed("speed_up"):
@@ -194,9 +195,11 @@ func get_input(delta):
 						if target.is_in_group("bullet_collision"):
 							bullet.target = target
 				projectile_manager.add_child(bullet)
+		
 func _physics_process(delta: float) -> void:
 	#multiplayer handling
 	if !is_authority: return
+	
 	#input
 	get_input(delta)
 	
