@@ -29,5 +29,5 @@ func encode() -> PackedByteArray:
 func decode(data: PackedByteArray) -> void:
 	super.decode(data)
 	id = data.decode_u8(1)
-	position = Vector3(data.decode_float(2), data.decode_float(6), data.decode_u8(10))
+	position = Vector3(data.decode_float(2), data.decode_float(6), data.decode_float(10))
 	

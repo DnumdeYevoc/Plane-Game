@@ -80,10 +80,14 @@ func server_handle_player_position(peer_id:int, player_position: PlayerPosition)
 func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if is_authority || owner_id != player_position.id : return
 	#movement for planes other than yours
-	print(owner_id)
+	
 	global_position = player_position.position
 	
 func _ready() -> void:
+	if is_authority:
+		cam.current = true
+	else:
+		cam.current = false
 	#set variables from resource
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -130,6 +134,7 @@ func _on_viewport_size_changed():
 
 
 func get_input(delta):
+	cam.current = true
 	#speed
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
