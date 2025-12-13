@@ -27,34 +27,34 @@ var fog_density :float
 var environment : Environment 
 
 func _ready() -> void:
-	size = map_resource.size
-	mesh
-	water.scale  =Vector3( size.x,0.5, size.y)*3
+	environment = world_environment.get_environment()
+	set_resource_var()
+	noise.seed = randi_range(0,99999999)
+	
+	generate_mesh()
+	#if adding chunk system add arguments to this function
 
-	#MAKE MESH REPEAT 
-	noise = map_resource.noise
-	noise.seed = randi_range(0,999999999)
+func set_resource_var():
+	#set resource var
+	size = map_resource.size
 	resolution =size.x/2
+	water.scale  =Vector3( size.x,0.5, size.y)*3 
+	noise = map_resource.noise
 	height = map_resource.height_of_details
 	mountain_height = map_resource.mountain_height
 	steepness = map_resource.steepness
 	material = map_resource.material
-	material.set_shader_parameter("height",height*5 )
-	
-	environment = world_environment.get_environment()
+	material.set_shader_parameter("height",height*5 )#figure out better way to make this coeficient
 	fog_color = map_resource.fog_color
 	fog_density = map_resource.fog_density
-	
 	environment.sky.sky_material = map_resource.sky_material
 	if fog_density >0:
 		environment.volumetric_fog_enabled = true
 		environment.volumetric_fog_density = fog_density
 		environment.volumetric_fog_albedo = fog_color
 	
-	generate_mesh()
-	#if adding chunk system add arguments to this function
-
 func generate_mesh():
+	
 	#texture mesh
 	var plane := PlaneMesh.new()
 	plane.subdivide_depth = resolution 
@@ -116,3 +116,12 @@ func get_normal(x: float, y:float) -> Vector3:
 			(noise.get_noise_2d(x, y+epsilon) * height - noise.get_noise_2d(x, y-epsilon) * height) / (2*epsilon),
 		)
 		return normal.normalized()
+		
+func change_seed(seed):
+
+	for child in collision_chunk_manager.get_children():
+		collision_chunk_manager.remove_child(child)
+	mesh.mesh  = null
+	array_mesh = ArrayMesh.new()
+	noise.seed = seed
+	generate_mesh()

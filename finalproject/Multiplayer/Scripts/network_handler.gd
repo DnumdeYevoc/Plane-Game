@@ -61,6 +61,7 @@ func handle_events() -> void:
 
 #CHECK IF YOU NEED TO LOOK UP YOUR IP ADRESS
 func start_server(ip_adress: String = cur_ip , port : int = 42069):
+	#NEED TO MAKE SEED AND MAP RESOURCE CONSISTENT
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:

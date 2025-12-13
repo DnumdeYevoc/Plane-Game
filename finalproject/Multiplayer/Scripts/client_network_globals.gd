@@ -7,6 +7,9 @@ signal handle_player_position(player_position: PlayerPosition)
 var id : int = -1
 var remote_ids: Array[int]
 
+
+var server_started : bool = false
+
 func _ready() -> void:
 	NetworkHandler.on_client_packet.connect(on_client_packet)
 	

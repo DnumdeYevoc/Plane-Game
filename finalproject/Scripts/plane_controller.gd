@@ -75,19 +75,27 @@ func server_handle_player_position(peer_id:int, player_position: PlayerPosition)
 	if owner_id != peer_id: return
 	
 	global_position = player_position.position
+
 	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
 	
 func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if is_authority || owner_id != player_position.id : return
 	#movement for planes other than yours
+	#update rotation locally
+	if global_position != player_position.position:
+		transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
+	#works, but only passively, no accurate roll and unwanted spins happen sometimes
+
+
+	#update over network z rotation
+
+	
+	#update pos
 	
 	global_position = player_position.position
 	
 func _ready() -> void:
-	if is_authority:
-		cam.current = true
-	else:
-		cam.current = false
+	cam.current = false
 	#set variables from resource
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration

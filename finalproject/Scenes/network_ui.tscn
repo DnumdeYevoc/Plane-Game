@@ -12,18 +12,36 @@ grow_vertical = 2
 script = ExtResource("1_utfyr")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -50.0
+offset_top = -33.0
+offset_right = 50.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="StartServer" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Start Server"
 
-[node name="JoinServer(Client)" type="Button" parent="VBoxContainer"]
+[node name="Randomize Seed" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Click to Randomize"
+text = "Seed:"
+
+[node name="JoinServer" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Join Server
 "
 
+[node name="IP Address" type="MenuButton" parent="VBoxContainer"]
+layout_mode = 2
+
 [connection signal="pressed" from="VBoxContainer/StartServer" to="." method="_on_start_server_pressed"]
-[connection signal="pressed" from="VBoxContainer/JoinServer(Client)" to="." method="_on_join_server_client_pressed"]
+[connection signal="pressed" from="VBoxContainer/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
+[connection signal="pressed" from="VBoxContainer/JoinServer" to="." method="_on_join_server_client_pressed"]
