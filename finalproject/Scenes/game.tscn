@@ -17,7 +17,7 @@ transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.2035, 19.9806, -60.1549)
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -9.90426, 19.9806, -60.1549)
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 74.0588, 609.15)
+transform = Transform3D(1, 0, 0, 0, 0.999486, 0.0320562, 0, -0.0320562, 0.999486, 0, 342.127, 1030.76)
 
 [node name="player_spawner" parent="." instance=ExtResource("3_3dryh")]
 

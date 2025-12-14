@@ -4,7 +4,7 @@ extends Control
 
 @onready var seed_button: Button = $"VBoxContainer/Randomize Seed"
 @onready var world: Node3D = $"../World"
-
+@onready var map_list: MenuButton = $VBoxContainer/MapList
 
 func _ready() -> void:
 	seed_button.text = "Randomize Seed"
@@ -13,6 +13,19 @@ func _ready() -> void:
 		start_server.visible = false
 	else:
 		start_server.visible = true
+	
+	map_list.get_popup().id_pressed.connect(on_popup_pressed)
+	
+func set_popup():
+	#handle map drop down after world loads
+	for map in world.map_resource_list:
+		map_list.get_popup().add_item(map.name, map.id)
+		
+func on_popup_pressed(id):
+	#change display
+	world.set_map_type(id)
+	#update var for starting server packet
+	ServerNetworkGlobals.map_id = id
 
 func _on_start_server_pressed() -> void:
 	NetworkHandler.start_server()

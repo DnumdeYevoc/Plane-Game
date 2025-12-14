@@ -1,0 +1,51 @@
+[gd_resource type="Resource" load_steps=8 format=3 uid="uid://nmmf5ndx48c4"]
+
+[ext_resource type="Shader" uid="uid://dpiil60lthn21" path="res://land.gdshader" id="1_rx5w6"]
+[ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_nnfuk"]
+
+[sub_resource type="Gradient" id="Gradient_onvjc"]
+offsets = PackedFloat32Array(0.4375, 0.55, 0.7375, 0.9375)
+colors = PackedColorArray(0.953951, 0, 0.0496959, 1, 0.13304, 0.137348, 0.1432, 1, 0, 0, 0, 1, 0.0940187, 0.0880624, 0.0760234, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
+gradient = SubResource("Gradient_onvjc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l273t"]
+render_priority = 0
+shader = ExtResource("1_rx5w6")
+shader_parameter/height = 0.0
+shader_parameter/color_gradient = SubResource("GradientTexture1D_l273t")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s13g3"]
+noise_type = 0
+frequency = 0.005
+fractal_octaves = 6
+fractal_gain = 0.3
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_onvjc"]
+sky_top_color = Color(0.0504966, 3.10443e-06, 0.28755, 1)
+sky_horizon_color = Color(0.0314772, 0.00754005, 0.0151255, 1)
+sky_curve = 0.878451
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.0318189, 0.00738706, 0.0152878, 1)
+ground_curve = 0.355062
+sun_angle_max = 109.12
+sun_curve = 0.0294221
+energy_multiplier = 2.0
+
+[resource]
+script = ExtResource("2_nnfuk")
+name = "Volcano"
+id = 2
+noise = SubResource("FastNoiseLite_s13g3")
+material = SubResource("ShaderMaterial_l273t")
+size = Vector2i(2000, 2000)
+height_of_details = 125
+mountain_height = 400
+steepness = 1.0
+water_color = Color(0.509804, 0.0235294, 0, 0.584314)
+sun_strength = 0.3
+sun_color = Color(0.597671, 0.597894, 0.544835, 1)
+sky_material = SubResource("ProceduralSkyMaterial_onvjc")
+fog_color = Color(0, 0, 0, 1)
+fog_density = 0.0

@@ -10,7 +10,7 @@ const collision_chunk_scene = preload("res://Scenes/collision_chunk.tscn")
 @onready var collision_chunk_manager: StaticBody3D = $CollsionChunkManager
 @onready var water:  = $Water
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
-@onready var sun: DirectionalLight3D = $DirectionalLight3D
+@onready var sun: DirectionalLight3D = $Sun
 
 
 var noise : Noise
@@ -25,33 +25,59 @@ var fog_color : Color
 var fog_density :float
 
 var environment : Environment 
+@onready var network_ui: Control = $"../Network_UI"
+
+#map list
+#make sure in order of map.id
+var map_resource_list : Array = [
+	preload("res://Resources/Maps/0_map_template.tres"),
+	preload("res://Resources/Maps/1_grass.tres"),
+	preload("res://Resources/Maps/2_volcano.tres")
+]
 
 func _ready() -> void:
+	
+	network_ui.set_popup()
 	environment = world_environment.get_environment()
 	set_resource_var()
 	noise.seed = randi_range(0,99999999)
 	
 	generate_mesh()
 	#if adding chunk system add arguments to this function
-
-func set_resource_var():
+func set_map_type(id: int)-> void:
+	
+	map_resource = map_resource_list[id]
+	map_resource.noise.seed = noise.seed
+	set_resource_var()
+	regenerate_mesh()
+	
+	
+func set_resource_var() -> void:
 	#set resource var
 	size = map_resource.size
 	resolution =size.x/2
-	water.scale  =Vector3( size.x,0.5, size.y)*3 
+	
 	noise = map_resource.noise
 	height = map_resource.height_of_details
 	mountain_height = map_resource.mountain_height
 	steepness = map_resource.steepness
 	material = map_resource.material
-	material.set_shader_parameter("height",height*5 )#figure out better way to make this coeficient
+	material.set_shader_parameter("height",mountain_height*5 )#figure out better way to make this coeficient
 	fog_color = map_resource.fog_color
 	fog_density = map_resource.fog_density
+	
+	water.scale  =Vector3( size.x,0.5, size.y)*3 
+	water.get_child(0).mesh.surface_get_material(0).albedo_color = map_resource.water_color
 	environment.sky.sky_material = map_resource.sky_material
+	sun.light_energy = map_resource.sun_strength
+	sun.light_color = map_resource.sun_color
+	
 	if fog_density >0:
 		environment.volumetric_fog_enabled = true
 		environment.volumetric_fog_density = fog_density
 		environment.volumetric_fog_albedo = fog_color
+	else:
+		environment.volumetric_fog_enabled = false
 	
 func generate_mesh():
 	
@@ -117,11 +143,13 @@ func get_normal(x: float, y:float) -> Vector3:
 		)
 		return normal.normalized()
 		
-func change_seed(seed):
+func change_seed(seed) -> void:
+	noise.seed = seed
+	regenerate_mesh()
 
+func regenerate_mesh() -> void:
 	for child in collision_chunk_manager.get_children():
 		collision_chunk_manager.remove_child(child)
 	mesh.mesh  = null
 	array_mesh = ArrayMesh.new()
-	noise.seed = seed
 	generate_mesh()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://mbpmm2hagsc7"]
 
 [ext_resource type="Script" uid="uid://dbpun3275s1yu" path="res://Scripts/world.gd" id="1_go701"]
-[ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/map_template.tres" id="2_5a7ea"]
+[ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/Maps/0_map_template.tres" id="2_5a7ea"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go701"]
 sky_top_color = Color(0.158828, 0.416281, 0.88099, 1)
@@ -40,9 +40,8 @@ map_resource = ExtResource("2_5a7ea")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_5a7ea")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.766045, 0.642788, 0, -0.642788, -0.766045, 0, 180, 0)
-light_volumetric_fog_energy = 0.0
 light_specular = 0.0
 
 [node name="Water" type="Node3D" parent="."]

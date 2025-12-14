@@ -34,13 +34,14 @@ layout_mode = 2
 tooltip_text = "Click to Randomize"
 text = "Seed:"
 
+[node name="MapList" type="MenuButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Choose Map"
+
 [node name="JoinServer" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Join Server
 "
-
-[node name="IP Address" type="MenuButton" parent="VBoxContainer"]
-layout_mode = 2
 
 [connection signal="pressed" from="VBoxContainer/StartServer" to="." method="_on_start_server_pressed"]
 [connection signal="pressed" from="VBoxContainer/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
