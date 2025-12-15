@@ -25,6 +25,7 @@ fog_density = 0.001
 transparency = 1
 albedo_color = Color(0.381151, 0.565647, 1, 0.431373)
 metallic = 0.27
+emission = Color(1, 1, 1, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_go701"]
 material = SubResource("StandardMaterial3D_go701")
