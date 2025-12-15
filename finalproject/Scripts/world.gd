@@ -89,7 +89,7 @@ func generate_mesh():
 	
 	var plane_arrays := plane.get_mesh_arrays()
 	var vertex_array : PackedVector3Array= plane_arrays[ArrayMesh.ARRAY_VERTEX]
-	var normal_array : PackedVector3Array= plane_arrays[ArrayMesh.ARRAY_NORMAL]
+	
 	var tangent_array : PackedFloat32Array= plane_arrays[ArrayMesh.ARRAY_TANGENT]
 	for i:int in vertex_array.size():
 		var vertex = vertex_array[i]
@@ -102,7 +102,7 @@ func generate_mesh():
 			vertex.y -= steepness*abs( global_pos.x)-mountain_height
 			vertex.y -= steepness*abs( global_pos.y)-mountain_height
 			
-			normal = get_normal(global_pos.x ,global_pos.y)
+			
 			tangent = normal.cross(Vector3.UP)
 			
 			if vertex.y <= 0:
@@ -111,13 +111,25 @@ func generate_mesh():
 				tangent = Vector3.RIGHT
 				
 		vertex_array[i]= vertex
-		normal_array[i] = normal
+		
 		tangent_array[4*i]= tangent.x
 		tangent_array[4*i+1]= tangent.y
 		tangent_array[4*i+2]= tangent.z
 	array_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, plane_arrays)
+	
+	var mdt = MeshDataTool.new()
+	mdt.create_from_surface(array_mesh,0)
+	for face_ind in range(mdt.get_face_count()):
+		var normal = mdt.get_face_normal(face_ind)
+		for vertex_ind in range(3):
+			var vertex_id = mdt.get_face_vertex(face_ind, vertex_ind)
+			mdt.set_vertex_normal(vertex_id, normal)
+	array_mesh.clear_surfaces()
+	mdt.commit_to_surface(array_mesh)
+	
 	mesh.mesh = array_mesh
 	mesh.mesh.surface_set_material(0, material)
+	
 	var chunk_size = 100
 	var chunk_amount = size/chunk_size
 	for x in chunk_amount.x:
@@ -134,14 +146,7 @@ func generate_mesh():
 			collision_chunk_manager.add_child(chunk)
 	#MAKE THIS CHUNK BASED
 	
-func get_normal(x: float, y:float) -> Vector3:
-		var epsilon = size.x / resolution
-		var normal := Vector3(
-			(noise.get_noise_2d(x+epsilon, y) * height- noise.get_noise_2d(x-epsilon, y) * height)/ (2*epsilon), 
-			1,
-			(noise.get_noise_2d(x, y+epsilon) * height - noise.get_noise_2d(x, y-epsilon) * height) / (2*epsilon),
-		)
-		return normal.normalized()
+
 		
 func change_seed(seed) -> void:
 	noise.seed = seed

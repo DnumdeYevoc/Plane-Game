@@ -21,9 +21,9 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip := "192.168.2.249" #home wifi 
-#"172.16.1.243" #school wifi  
-#
+var cur_ip := "172.16.1.224"
+#"172.16.1.244" #school wifi  
+#"192.168.2.249" #home wifi 
 
 func _process(delta: float) -> void:
 	if connection == null: return
