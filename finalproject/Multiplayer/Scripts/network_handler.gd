@@ -5,6 +5,7 @@ signal on_peer_connected(peer_id:int)
 signal on_peer_disconnected(peer_id:int)
 signal on_server_packet(peer_id:int, data: PackedByteArray)
 
+signal on_server_start()
 #client signals
 signal on_connected_to_server()
 signal on_disconnected_to_server()
@@ -21,10 +22,15 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip := "172.16.1.224"
+var cur_ip := "172.16.2.51"
 #"172.16.1.244" #school wifi  
 #"192.168.2.249" #home wifi 
 
+var world: Node3D 
+
+func _ready() -> void:
+	world = get_node("/root/Game/World")
+	
 func _process(delta: float) -> void:
 	if connection == null: return
 	handle_events() #handle incoming packets
@@ -68,6 +74,8 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 		print("Server starting failed" , error_string(error))
 		connection = null
 		return
+		
+	OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed).broadcast(connection) #PACKET ISNT BEING RECIVED CORRECTLY
 	print("server started")
 	is_server = true
 

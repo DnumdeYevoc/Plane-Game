@@ -3,15 +3,19 @@ extends Node
 signal handle_local_id_assignment(local_id: int)
 signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
+signal on_server_started()
 
 var id : int = -1
 var remote_ids: Array[int]
 
-
 var server_started : bool = false
+var map_id : int
+var seed: int
+var world: Node3D
 
 func _ready() -> void:
 	NetworkHandler.on_client_packet.connect(on_client_packet)
+	world = get_node("/root/Game/World")
 	
 func on_client_packet(data: PackedByteArray)-> void:
 	var packet_type : int = data.decode_u8(0)
@@ -21,6 +25,8 @@ func on_client_packet(data: PackedByteArray)-> void:
 			manage_ids(IDAssignment.create_from_data(data))
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(PlayerPosition.create_from_data(data))
+		PacketInfo.PACKET_TYPE.ON_SERVER_START:
+			set_world(OnServerStart.create_from_data(data))
 		_:
 			push_error("Packet type with index", data[0], "unhandled")
 
@@ -37,3 +43,10 @@ func manage_ids(id_assignment:IDAssignment )-> void:
 	else:
 		remote_ids.append(id_assignment.id)
 		handle_remote_id_assignment.emit(id_assignment.id)
+		
+func set_world(on_server_start:OnServerStart) -> void:
+	server_started = true
+	
+	world.change_seed( on_server_start.seed)
+	world.set_map_type(on_server_start.map_id)
+	on_server_started.emit()

@@ -36,21 +36,21 @@ var map_resource_list : Array = [
 ]
 
 func _ready() -> void:
+	ServerNetworkGlobals.map_id = map_resource.id
 	
 	network_ui.set_popup()
 	environment = world_environment.get_environment()
 	set_resource_var()
 	noise.seed = randi_range(0,99999999)
-	
+	ServerNetworkGlobals.seed = noise.seed
 	generate_mesh()
-	#if adding chunk system add arguments to this function
-func set_map_type(id: int)-> void:
 	
+func set_map_type(id: int)-> void:
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed
+	ServerNetworkGlobals.map_id = id
 	set_resource_var()
 	regenerate_mesh()
-	
 	
 func set_resource_var() -> void:
 	#set resource var
@@ -62,7 +62,7 @@ func set_resource_var() -> void:
 	mountain_height = map_resource.mountain_height
 	steepness = map_resource.steepness
 	material = map_resource.material
-	material.set_shader_parameter("height",mountain_height*5 )#figure out better way to make this coeficient
+	material.set_shader_parameter("height",mountain_height*5 )
 	fog_color = map_resource.fog_color
 	fog_density = map_resource.fog_density
 	
@@ -75,7 +75,6 @@ func set_resource_var() -> void:
 		water_mesh_mat.emission= map_resource.water_color
 	else:
 		water_mesh_mat.emission_enabled = false
-	
 	
 	environment.sky.sky_material = map_resource.sky_material
 	sun.light_energy = map_resource.sun_strength
@@ -152,12 +151,10 @@ func generate_mesh():
 			chunk.chunk_amount = chunk_amount
 			chunk.position = (Vector3(x,0,y)*chunk_size)-(Vector3(size.x, 0, size.y)/2)+ (Vector3(chunk_size,0, chunk_size)/2)
 			collision_chunk_manager.add_child(chunk)
-	#MAKE THIS CHUNK BASED
-	
 
-		
 func change_seed(seed) -> void:
 	noise.seed = seed
+	ServerNetworkGlobals.seed = seed
 	regenerate_mesh()
 
 func regenerate_mesh() -> void:

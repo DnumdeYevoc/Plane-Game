@@ -3,6 +3,7 @@ class_name PacketInfo
 enum PACKET_TYPE {
 	ID_ASSIGNMENT = 0,
 	PLAYER_POSITION = 14,
+	ON_SERVER_START = 6,
 }
 
 var packet_type: PACKET_TYPE
@@ -14,7 +15,6 @@ func encode() -> PackedByteArray:
 	data.resize(1)
 	data.encode_u8(0, packet_type)
 	return data
-	
 	
 #override  function in derived classes
 func decode(data : PackedByteArray) -> void:

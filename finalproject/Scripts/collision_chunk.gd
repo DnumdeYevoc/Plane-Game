@@ -3,7 +3,6 @@ extends CollisionShape3D
 @onready var col_mesh := ArrayMesh.new()
 
 var margin := 50
-
 var world_height :int
 var world_resolution :int
 var world_steepness :float

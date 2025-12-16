@@ -5,20 +5,21 @@ signal handle_player_position(peer_id:int, player_position: PlayerPosition)
 var peer_ids: Array[int]
 
 var map_id : int
+var seed : int
 
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)
 	NetworkHandler.on_peer_disconnected.connect(on_peer_disconnected)
 	NetworkHandler.on_server_packet.connect(on_server_packet)
 
+
 func on_peer_connected (peer_id: int) -> void:
 	peer_ids.append(peer_id)
 	#send ID data over the network (from server to all the players)
-	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)	
+	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)
 	
 func on_peer_disconnected(peer_id : int) -> void:
 	peer_ids.erase(peer_id)
-	
 	#optional ID-unassignment type and broadcast to still connected players that that id isn't there anymore
 	
 func on_server_packet(peer_id: int, data: PackedByteArray) -> void:

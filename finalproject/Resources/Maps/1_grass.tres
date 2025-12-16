@@ -40,6 +40,7 @@ height_of_details = 100
 mountain_height = 100
 steepness = 0.4
 water_color = Color(0, 0.313726, 0.729412, 0.47451)
+water_glow_strength = 0.0
 sun_strength = 1.0
 sun_color = Color(1, 1, 0.34902, 1)
 sky_material = SubResource("ProceduralSkyMaterial_onvjc")
