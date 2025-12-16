@@ -2,10 +2,10 @@ extends CharacterBody3D
 
 @export var plane_type : Resource
 #multiplayer variables
-#whether or not you are server
+#whether or not you are in control of this player
+var owner_id: int
 var is_authority: bool: 
 	get: return !NetworkHandler.is_server && owner_id == ClientNetworkGlobals.id
-var owner_id: int
 
 #customizable variables by type
 #handling
@@ -29,7 +29,6 @@ var turbo_max : float
 var turbo_reload_speed: float
 
 #shooting
-
 var pivotable_gun : bool
 var barrel_amount : int
 var barrel_spread : float
@@ -85,10 +84,7 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if global_position != player_position.position:
 		transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
 	#works, but only passively, no accurate roll and unwanted spins happen sometimes
-
-
 	#update over network z rotation
-
 	
 	#update pos
 	

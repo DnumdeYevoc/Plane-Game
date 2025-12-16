@@ -12,7 +12,6 @@ func _ready() -> void:
 	
 func spawn_player(id: int) -> void:
 	#need to make specific spawning locations
-	
 	var player = PLANE.instantiate()
 	player.owner_id = id
 	#player.name = str(id) #optional

@@ -36,18 +36,21 @@ var map_resource_list : Array = [
 ]
 
 func _ready() -> void:
-	ServerNetworkGlobals.map_id = map_resource.id
+	
 	
 	network_ui.set_popup()
 	environment = world_environment.get_environment()
 	set_resource_var()
 	noise.seed = randi_range(0,99999999)
+	#for map syncing
 	ServerNetworkGlobals.seed = noise.seed
+	ServerNetworkGlobals.map_id = map_resource.id
 	generate_mesh()
 	
 func set_map_type(id: int)-> void:
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed
+	#for map_sync
 	ServerNetworkGlobals.map_id = id
 	set_resource_var()
 	regenerate_mesh()
@@ -109,7 +112,6 @@ func generate_mesh():
 			vertex.y -= steepness*abs( global_pos.x)-mountain_height
 			vertex.y -= steepness*abs( global_pos.y)-mountain_height
 			
-			
 			tangent = normal.cross(Vector3.UP)
 			
 			if vertex.y <= 0:
@@ -154,7 +156,21 @@ func generate_mesh():
 
 func change_seed(seed) -> void:
 	noise.seed = seed
+	#for map syncing
 	ServerNetworkGlobals.seed = seed
+	regenerate_mesh()
+
+func set_seed_and_id(seed, id):
+	noise.seed = seed
+	#for map syncing
+	ServerNetworkGlobals.seed = seed
+	
+	#do both change_seed() and set_map_id() just without double generating
+	map_resource = map_resource_list[id]
+	map_resource.noise.seed = noise.seed
+	#for map_sync
+	ServerNetworkGlobals.map_id = id
+	set_resource_var()
 	regenerate_mesh()
 
 func regenerate_mesh() -> void:

@@ -22,14 +22,9 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip := "172.16.2.51"
+var cur_ip :="192.168.2.249"
 #"172.16.1.244" #school wifi  
 #"192.168.2.249" #home wifi 
-
-var world: Node3D 
-
-func _ready() -> void:
-	world = get_node("/root/Game/World")
 	
 func _process(delta: float) -> void:
 	if connection == null: return
@@ -65,17 +60,14 @@ func handle_events() -> void:
 		packet_event = connection.service()
 		event_type = packet_event[0]
 
-#CHECK IF YOU NEED TO LOOK UP YOUR IP ADRESS
 func start_server(ip_adress: String = cur_ip , port : int = 42069):
-	#NEED TO MAKE SEED AND MAP RESOURCE CONSISTENT
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:
 		print("Server starting failed" , error_string(error))
 		connection = null
 		return
-		
-	OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed).broadcast(connection) #PACKET ISNT BEING RECIVED CORRECTLY
+	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed)
 	print("server started")
 	is_server = true
 
@@ -85,7 +77,7 @@ func peer_connected(peer: ENetPacketPeer) -> void:
 	client_peers[peer_id]= peer
 	
 	print("peer_connected with id:", peer_id)
-	on_peer_connected.emit(peer_id)#CURRENTLY ONLY CORRECT SPAWN 
+	on_peer_connected.emit(peer_id)
 
 func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id : int = peer.get_meta("id")

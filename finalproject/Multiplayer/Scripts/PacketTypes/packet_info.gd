@@ -2,8 +2,8 @@ class_name PacketInfo
 
 enum PACKET_TYPE {
 	ID_ASSIGNMENT = 0,
-	PLAYER_POSITION = 14,
-	ON_SERVER_START = 6,
+	PLAYER_POSITION = 1,
+	ON_SERVER_START = 2,
 }
 
 var packet_type: PACKET_TYPE

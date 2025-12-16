@@ -1,6 +1,7 @@
 extends CollisionShape3D
 
 @onready var col_mesh := ArrayMesh.new()
+@onready var player_spawner: Node
 
 var margin := 50
 var world_height :int
@@ -14,12 +15,12 @@ var player : CharacterBody3D
 var chunk_size : Vector2i
 
 func _ready() -> void:
-	await NetworkHandler.on_peer_connected 
 	disabled = true
 	chunk_size = world_size/chunk_amount
 	generate_mesh()
-	#FIX TO BE SPECIFIC TO PLAYER ID
-	#player =get_node("/root/Game/Plane")
+	player_spawner = get_node("/root/Game/player_spawner")
+
+			
 func generate_mesh():
 	#collision mesh
 	var col_plane := PlaneMesh.new()
@@ -47,7 +48,16 @@ func generate_mesh():
 
 func _physics_process(delta: float) -> void:
 	#if within chunk + margin
-	if ! player : return
+	if ! player :
+		if len( player_spawner.get_children()) != 0:
+			for p in player_spawner.get_children():
+				if p.is_authority:
+					player = p
+				else:
+					return
+		else:
+			return
+
 	if player.global_position.x >= (position.x-chunk_size.x/2) -margin and player.global_position.x <= (position.x + chunk_size.x/2)  + margin and player.global_position.z >= (position.z -chunk_size.y/2) - margin and player.global_position.z<= (position.z + chunk_size.y/2) + margin:
 		disabled = false
 	else:

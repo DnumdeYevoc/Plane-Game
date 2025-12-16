@@ -1,7 +1,7 @@
 class_name OnServerStart extends PacketInfo
-#encode_u32 (seed)
-#[PACKET_ID, MAP_RESOURCE_ID, SEED(4-bytes)] IP??
 
+#[PACKET_ID, MAP_RESOURCE_ID, SEED(4-bytes)] IP??
+#do you need to include IP in this?
 var map_id : int
 var seed: int
 
