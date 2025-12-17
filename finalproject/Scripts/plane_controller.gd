@@ -45,9 +45,10 @@ var cur_speed := 0.0
 
 #children
 @onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
-@onready var turbo_meter: ProgressBar = $TurboMeter
-@onready var speed_label: Label = $Speed
-@onready var fps_label: Label = $FPS
+@onready var turbo_meter: ProgressBar = $UI/TurboMeter
+@onready var speed_label: Label = $UI/Speed
+@onready var ui: VBoxContainer = $UI
+@onready var fps_label: Label = $UI/FPS
 @onready var aim_cast: = $AimCast
 @onready var projectile_manager: Node3D = $ProjectileManager
 
@@ -91,7 +92,14 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	global_position = player_position.position
 	
 func _ready() -> void:
-	cam.current = false
+	if is_authority:
+		ui.visible = true
+		cam.current = true
+	else:
+		ui.visible = false
+		cam.current = false
+	
+	
 	#set variables from resource
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -114,20 +122,18 @@ func _ready() -> void:
 	
 	#set other values
 	cam.fov = fov
+	max_speed *= 20
 	
-	max_speed /= 4
-
 	if turbo:
 		turbo_meter.max_value = turbo_max
-		turbo_meter.size.x= turbo_max*100
+		ui.size.x= turbo_max*100
 		turbo_meter.value = 0.0
 		t_cooldown = 100
 	
 	#non-pivotable settings
 	if pivotable_gun == false:
 		aim_cast.target_position = Vector3(0,0,-1000) #Make Crosshair
-	#pivotable settings
-	
+	#pivotable settings?
 	
 	#set screen_center
 	screen_center = cam.get_viewport().size /2.0
@@ -136,9 +142,7 @@ func _ready() -> void:
 func _on_viewport_size_changed():
 	screen_center = cam.get_viewport().size /2.0
 
-
 func get_input(delta):
-	cam.current = true
 	#speed
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
@@ -196,7 +200,7 @@ func get_input(delta):
 				bullet.rotation = rotation
 				bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 				bullet.end_pos =  to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-				bullet.speed = cur_speed
+				bullet.speed = cur_speed*delta
 				
 				if aim_cast.is_colliding():
 					target = aim_cast.get_collider(0)
@@ -213,7 +217,7 @@ func _physics_process(delta: float) -> void:
 	get_input(delta)
 	
 	#UI
-	speed_label.text = str(int(cur_speed*4))+ "km/h"
+	speed_label.text = str(int(cur_speed/20))+ "km/h"
 	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
 	
 	#rotate
@@ -232,7 +236,7 @@ func _physics_process(delta: float) -> void:
 		world.sun.light_energy = 1
 		
 	#move forward
-	velocity = -transform.basis.z*cur_speed
+	velocity = -transform.basis.z*cur_speed*delta
 	move_and_slide()
 	
 	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)

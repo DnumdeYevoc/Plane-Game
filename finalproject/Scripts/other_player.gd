@@ -27,3 +27,10 @@ func _on_area_entered(area: Area3D) -> void:
 		
 		#colour delay
 		d_cooldown = 10
+		
+		
+	#SHOOT PACKET
+	#bullets will be spawned everywhere at the same time in the same direction
+	
+	#HIT PACKET/ TAKE DAMAGE
+	#want bullet hit checking to happen locally, and then send the info to the hit player if he is hit

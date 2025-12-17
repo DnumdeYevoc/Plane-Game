@@ -20,7 +20,6 @@ func _ready() -> void:
 	generate_mesh()
 	player_spawner = get_node("/root/Game/player_spawner")
 
-			
 func generate_mesh():
 	#collision mesh
 	var col_plane := PlaneMesh.new()

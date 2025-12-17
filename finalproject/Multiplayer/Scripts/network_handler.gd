@@ -5,7 +5,6 @@ signal on_peer_connected(peer_id:int)
 signal on_peer_disconnected(peer_id:int)
 signal on_server_packet(peer_id:int, data: PackedByteArray)
 
-signal on_server_start()
 #client signals
 signal on_connected_to_server()
 signal on_disconnected_to_server()
@@ -22,10 +21,10 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip :="192.168.2.249"
+var cur_ip :="172.16.1.218"
 #"172.16.1.244" #school wifi  
 #"192.168.2.249" #home wifi 
-	
+
 func _process(delta: float) -> void:
 	if connection == null: return
 	handle_events() #handle incoming packets
@@ -68,6 +67,7 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 		connection = null
 		return
 	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed)
+	get_node("/root/Game/Network_UI").visible = false#ADD SPECTATING MODE HERE?
 	print("server started")
 	is_server = true
 

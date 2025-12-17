@@ -29,5 +29,6 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	match packet_type:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
+		
 		_:
 			push_error("packet type with index", data[0], "unhandled")
