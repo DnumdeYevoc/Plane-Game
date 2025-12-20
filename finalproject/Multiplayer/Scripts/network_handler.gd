@@ -21,7 +21,7 @@ var server_peer : ENetPacketPeer
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip :="172.16.1.218"
+var cur_ip :="192.168.0.112"
 #"172.16.1.244" #school wifi  
 #"192.168.2.249" #home wifi 
 

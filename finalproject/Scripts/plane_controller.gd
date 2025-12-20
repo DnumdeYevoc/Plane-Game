@@ -143,6 +143,7 @@ func _on_viewport_size_changed():
 	screen_center = cam.get_viewport().size /2.0
 
 func get_input(delta):
+	cam.current = true
 	#speed
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
@@ -210,9 +211,8 @@ func get_input(delta):
 				projectile_manager.add_child(bullet)
 		
 func _physics_process(delta: float) -> void:
-	#multiplayer handling
+	#if you are driver
 	if !is_authority: return
-	
 	#input
 	get_input(delta)
 	

@@ -19,6 +19,7 @@ func _process(delta: float) -> void:
 	if d_cooldown == 1:
 		material.albedo_color = Color8(255,255,255,1)
 
+#move trhis to rthe bullet and change the groups 
 func _on_area_entered(area: Area3D) -> void:
 	if area.is_in_group('bullets'):
 		area.end()
