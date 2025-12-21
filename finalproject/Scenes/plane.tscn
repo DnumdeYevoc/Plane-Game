@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://Scripts/plane_controller.gd" id="1_f3srd"]
 [ext_resource type="Resource" uid="uid://bkkxvevnoj7ks" path="res://Resources/plane_template.tres" id="2_7e1cs"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://Scripts/3rd_person_cam.gd" id="2_dpar4"]
-[ext_resource type="PackedScene" uid="uid://w2xh30lmc6ad" path="res://Blender/Plane.blend" id="3_7e1cs"]
+[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="3_7e1cs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)

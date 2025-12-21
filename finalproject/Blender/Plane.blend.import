@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://w2xh30lmc6ad"
+uid="uid://bumjqmkvm21f"
 path="res://.godot/imported/Plane.blend-bc1bdf652991be64723d1161876c0a61.scn"
 
 [deps]
@@ -32,13 +32,7 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
-_subresources={
-"nodes": {
-"PATH:Body": {
-"import/skip_import": true
-}
-}
-}
+_subresources={}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true
