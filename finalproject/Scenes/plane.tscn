@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b6713dtnbcff"]
+[gd_scene load_steps=6 format=3 uid="uid://b6713dtnbcff"]
 
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://Scripts/plane_controller.gd" id="1_f3srd"]
-[ext_resource type="Resource" uid="uid://bkkxvevnoj7ks" path="res://Resources/plane_template.tres" id="2_7e1cs"]
+[ext_resource type="Resource" uid="uid://bkkxvevnoj7ks" path="res://Resources/Planes/plane_template.tres" id="2_7e1cs"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://Scripts/3rd_person_cam.gd" id="2_dpar4"]
-[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="3_7e1cs"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)
@@ -13,8 +12,6 @@ size = Vector3(1, 0.5, 2.07367)
 [node name="Plane" type="CharacterBody3D"]
 script = ExtResource("1_f3srd")
 plane_type = ExtResource("2_7e1cs")
-
-[node name="Plane_1" parent="." instance=ExtResource("3_7e1cs")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.11734)
@@ -26,14 +23,13 @@ shape = SubResource("SphereShape3D_dpar4")
 target_position = Vector3(0, 0, 0)
 collide_with_areas = true
 
-[node name="3rdPersonCam" type="Node3D" parent="." node_paths=PackedStringArray("target")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0550327, 0)
+[node name="CameraTarget" type="Node3D" parent="." node_paths=PackedStringArray("target")]
 top_level = true
 script = ExtResource("2_dpar4")
 target = NodePath("..")
 
-[node name="Camera3D" type="Camera3D" parent="3rdPersonCam"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8195, 6.44303)
+[node name="Camera3D" type="Camera3D" parent="CameraTarget"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 7)
 current = true
 fov = 90.0
 

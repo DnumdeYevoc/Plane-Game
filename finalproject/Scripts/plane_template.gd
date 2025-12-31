@@ -1,5 +1,7 @@
 extends Resource
 
+#appearance
+@export var mesh : PackedScene
 #handling
 @export var max_speed : float #in km/h
 @export var acceleration : float

@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://rtr6y61uhb04"]
+[gd_scene load_steps=5 format=3 uid="uid://rtr6y61uhb04"]
 
 [ext_resource type="Script" uid="uid://1obfl4uvhton" path="res://Multiplayer/Scripts/network_ui.gd" id="1_utfyr"]
+[ext_resource type="Script" uid="uid://28885lac7uog" path="res://Scripts/plane_display.gd" id="2_v1uh1"]
+[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="3_7p3bk"]
+
+[sub_resource type="World3D" id="World3D_v1uh1"]
 
 [node name="Network_UI" type="Control"]
 layout_mode = 3
@@ -18,12 +22,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -33.0
-offset_right = 50.0
-offset_bottom = 33.0
+offset_left = -576.0
+offset_top = -124.0
+offset_right = -176.0
+offset_bottom = 251.0
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 1
 
 [node name="StartServer" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -42,6 +47,42 @@ text = "Choose Map"
 layout_mode = 2
 text = "Join Server
 "
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="PlaneDisplay" type="SubViewport" parent="VBoxContainer/SubViewportContainer"]
+own_world_3d = true
+world_3d = SubResource("World3D_v1uh1")
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(400, 200)
+render_target_update_mode = 4
+script = ExtResource("2_v1uh1")
+
+[node name="Camera3D" type="Camera3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771307, 1.57748, 1.40429, -2.10533)
+fov = 30.0
+
+[node name="Plane_1" parent="VBoxContainer/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17169, 1.36726, -0.865482)
+light_color = Color(0.690416, 0.793427, 1, 1)
+light_energy = 3.0
+omni_range = 20.0
+omni_attenuation = 2.0
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67237, 1.14378, 1.31346)
+light_color = Color(1, 0.840027, 0.813055, 1)
+light_energy = 3.0
+omni_range = 20.0
+omni_attenuation = 2.0
+
+[node name="PlaneSelector" type="MenuButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Choose Plane"
 
 [connection signal="pressed" from="VBoxContainer/StartServer" to="." method="_on_start_server_pressed"]
 [connection signal="pressed" from="VBoxContainer/Randomize Seed" to="." method="_on_randomize_seed_pressed"]

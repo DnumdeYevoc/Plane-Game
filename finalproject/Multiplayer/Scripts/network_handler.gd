@@ -1,7 +1,7 @@
 extends Node
 
 #server signals
-signal on_peer_connected(peer_id:int)
+signal on_peer_connected(peer_id:int, plane_id :int)
 signal on_peer_disconnected(peer_id:int)
 signal on_server_packet(peer_id:int, data: PackedByteArray)
 
@@ -16,6 +16,9 @@ var client_peers: Dictionary [int, ENetPacketPeer] #list of peers with ids as ke
 
 #client variables
 var server_peer : ENetPacketPeer
+
+#for type of plane
+var plane_id : int
 
 #general variables
 var connection : ENetConnection
@@ -41,7 +44,7 @@ func handle_events() -> void:
 				return
 			ENetConnection.EVENT_CONNECT:
 				if is_server:
-					peer_connected(peer)
+					peer_connected(peer,plane_id)
 				else:#if client
 					connected_to_server()
 			ENetConnection.EVENT_DISCONNECT:
@@ -71,13 +74,13 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 	print("server started")
 	is_server = true
 
-func peer_connected(peer: ENetPacketPeer) -> void:
+func peer_connected(peer: ENetPacketPeer, plane_id) -> void:
 	var peer_id: int = available_peer_ids.pop_back()
 	peer.set_meta("id", peer_id)
 	client_peers[peer_id]= peer
 	
-	print("peer_connected with id:", peer_id)
-	on_peer_connected.emit(peer_id)
+	print("peer_connected with id:", peer_id, "type", plane_id)
+	on_peer_connected.emit(peer_id, plane_id)
 
 func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id : int = peer.get_meta("id")
@@ -87,7 +90,8 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(ip_adress: String = cur_ip, port : int = 42069):
+func start_client(plane_type : int, ip_adress: String = cur_ip, port : int = 42069):
+	plane_id =plane_type
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host(1)
 	if error:
@@ -98,6 +102,7 @@ func start_client(ip_adress: String = cur_ip, port : int = 42069):
 	#variable for server from perspectove of clients
 	server_peer = connection.connect_to_host(ip_adress, port)
 	
+
 func disconnect_client() -> void: #When player hits disconnect button
 	if is_server: return
 	server_peer.peer_disconnect()

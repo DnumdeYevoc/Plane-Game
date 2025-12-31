@@ -4,6 +4,7 @@ enum PACKET_TYPE {
 	ID_ASSIGNMENT = 0,
 	PLAYER_POSITION = 1,
 	ON_SERVER_START = 2,
+	PLANE_TYPE = 3,
 }
 
 var packet_type: PACKET_TYPE

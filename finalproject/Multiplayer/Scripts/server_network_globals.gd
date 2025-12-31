@@ -14,11 +14,13 @@ func _ready() -> void:
 	NetworkHandler.on_peer_disconnected.connect(on_peer_disconnected)
 	NetworkHandler.on_server_packet.connect(on_server_packet)
 
-func on_peer_connected (peer_id: int) -> void:
+func on_peer_connected (peer_id: int, plane_id :int) -> void:
 	peer_ids.append(peer_id)
 	#send ID data and map data over the network 
-	IDAssignment.create(peer_id, peer_ids).broadcast(NetworkHandler.connection)
+	IDAssignment.create(plane_id, peer_id, peer_ids).broadcast(NetworkHandler.connection)
 	on_server_start_packet.send(NetworkHandler.client_peers[peer_id])
+
+	print("server recived plane type", plane_id)
 	
 func on_peer_disconnected(peer_id : int) -> void:
 	peer_ids.erase(peer_id)
@@ -29,6 +31,7 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	match packet_type:
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
+			
 		
 		_:
 			push_error("packet type with index", data[0], "unhandled")

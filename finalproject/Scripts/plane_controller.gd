@@ -1,6 +1,10 @@
 extends CharacterBody3D
 
 @export var plane_type : Resource
+
+var plane_resource_list : Array = [
+	preload("res://Resources/Planes/plane_template.tres"),
+]
 #multiplayer variables
 #whether or not you are in control of this player
 var owner_id: int
@@ -43,8 +47,11 @@ var cur_speed := 0.0
 
 @onready var world: Node3D = get_node("/root/Game/World")
 
+#camera
+var cam_positions : Array = [Vector3(0,3,7),Vector3(0,3,-10)] #back, front, inside(to add if wanted)
+var cam_index = 0
 #children
-@onready var cam: Camera3D = $"3rdPersonCam/Camera3D"
+@onready var cam: Camera3D = $"CameraTarget/Camera3D"
 @onready var turbo_meter: ProgressBar = $UI/TurboMeter
 @onready var speed_label: Label = $UI/Speed
 @onready var ui: VBoxContainer = $UI
@@ -92,6 +99,8 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	global_position = player_position.position
 	
 func _ready() -> void:
+	
+	
 	if is_authority:
 		ui.visible = true
 		cam.current = true
@@ -101,6 +110,10 @@ func _ready() -> void:
 	
 	
 	#set variables from resource
+	#add mesh
+	var mesh = plane_type.mesh.instantiate()
+	add_child(mesh)
+	
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
 	deceleration = plane_type.deceleration
@@ -122,6 +135,8 @@ func _ready() -> void:
 	
 	#set other values
 	cam.fov = fov
+	cam.position = cam_positions[cam_index]
+	
 	max_speed *= 20
 	
 	if turbo:
@@ -209,7 +224,18 @@ func get_input(delta):
 						if target.is_in_group("bullet_collision"):
 							bullet.target = target
 				projectile_manager.add_child(bullet)
-		
+				
+	#handle multiple camera povs
+	if Input.is_action_just_pressed("SwitchCam"):
+		cam_index+=1
+		if cam_index >=2:
+			cam_index = 0
+		cam.position = cam_positions[cam_index]
+		if cam_index == 1:
+			cam.rotation_degrees.y = 180
+		else:
+			cam.rotation_degrees.y = 0
+			
 func _physics_process(delta: float) -> void:
 	#if you are driver
 	if !is_authority: return
