@@ -24,3 +24,5 @@ transform = Transform3D(1, 0, 0, 0, 0.999486, 0.0320562, 0, -0.0320562, 0.999486
 [node name="Network_UI" parent="." instance=ExtResource("4_wowpa")]
 
 [node name="World" parent="." instance=ExtResource("4_3dryh")]
+
+[node name="ProjectileManager" type="Node" parent="."]

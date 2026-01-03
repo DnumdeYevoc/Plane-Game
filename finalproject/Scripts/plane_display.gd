@@ -4,6 +4,7 @@ var plane_resource : Resource
 
 var plane_resource_list : Array = [
 	preload("res://Resources/Planes/plane_template.tres"),
+	preload("res://Resources/Planes/plane_1.tres"),
 ]
 
 func set_resource(id: int)-> void:

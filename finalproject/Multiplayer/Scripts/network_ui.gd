@@ -13,11 +13,15 @@ func _ready() -> void:
 	seed_button.text = "Randomize Seed"
 	map_list.get_popup().id_pressed.connect(on_world_popup_pressed)
 	plane_selector.get_popup().id_pressed.connect(on_plane_popup_pressed)
+	set_plane_popup()
 func set_popup():
 	#handle map drop down after world loads
 	for map in world.map_resource_list:
 		map_list.get_popup().add_item(map.name, map.id)
 	
+func set_plane_popup():
+	for plane in plane_display.plane_resource_list:
+		plane_selector.get_popup().add_item(plane.name, plane.id)
 	
 func on_world_popup_pressed(id):
 	#change display
@@ -26,6 +30,7 @@ func on_world_popup_pressed(id):
 func on_plane_popup_pressed(id):
 	#change display
 	plane_display.set_resource(id)
+	plane_display.update_display()
 
 func _on_start_server_pressed() -> void:
 	NetworkHandler.start_server()

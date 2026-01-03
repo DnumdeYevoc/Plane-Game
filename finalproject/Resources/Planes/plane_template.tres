@@ -6,6 +6,8 @@
 
 [resource]
 script = ExtResource("2_6tx43")
+name = "RedPlane"
+id = 0
 mesh = ExtResource("2_xy6yy")
 max_speed = 120.0
 acceleration = 0.6
@@ -23,5 +25,5 @@ turbo_reload_speed = 1.0
 pivotable_gun = false
 aim_assist_radius = 3
 barrel_amount = 2
-barrel_spread = 1.5
+barrel_spread = 0.75
 bullet_type = ExtResource("1_tm7rb")

@@ -1,5 +1,8 @@
 extends Resource
 
+@export var name : String
+@export var id : int
+
 #appearance
 @export var mesh : PackedScene
 #handling

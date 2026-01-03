@@ -55,12 +55,12 @@ own_world_3d = true
 world_3d = SubResource("World3D_v1uh1")
 transparent_bg = true
 handle_input_locally = false
-size = Vector2i(400, 200)
+size = Vector2i(638, 250)
 render_target_update_mode = 4
 script = ExtResource("2_v1uh1")
 
 [node name="Camera3D" type="Camera3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
-transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771307, 1.57748, 1.40429, -2.10533)
+transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771307, 1.577, 1.75, -2.105)
 fov = 30.0
 
 [node name="Plane_1" parent="VBoxContainer/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]

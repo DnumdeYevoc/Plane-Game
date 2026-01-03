@@ -8,5 +8,3 @@ script = ExtResource("1_oduel")
 resource = ExtResource("2_ycag2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

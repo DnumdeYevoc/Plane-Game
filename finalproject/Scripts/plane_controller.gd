@@ -57,7 +57,7 @@ var cam_index = 0
 @onready var ui: VBoxContainer = $UI
 @onready var fps_label: Label = $UI/FPS
 @onready var aim_cast: = $AimCast
-@onready var projectile_manager: Node3D = $ProjectileManager
+@onready var projectile_manager: Node
 
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
@@ -99,8 +99,6 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	global_position = player_position.position
 	
 func _ready() -> void:
-	
-	
 	if is_authority:
 		ui.visible = true
 		cam.current = true
@@ -138,6 +136,8 @@ func _ready() -> void:
 	cam.position = cam_positions[cam_index]
 	
 	max_speed *= 20
+	
+	projectile_manager = get_node("/root/Game/ProjectileManager") 
 	
 	if turbo:
 		turbo_meter.max_value = turbo_max
@@ -218,11 +218,12 @@ func get_input(delta):
 				bullet.end_pos =  to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 				bullet.speed = cur_speed*delta
 				
-				if aim_cast.is_colliding():
-					target = aim_cast.get_collider(0)
-					if target:
-						if target.is_in_group("bullet_collision"):
-							bullet.target = target
+				if bullet.resource.homing:
+					if aim_cast.is_colliding():
+						target = aim_cast.get_collider(0)
+						if target:
+							if target.is_in_group("bullet_collision"):
+								bullet.target  = target
 				projectile_manager.add_child(bullet)
 				
 	#handle multiple camera povs

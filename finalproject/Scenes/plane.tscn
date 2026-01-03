@@ -47,6 +47,3 @@ layout_mode = 2
 
 [node name="Speed" type="Label" parent="UI"]
 layout_mode = 2
-
-[node name="ProjectileManager" type="Node3D" parent="."]
-top_level = true

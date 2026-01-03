@@ -1,51 +1,46 @@
 extends Area3D
-var vel : Vector3
 
 @export var resource : Resource
 
 var speed : int
-var target_pos := Vector3.ZERO
+
+#set position
 var end_pos:= Vector3.ZERO
+#follwing a person
+var target : Node3D
 
 var explode : bool
 var damage : int
 var homing : bool
 
 var dir : Vector3
-var target : Node3D
+var vel : Vector3
+
 var timer : int
 
-@onready var mesh: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
 	speed += resource.speed
-	mesh.mesh = resource.mesh
+	add_child(resource.mesh.instantiate())
 	damage = resource.damage
 	explode = resource.explode
 	homing = resource.homing
 	timer = resource.lifetime*60
 	collision_shape.shape = resource.collision_shape
-	
+	dir = global_position.direction_to(end_pos)
 func _process(delta: float) -> void:
 	timer -=1
-	#homing
-	if homing and target != null:
-		#homing
-		dir = position.direction_to(target.global_position)
-	elif target == null:
-		#homing but no target
-		dir = position.direction_to(end_pos)
-	else:
-		#regular
-		dir = position.direction_to(target_pos)
+#	if target:
+#		end_pos = target.global_position
+	
 	vel = dir *speed *delta
 	
 	if timer <=0:
 		
 		end()
 	
-	position += vel
+	global_position += vel
 
 func end():
 	

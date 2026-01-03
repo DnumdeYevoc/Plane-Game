@@ -1,17 +1,16 @@
 [gd_resource type="Resource" load_steps=4 format=3 uid="uid://cyiy4vmnkqjxw"]
 
+[ext_resource type="PackedScene" uid="uid://wx6uqo5s1vi6" path="res://Blender/Bullet.blend" id="1_ltmxl"]
 [ext_resource type="Script" uid="uid://celgfdf3x0i2h" path="res://Scripts/bullet_template.gd" id="1_v74cf"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_l0ul8"]
-
 [resource]
 script = ExtResource("1_v74cf")
-speed = 100
-mesh = SubResource("BoxMesh_l0ul8")
+speed = 10
+mesh = ExtResource("1_ltmxl")
 damage = 10
 explode = false
-homing = true
+homing = false
 lifetime = 2
 collision_shape = SubResource("SphereShape3D_670gq")
