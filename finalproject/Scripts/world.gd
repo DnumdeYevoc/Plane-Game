@@ -30,7 +30,7 @@ var environment : Environment
 #map list
 #make sure in order of map.id
 var map_resource_list : Array = [
-	preload("res://Resources/Maps/0_map_template.tres"),
+	preload("res://Resources/Maps/0_beach.tres"),
 	preload("res://Resources/Maps/1_grass.tres"),
 	preload("res://Resources/Maps/2_volcano.tres")
 ]
@@ -65,7 +65,7 @@ func set_resource_var() -> void:
 	mountain_height = map_resource.mountain_height
 	steepness = map_resource.steepness
 	material = map_resource.material
-	material.set_shader_parameter("height",mountain_height*5 )
+	material.set_shader_parameter("height",mountain_height*8 )
 	fog_color = map_resource.fog_color
 	fog_density = map_resource.fog_density
 	

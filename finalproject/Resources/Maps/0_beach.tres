@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=8 format=3 uid="uid://2yymn03klern"]
 
-[ext_resource type="Shader" uid="uid://dpiil60lthn21" path="res://land.gdshader" id="1_xvh2c"]
-[ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_ygig0"]
+[ext_resource type="Shader" uid="uid://dpiil60lthn21" path="res://land.gdshader" id="1_n5rou"]
+[ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_8qbrc"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
 offsets = PackedFloat32Array(0.484127, 0.52381)
@@ -12,7 +12,7 @@ gradient = SubResource("Gradient_onvjc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l273t"]
 render_priority = 0
-shader = ExtResource("1_xvh2c")
+shader = ExtResource("1_n5rou")
 shader_parameter/height = 0.0
 shader_parameter/color_gradient = SubResource("GradientTexture1D_l273t")
 
@@ -30,15 +30,15 @@ sun_angle_max = 109.12
 sun_curve = 0.0326456
 
 [resource]
-script = ExtResource("2_ygig0")
-name = "Template"
+script = ExtResource("2_8qbrc")
+name = "Beach"
 id = 0
 noise = SubResource("FastNoiseLite_s13g3")
 material = SubResource("ShaderMaterial_l273t")
-size = Vector2i(1200, 1200)
-height_of_details = 100
-mountain_height = 100
-steepness = 0.4
+size = Vector2i(1800, 1800)
+height_of_details = 35
+mountain_height = 15
+steepness = 0.05
 water_color = Color(0, 0.905882, 0.827451, 0.407843)
 water_glow_strength = 0.0
 sun_strength = 1.0

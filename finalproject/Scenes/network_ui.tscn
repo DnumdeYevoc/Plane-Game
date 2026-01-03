@@ -28,7 +28,6 @@ offset_right = -176.0
 offset_bottom = 251.0
 grow_horizontal = 2
 grow_vertical = 2
-alignment = 1
 
 [node name="StartServer" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -74,7 +73,7 @@ omni_range = 20.0
 omni_attenuation = 2.0
 
 [node name="OmniLight3D2" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67237, 1.14378, 1.31346)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.67237, 1.44421, 1.31346)
 light_color = Color(1, 0.840027, 0.813055, 1)
 light_energy = 3.0
 omni_range = 20.0
