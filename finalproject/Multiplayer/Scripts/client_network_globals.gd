@@ -4,9 +4,12 @@ signal handle_local_id_assignment(local_id: int)
 signal handle_remote_id_assignment(remote_id: int)
 signal handle_player_position(player_position: PlayerPosition)
 
-var plane_id : int = -1
+
+var plane_ids: Array[int]  #plane types, listed in order of Peer IDs
+
 var id : int = -1
 var remote_ids: Array[int]
+
 
 var map_id : int
 var seed: int
@@ -20,6 +23,11 @@ func on_client_packet(data: PackedByteArray)-> void:
 	var packet_type : int = data.decode_u8(0)
 	
 	match packet_type:
+		PacketInfo.PACKET_TYPE.PLANE_TYPE:
+			var plane_type = PlaneType.create_from_data(data)
+			
+			plane_ids =plane_type.remoted_plane_ids
+			
 		PacketInfo.PACKET_TYPE.ID_ASSIGNMENT:
 			manage_ids(IDAssignment.create_from_data(data))
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
@@ -31,21 +39,18 @@ func on_client_packet(data: PackedByteArray)-> void:
 			push_error("Packet type with index", data[0], "unhandled")
 
 func manage_ids(id_assignment:IDAssignment )-> void:
-	
-	print("client recived",id_assignment.plane_id)
-	plane_id = id_assignment.plane_id
 	#handles new IDs and sends signal to spawn them in as other players
-	if id == -1:
+	if id == -1:#set id
 		id = id_assignment.id
-		handle_local_id_assignment.emit(id_assignment.id, plane_id) #you spawned in (client )
+		handle_local_id_assignment.emit(id_assignment.id) #you spawned in (client )
 		
 		remote_ids = id_assignment.remoted_ids
 		for remote_id in remote_ids:
 			if remote_id == id : continue
-			handle_remote_id_assignment.emit(remote_id, plane_id) #someone else spawned in (you are neighbouring client)
-	else:
+			handle_remote_id_assignment.emit(remote_id) #someone else spawned in (you are neighbouring client)
+	else:#already set id
 		remote_ids.append(id_assignment.id)
-		handle_remote_id_assignment.emit(id_assignment.id, plane_id)
+		handle_remote_id_assignment.emit(id_assignment.id)
 		
 func set_world(on_server_start:OnServerStart) -> void:
 	world.set_seed_and_id( on_server_start.seed, on_server_start.map_id)

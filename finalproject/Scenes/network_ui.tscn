@@ -61,9 +61,7 @@ script = ExtResource("2_v1uh1")
 
 [node name="Camera3D" type="Camera3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771307, 1.577, 1.75, -2.105)
-fov = 30.0
-
-[node name="Plane_1" parent="VBoxContainer/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
+fov = 40.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17169, 1.36726, -0.865482)
@@ -78,6 +76,8 @@ light_color = Color(1, 0.840027, 0.813055, 1)
 light_energy = 3.0
 omni_range = 20.0
 omni_attenuation = 2.0
+
+[node name="Plane_1" parent="VBoxContainer/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
 
 [node name="PlaneSelector" type="MenuButton" parent="VBoxContainer"]
 layout_mode = 2

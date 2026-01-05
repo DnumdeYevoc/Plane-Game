@@ -1,9 +1,10 @@
 extends CharacterBody3D
 
 @export var plane_type : Resource
-
+var plane_id: int 
 var plane_resource_list : Array = [
-	preload("res://Resources/Planes/plane_template.tres"),
+	preload("res://Resources/Planes/cardinal_0.tres"),
+	preload("res://Resources/Planes/bomber_1.tres"),
 ]
 #multiplayer variables
 #whether or not you are in control of this player
@@ -105,8 +106,7 @@ func _ready() -> void:
 	else:
 		ui.visible = false
 		cam.current = false
-	
-	
+	plane_type = plane_resource_list[plane_id]
 	#set variables from resource
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()

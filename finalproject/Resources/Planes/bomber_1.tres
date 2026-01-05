@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=7 format=4 uid="uid://cxs5k0e462c25"]
 
-[ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_q5181"]
-[ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_7ailx"]
+[ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_2bwrl"]
+[ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_rb1fo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bp7j"]
 resource_name = "Material"
@@ -55,8 +55,8 @@ _bundled = {
 }
 
 [resource]
-script = ExtResource("2_7ailx")
-name = "Cube"
+script = ExtResource("2_rb1fo")
+name = "Bomber 800M"
 id = 1
 mesh = SubResource("PackedScene_1b5k8")
 max_speed = 120.0
@@ -76,4 +76,4 @@ pivotable_gun = false
 aim_assist_radius = 3
 barrel_amount = 2
 barrel_spread = 1.5
-bullet_type = ExtResource("1_q5181")
+bullet_type = ExtResource("1_2bwrl")

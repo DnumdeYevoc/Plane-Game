@@ -7,13 +7,15 @@ extends Control
 @onready var map_list: MenuButton = $VBoxContainer/MapList
 @onready var plane_selector: MenuButton = $VBoxContainer/PlaneSelector
 @onready var plane_display: SubViewport = $VBoxContainer/SubViewportContainer/PlaneDisplay
+var plane_type : int = -1
 
-var plane_type = 0
 func _ready() -> void:
+	plane_type = 0
 	seed_button.text = "Randomize Seed"
 	map_list.get_popup().id_pressed.connect(on_world_popup_pressed)
 	plane_selector.get_popup().id_pressed.connect(on_plane_popup_pressed)
 	set_plane_popup()
+	
 func set_popup():
 	#handle map drop down after world loads
 	for map in world.map_resource_list:
@@ -29,6 +31,8 @@ func on_world_popup_pressed(id):
 	
 func on_plane_popup_pressed(id):
 	#change display
+	plane_type= id
+	
 	plane_display.set_resource(id)
 	plane_display.update_display()
 

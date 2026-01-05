@@ -12,7 +12,6 @@ const collision_chunk_scene = preload("res://Scenes/collision_chunk.tscn")
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
 
-
 var noise : Noise
 var size : Vector2i
 var resolution : int
@@ -36,7 +35,6 @@ var map_resource_list : Array = [
 ]
 
 func _ready() -> void:
-	
 	
 	network_ui.set_popup()
 	environment = world_environment.get_environment()

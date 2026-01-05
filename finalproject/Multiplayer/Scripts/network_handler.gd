@@ -1,7 +1,7 @@
 extends Node
 
 #server signals
-signal on_peer_connected(peer_id:int, plane_id :int)
+signal on_peer_connected(peer_id:int)
 signal on_peer_disconnected(peer_id:int)
 signal on_server_packet(peer_id:int, data: PackedByteArray)
 
@@ -17,16 +17,30 @@ var client_peers: Dictionary [int, ENetPacketPeer] #list of peers with ids as ke
 #client variables
 var server_peer : ENetPacketPeer
 
-#for type of plane
-var plane_id : int
-
 #general variables
 var connection : ENetConnection
 var is_server : bool = false
 
-var cur_ip :="192.168.2.249"
-#"172.16.1.244" #school wifi  
-#"192.168.2.249" #home wifi 
+var cur_ip : String 
+
+func _ready() -> void:
+	cur_ip = get_wifi_ip_address()
+
+func get_wifi_ip_address() -> String:
+	var potential_ips: PackedStringArray = IP.get_local_addresses()
+	var local_ip: String = ""
+	for address in potential_ips:
+	#Check if it's an IPv4 address (contains dots)
+		if address.find(".") != -1:
+			# Filter out the loopback address and non-private addresses
+			if not address.begins_with("127.") and not address.begins_with("169.254"):
+				local_ip = address
+	# If a common private IP is not explicitly found, return the last non-loopback IPv4 address found
+		if local_ip.is_empty() and potential_ips.size() > 0:
+				if address.find(".") != -1 and not address.begins_with("127."):
+					local_ip = address 
+	print(local_ip)
+	return local_ip
 
 func _process(delta: float) -> void:
 	if connection == null: return
@@ -44,7 +58,7 @@ func handle_events() -> void:
 				return
 			ENetConnection.EVENT_CONNECT:
 				if is_server:
-					peer_connected(peer,plane_id)
+					peer_connected(peer)
 				else:#if client
 					connected_to_server()
 			ENetConnection.EVENT_DISCONNECT:
@@ -74,13 +88,13 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 	print("server started")
 	is_server = true
 
-func peer_connected(peer: ENetPacketPeer, plane_id) -> void:
+func peer_connected(peer: ENetPacketPeer) -> void:
 	var peer_id: int = available_peer_ids.pop_back()
 	peer.set_meta("id", peer_id)
 	client_peers[peer_id]= peer
 	
-	print("peer_connected with id:", peer_id, "type", plane_id)
-	on_peer_connected.emit(peer_id, plane_id)
+	print("peer_connected with id:", peer_id)
+	on_peer_connected.emit(peer_id)
 
 func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id : int = peer.get_meta("id")
@@ -91,7 +105,7 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	on_peer_disconnected.emit(peer_id)
 	
 func start_client(plane_type : int, ip_adress: String = cur_ip, port : int = 42069):
-	plane_id =plane_type
+	
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host(1)
 	if error:
@@ -101,7 +115,7 @@ func start_client(plane_type : int, ip_adress: String = cur_ip, port : int = 420
 	print("client started")
 	#variable for server from perspectove of clients
 	server_peer = connection.connect_to_host(ip_adress, port)
-	
+	PlaneType.create(-1,[plane_type]).send(server_peer)
 
 func disconnect_client() -> void: #When player hits disconnect button
 	if is_server: return

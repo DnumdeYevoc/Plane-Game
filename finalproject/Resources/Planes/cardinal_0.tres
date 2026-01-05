@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("2_6tx43")
-name = "RedPlane"
+name = "Cardinal 360"
 id = 0
 mesh = ExtResource("2_xy6yy")
 max_speed = 120.0
