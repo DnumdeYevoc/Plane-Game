@@ -16,7 +16,7 @@ var client_peers: Dictionary [int, ENetPacketPeer] #list of peers with ids as ke
 
 #client variables
 var server_peer : ENetPacketPeer
-
+var plane_type : int =-1
 #general variables
 var connection : ENetConnection
 var is_server : bool = false
@@ -39,7 +39,6 @@ func get_wifi_ip_address() -> String:
 		if local_ip.is_empty() and potential_ips.size() > 0:
 				if address.find(".") != -1 and not address.begins_with("127."):
 					local_ip = address 
-	print(local_ip)
 	return local_ip
 
 func _process(delta: float) -> void:
@@ -60,7 +59,7 @@ func handle_events() -> void:
 				if is_server:
 					peer_connected(peer)
 				else:#if client
-					connected_to_server()
+					connected_to_server(peer)
 			ENetConnection.EVENT_DISCONNECT:
 				if is_server:
 					peer_disconnected(peer)
@@ -95,7 +94,7 @@ func peer_connected(peer: ENetPacketPeer) -> void:
 	
 	print("peer_connected with id:", peer_id)
 	on_peer_connected.emit(peer_id)
-
+	
 func peer_disconnected(peer: ENetPacketPeer) -> void:
 	var peer_id : int = peer.get_meta("id")
 	available_peer_ids.push_back(peer_id)
@@ -104,8 +103,7 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(plane_type : int, ip_adress: String = cur_ip, port : int = 42069):
-	
+func start_client(ip_adress: String = cur_ip, port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host(1)
 	if error:
@@ -114,19 +112,22 @@ func start_client(plane_type : int, ip_adress: String = cur_ip, port : int = 420
 		return
 	print("client started")
 	#variable for server from perspectove of clients
+	
 	server_peer = connection.connect_to_host(ip_adress, port)
-	PlaneType.create(-1,[plane_type]).send(server_peer)
-
+	
+	
 func disconnect_client() -> void: #When player hits disconnect button
 	if is_server: return
-	server_peer.peer_disconnect()
+	server_peer.peer_disconnected()
 	#happens automatically if you close, but this is nice if you want main screen again
-
-func connected_to_server() -> void:
+	
+func connected_to_server(peer: ENetPacketPeer) -> void:
 	print("Successfully connected to server")
 	on_connected_to_server.emit()
+	IDAssignment.create(-1, plane_type, [],[]).send(server_peer)
 	
 func disconnected_from_server() -> void:
 	print("successfully disconnected from server")
 	on_disconnected_to_server.emit()
 	connection = null
+	

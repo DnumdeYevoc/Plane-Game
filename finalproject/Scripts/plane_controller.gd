@@ -83,7 +83,6 @@ func server_handle_player_position(peer_id:int, player_position: PlayerPosition)
 	if owner_id != peer_id: return
 	
 	global_position = player_position.position
-
 	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
 	
 func client_handle_player_position(player_position: PlayerPosition)-> void:
@@ -106,7 +105,7 @@ func _ready() -> void:
 	else:
 		ui.visible = false
 		cam.current = false
-	plane_type = plane_resource_list[plane_id]
+
 	#set variables from resource
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
