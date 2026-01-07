@@ -8,6 +8,8 @@
 script = ExtResource("2_rb1fo")
 name = "Bomber 800M"
 id = 1
+plane_health = 200
+player_health = 50
 mesh = ExtResource("2_n65kh")
 max_speed = 120.0
 acceleration = 0.6

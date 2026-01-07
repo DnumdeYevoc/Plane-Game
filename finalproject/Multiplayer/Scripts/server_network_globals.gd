@@ -43,6 +43,9 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
 		PacketInfo.PACKET_TYPE.SHOOT:
 			Shoot.create_from_data(data).broadcast(NetworkHandler.connection)
-			
+			print("server recieved shot")
+		PacketInfo.PACKET_TYPE.HIT:
+			Hit.create_from_data(data).broadcast(NetworkHandler.connection)
+			print("server recieved hit")
 		_:
 			push_error("packet type with index", data[0], "unhandled")

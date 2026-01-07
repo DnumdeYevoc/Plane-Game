@@ -5,6 +5,7 @@ signal handle_remote_id_assignment(remote_id: int)
 signal plane_type_assignment(plane_type: int)
 signal handle_player_position(player_position: PlayerPosition)
 signal handle_shot(shot : Shoot)
+signal handle_hit(hit : Hit)
 
 var plane_resource_list : Array = [
 	preload("res://Resources/Planes/cardinal_0.tres"),
@@ -40,6 +41,9 @@ func on_client_packet(data: PackedByteArray)-> void:
 		PacketInfo.PACKET_TYPE.SHOOT:
 			var shot = Shoot.create_from_data(data)
 			handle_shot.emit(shot)
+		PacketInfo.PACKET_TYPE.HIT:
+			var hit = Hit.create_from_data(data)
+			handle_hit.emit(hit)
 		_:
 			push_error("Packet type with index", data[0], "unhandled")
 

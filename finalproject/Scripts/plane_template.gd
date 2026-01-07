@@ -3,6 +3,9 @@ extends Resource
 @export var name : String
 @export var id : int
 
+#health
+@export var plane_health : int
+@export var player_health : int
 #appearance
 @export var mesh : PackedScene
 #handling

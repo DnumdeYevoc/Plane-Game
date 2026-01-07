@@ -1,34 +1,30 @@
 class_name Hit extends PacketInfo
 
 var id: int
-var position: Vector3
+var remaining_health : int
 
-static func create(id: int, position: Vector3) -> PlayerPosition:
-	var info : PlayerPosition = PlayerPosition.new()
-	info.packet_type = PACKET_TYPE.PLAYER_POSITION
-	info.flag = ENetPacketPeer.FLAG_UNSEQUENCED
+static func create(id: int, remaining_health : int) -> Hit:
+	var info : Hit = Hit.new()
+	info.packet_type = PACKET_TYPE.HIT
+	info.flag = ENetPacketPeer.FLAG_RELIABLE
 	info.id = id
-	info.position = position
-
+	info.remaining_health = remaining_health 
 	return info
 	
-static func create_from_data(data: PackedByteArray) -> PlayerPosition:
-	var info: PlayerPosition = PlayerPosition.new()
+static func create_from_data(data: PackedByteArray) -> Hit:
+	var info: Hit = Hit.new()
 	info.decode(data)
 	return info
-
+	
 func encode() -> PackedByteArray:
 	var data: PackedByteArray  = super.encode()
-	data.resize(14)
+	data.resize(3)
 	data.encode_u8(1,id)
-	#floats take 4 btyes of data
-	data.encode_float(2, position.x)
-	data.encode_float(6, position.y)
-	data.encode_float(10, position.z)
-
+	data.encode_u8(2,remaining_health)
 	return data
 	
 func decode(data: PackedByteArray) -> void:
 	super.decode(data)
 	id = data.decode_u8(1)
-	position = Vector3(data.decode_float(2), data.decode_float(6), data.decode_float(10))
+	remaining_health = data.decode_u8(2)
+	

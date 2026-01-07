@@ -8,7 +8,7 @@ size = Vector3(1, 0.5, 2.07367)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_dpar4"]
 
-[node name="Plane" type="CharacterBody3D"]
+[node name="Plane" type="CharacterBody3D" groups=["bullet_collision"]]
 script = ExtResource("1_f3srd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

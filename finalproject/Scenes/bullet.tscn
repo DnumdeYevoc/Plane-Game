@@ -3,8 +3,10 @@
 [ext_resource type="Script" uid="uid://bqgv6pm7pnmb3" path="res://Scripts/bullet.gd" id="1_oduel"]
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="2_ycag2"]
 
-[node name="Bullet" type="Area3D" groups=["bullets"]]
+[node name="Bullet" type="Area3D" groups=["bullet_collision"]]
 script = ExtResource("1_oduel")
 resource = ExtResource("2_ycag2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

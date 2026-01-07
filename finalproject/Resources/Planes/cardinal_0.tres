@@ -8,6 +8,8 @@
 script = ExtResource("2_6tx43")
 name = "Cardinal 360"
 id = 0
+plane_health = 100
+player_health = 50
 mesh = ExtResource("2_xy6yy")
 max_speed = 120.0
 acceleration = 0.6

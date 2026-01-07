@@ -17,9 +17,11 @@ var vel : Vector3
 
 var timer : int
 
+var  shooter_id  : int
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
+	
 	add_child(resource.mesh.instantiate())
 	speed += resource.speed
 	damage = resource.damage
@@ -39,10 +41,13 @@ func _process(delta: float) -> void:
 	global_position += vel
 
 func end():
-	
 	#add explsoion animation/ particles
 	if explode:
 		#await
 		pass
 	queue_free()
-	
+
+func _on_body_entered(body: Node3D) -> void:
+	if body.is_in_group('bullet_collision') and body.owner_id != shooter_id:
+		body.take_damage(damage)
+		end()

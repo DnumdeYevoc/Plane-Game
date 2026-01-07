@@ -30,7 +30,6 @@ window/stretch/scale=0.75
 [global_group]
 
 bullet_collision=""
-bullets=""
 
 [input]
 

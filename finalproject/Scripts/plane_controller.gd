@@ -10,6 +10,11 @@ var is_authority: bool:
 	get: return !NetworkHandler.is_server && owner_id == ClientNetworkGlobals.id
 
 #customizable variables by type
+#health
+var plane_health : int
+var player_health : int
+var cur_health : int #not customizble, like cur_speed
+
 #handling
 var max_speed : float
 var acceleration : float
@@ -74,6 +79,7 @@ func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.connect(client_handle_shot)
+	ClientNetworkGlobals.handle_hit.connect(client_handle_hit)
 	
 func _exit_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
@@ -115,10 +121,15 @@ func shoot_remote(shot: Shoot)-> void:
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation
-			
+			bullet.shooter_id = owner_id
 			#homing was here but needs to be remade
 			projectile_manager.add_child(bullet)
-	
+			
+func client_handle_hit(hit: Hit) -> void:
+	if hit.id == owner_id and not is_authority:
+		cur_health = hit.remaining_health
+		print(owner_id,"hit, health:", cur_health)
+		
 func _ready() -> void:
 	if is_authority:
 		ui.visible = true
@@ -130,6 +141,11 @@ func _ready() -> void:
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
 	add_child(mesh)
+	
+	#set health
+	plane_health = plane_type.plane_health
+	player_health = plane_type.player_health
+	cur_health = plane_health
 	
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -253,11 +269,19 @@ func shoot() -> void:
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation
+			bullet.shooter_id = owner_id
 			
 			#homing was here but needs to be remade
 			
 			projectile_manager.add_child(bullet)
-
+func take_damage(damage):
+	if is_authority:
+		cur_health -= damage
+		if cur_health <=0:
+			print("dead")
+		
+		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
+	
 func _physics_process(delta: float) -> void:
 	#if you are driver
 	if !is_authority: return
