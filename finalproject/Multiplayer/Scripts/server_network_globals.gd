@@ -30,8 +30,6 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 	var packet_type : int = data.decode_u8(0)
 	
 	match packet_type:
-		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
-			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
 		PacketInfo.PACKET_TYPE.ID_ASSIGNMENT:
 			var type_packet = IDAssignment.create_from_data(data)
 			
@@ -41,5 +39,10 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			id_assignment_packet.broadcast(NetworkHandler.connection)
 			print("server broadcasted plane id:", id_assignment_packet.id,"type:", id_assignment_packet.plane_type)
 			id_assignment_packet = null
+		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
+			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
+		PacketInfo.PACKET_TYPE.SHOOT:
+			Shoot.create_from_data(data).broadcast(NetworkHandler.connection)
+			
 		_:
 			push_error("packet type with index", data[0], "unhandled")

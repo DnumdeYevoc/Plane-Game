@@ -1,64 +1,14 @@
-[gd_resource type="Resource" load_steps=7 format=4 uid="uid://cxs5k0e462c25"]
+[gd_resource type="Resource" load_steps=4 format=3 uid="uid://cxs5k0e462c25"]
 
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_2bwrl"]
+[ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Plane_1.blend" id="2_n65kh"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_rb1fo"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bp7j"]
-resource_name = "Material"
-cull_mode = 2
-albedo_color = Color(0.906332, 0.906332, 0.906332, 1)
-roughness = 0.5
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_rtdos"]
-_surfaces = [{
-"aabb": AABB(-1, -1, -1, 2, 2, 2),
-"format": 34896613377,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAwACAAEAAAAEAAEAAwAFAAIABQAAAAIABgAEAAAABQAGAAAABwABAAQABwADAAEABgAHAAQABQADAAcABQAHAAYA"),
-"name": "Material",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("/////wAAAAAAAP////8AAAAA//8AAAAAAAAAAP//AAD///////8AAAAAAAAAAAAA//8AAAAAAAD//wAA//8AAA==")
-}]
-blend_shape_mode = 0
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_qjkqq"]
-resource_name = "Plane_2_Cube"
-_surfaces = [{
-"aabb": AABB(-1, -1, -1, 2, 2, 2),
-"attribute_data": PackedByteArray("/5//f//f/z//3/9//5//P/9f/z//nwAA/5//P/9fAAD/X////5//v/+f////X/+//x//f/9f/z//X/9//x//P/9f/3//n/8//5//f/9f/z//X/+//5//f/+f/7//X/9/"),
-"format": 34896613399,
-"index_count": 36,
-"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
-"material": SubResource("StandardMaterial3D_1bp7j"),
-"name": "Material",
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 24,
-"vertex_data": PackedByteArray("/////wAA//8AAP///////wAA//8AAP///////////////wAA////vwAA//////+//////////78AAAAA////vwAAAAD//1TVAAD//wAAVNUAAP////9U1QAAAAAAAFTVAAAAAAAA/7///wAA////v///AAAAAP+/AAAAAP///7///wAAAABU1f///////1TV/////wAAVNX//wAA//9U1QAAAAAAAP///////wAA//8AAP//AAD/////AAAAAP///3//v/9//7//f/+//3//v/////////////////////9U1VTVVNVU1VTVVNVU1VTVAAD/fwAA/38AAP9/AAD/f6oqqiqqKqoqqiqqKqoqqir/v/+//7//v/+//7//v/+/")
-}]
-blend_shape_mode = 0
-shadow_mesh = SubResource("ArrayMesh_rtdos")
-
-[sub_resource type="PackedScene" id="PackedScene_1b5k8"]
-_bundled = {
-"conn_count": 0,
-"conns": PackedInt32Array(),
-"editable_instances": [],
-"names": PackedStringArray("Plane_2", "Node3D", "Cube", "mesh", "skeleton", "MeshInstance3D", "Light", "transform", "light_energy", "omni_range", "OmniLight3D", "Camera", "fov", "near", "far", "Camera3D"),
-"node_count": 4,
-"node_paths": [],
-"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 0, 0, 0, 0, 5, 2, -1, 2, 3, 0, 4, 1, 0, 0, 0, 10, 6, -1, 3, 7, 2, 8, 3, 9, 4, 0, 0, 0, 15, 11, -1, 4, 7, 5, 12, 6, 13, 7, 14, 8, 0),
-"variants": [SubResource("ArrayMesh_qjkqq"), NodePath(""), Transform3D(-0.290865, -0.771101, 0.566393, -0.055189, 0.604525, 0.794672, -0.955171, 0.199883, -0.218391, 4.07625, 5.90386, -1.00545), 54351.4, 4096.0, Transform3D(0.685921, -0.324013, 0.651558, -1.49012e-08, 0.895396, 0.445271, -0.727676, -0.305421, 0.61417, 7.35889, 4.95831, 6.92579), 22.8952, 0.1, 100.0],
-"version": 3
-}
 
 [resource]
 script = ExtResource("2_rb1fo")
 name = "Bomber 800M"
 id = 1
-mesh = SubResource("PackedScene_1b5k8")
+mesh = ExtResource("2_n65kh")
 max_speed = 120.0
 acceleration = 0.6
 deceleration = 0.3

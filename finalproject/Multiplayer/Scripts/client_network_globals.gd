@@ -4,7 +4,12 @@ signal handle_local_id_assignment(local_id: int)
 signal handle_remote_id_assignment(remote_id: int)
 signal plane_type_assignment(plane_type: int)
 signal handle_player_position(player_position: PlayerPosition)
+signal handle_shot(shot : Shoot)
 
+var plane_resource_list : Array = [
+	preload("res://Resources/Planes/cardinal_0.tres"),
+	preload("res://Resources/Planes/bomber_1.tres"),
+]
 
 var plane_ids: Array[int]  #plane types, listed in order of Peer IDs
 
@@ -32,6 +37,9 @@ func on_client_packet(data: PackedByteArray)-> void:
 		PacketInfo.PACKET_TYPE.ON_SERVER_START:
 			print("starting packet recieved")
 			set_world(OnServerStart.create_from_data(data))
+		PacketInfo.PACKET_TYPE.SHOOT:
+			var shot = Shoot.create_from_data(data)
+			handle_shot.emit(shot)
 		_:
 			push_error("Packet type with index", data[0], "unhandled")
 

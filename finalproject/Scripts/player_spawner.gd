@@ -16,7 +16,7 @@ func spawn_player(id: int, type :int = 1) -> void:
 	#need to make specific spawning locations
 	var player = PLANE.instantiate()
 	player.owner_id = id
-	player.plane_type = player.plane_resource_list[type]
+	player.plane_type = ClientNetworkGlobals.plane_resource_list[type]
 	#player.name = str(id) #optional
 	
 	call_deferred("add_child",player)

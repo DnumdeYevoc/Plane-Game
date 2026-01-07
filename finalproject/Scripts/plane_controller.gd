@@ -2,10 +2,7 @@ extends CharacterBody3D
 
 @export var plane_type : Resource
 var plane_id: int 
-var plane_resource_list : Array = [
-	preload("res://Resources/Planes/cardinal_0.tres"),
-	preload("res://Resources/Planes/bomber_1.tres"),
-]
+
 #multiplayer variables
 #whether or not you are in control of this player
 var owner_id: int
@@ -37,6 +34,8 @@ var turbo_reload_speed: float
 var pivotable_gun : bool
 var barrel_amount : int
 var barrel_spread : float
+
+var bullet_id : int
 var bullet_type : Resource
 
 #non-customizeable variables
@@ -74,16 +73,18 @@ var h_cooldown := 0
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
+	ClientNetworkGlobals.handle_shot.connect(client_handle_shot)
 	
 func _exit_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
+	ClientNetworkGlobals.handle_shot.disconnect(client_handle_shot)
 	
 func server_handle_player_position(peer_id:int, player_position: PlayerPosition)->void:
 	if owner_id != peer_id: return
 	
 	global_position = player_position.position
-	PlayerPosition.create(owner_id, global_position).broadcast(NetworkHandler.connection)
+	PlayerPosition.create(owner_id, global_position,  player_position.rotation_z).broadcast(NetworkHandler.connection)
 	
 func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if is_authority || owner_id != player_position.id : return
@@ -93,10 +94,30 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 		transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
 	#works, but only passively, no accurate roll and unwanted spins happen sometimes
 	#update over network z rotation
-	
+	rotation.z =player_position.rotation_z 
 	#update pos
 	
 	global_position = player_position.position
+	
+func client_handle_shot(shot)-> void:
+	if shot.id == owner_id and not is_authority:
+		shoot_remote(shot)
+func shoot_remote(shot: Shoot)-> void:
+	if barrel_amount >0:
+		for barrel in barrel_amount:
+			#create bullet scene
+			var bullet = bullet_scene.instantiate()
+			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+			#variables from packet
+			bullet.dir = shot.dir
+			bullet.speed = shot.plane_speed
+			
+			#finish setting variables
+			bullet.resource = bullet_type
+			bullet.rotation = rotation
+			
+			#homing was here but needs to be remade
+			projectile_manager.add_child(bullet)
 	
 func _ready() -> void:
 	if is_authority:
@@ -105,7 +126,6 @@ func _ready() -> void:
 	else:
 		ui.visible = false
 		cam.current = false
-
 	#set variables from resource
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
@@ -207,23 +227,7 @@ func get_input(delta):
 		pass
 		
 	if Input.is_action_just_pressed("shoot"):
-		#bullet
-		if barrel_amount >0:
-			for barrel in barrel_amount:
-				var bullet = bullet_scene.instantiate()
-				bullet.resource = bullet_type
-				bullet.rotation = rotation
-				bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-				bullet.end_pos =  to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-				bullet.speed = cur_speed*delta
-				
-				if bullet.resource.homing:
-					if aim_cast.is_colliding():
-						target = aim_cast.get_collider(0)
-						if target:
-							if target.is_in_group("bullet_collision"):
-								bullet.target  = target
-				projectile_manager.add_child(bullet)
+		shoot()
 				
 	#handle multiple camera povs
 	if Input.is_action_just_pressed("SwitchCam"):
@@ -236,6 +240,24 @@ func get_input(delta):
 		else:
 			cam.rotation_degrees.y = 0
 			
+func shoot() -> void:
+	if barrel_amount >0:
+		for barrel in barrel_amount:
+			#create bullet scene
+			var bullet = bullet_scene.instantiate()
+			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+			bullet.dir = bullet.position.direction_to(to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)))
+			bullet.speed = cur_speed/60
+			#send packet ASAP
+			Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
+			#finish setting variables
+			bullet.resource = bullet_type
+			bullet.rotation = rotation
+			
+			#homing was here but needs to be remade
+			
+			projectile_manager.add_child(bullet)
+
 func _physics_process(delta: float) -> void:
 	#if you are driver
 	if !is_authority: return
@@ -265,4 +287,4 @@ func _physics_process(delta: float) -> void:
 	velocity = -transform.basis.z*cur_speed*delta
 	move_and_slide()
 	
-	PlayerPosition.create(owner_id, global_position).send(NetworkHandler.server_peer)
+	PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)

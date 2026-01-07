@@ -22,7 +22,7 @@ func set_popup():
 		map_list.get_popup().add_item(map.name, map.id)
 	
 func set_plane_popup():
-	for plane in plane_display.plane_resource_list:
+	for plane in ClientNetworkGlobals.plane_resource_list:
 		plane_selector.get_popup().add_item(plane.name, plane.id)
 	
 func on_world_popup_pressed(id):
