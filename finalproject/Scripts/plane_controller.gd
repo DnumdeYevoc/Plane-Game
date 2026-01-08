@@ -121,7 +121,6 @@ func shoot_remote(shot: Shoot)-> void:
 			#variables from packet
 			bullet.dir = shot.dir
 			bullet.speed = shot.plane_speed
-		
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation
@@ -218,7 +217,7 @@ func _ready() -> void:
 	
 	#non-pivotable settings
 	if pivotable_gun == false:
-		aim_cast.target_position = Vector3(0,0,-1000) #Make Crosshair
+		aim_cast.target_position = Vector3(0,0,-plane_type.aim_assist_range) #Make Crosshair
 	#pivotable settings?
 	
 	#set screen_center
@@ -280,7 +279,7 @@ func get_input(delta):
 		
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
-				
+		
 	#handle multiple camera povs
 	if Input.is_action_just_pressed("SwitchCam"):
 		cam_index+=1
@@ -293,17 +292,30 @@ func get_input(delta):
 			cam.rotation_degrees.y = 0
 			
 func shoot() -> void:
+	var target_pos : Vector3
 	if barrel_amount >0:
 		for barrel in barrel_amount:
 			#create bullet scene
 			var bullet = bullet_scene.instantiate()
-			
 			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-			bullet.dir = bullet.position.direction_to(to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)))
+			
+			
+			if aim_cast.is_colliding():
+				if barrel_amount == 1:
+					var collider =aim_cast.get_collider(0)
+					target_pos = collider.global_position + collider.velocity * 30
+				else:
+					to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+					
+			else:
+				target_pos = to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+				
+			bullet.dir = bullet.position.direction_to(target_pos)
 			bullet.speed = cur_speed/60
 			#send packet ASAP
 			if barrel == 1: #revise?>
 				Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
+			
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation

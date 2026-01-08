@@ -6,9 +6,11 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_dpar4"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_ly0hq"]
+resource_local_to_scene = true
 
 [node name="Plane" type="CharacterBody3D" groups=["bullet_collision"]]
+collision_layer = 3
 script = ExtResource("1_f3srd")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -17,8 +19,9 @@ shape = SubResource("BoxShape3D_uw3ql")
 
 [node name="AimCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
-shape = SubResource("SphereShape3D_dpar4")
+shape = SubResource("SphereShape3D_ly0hq")
 target_position = Vector3(0, 0, 0)
+collision_mask = 2
 collide_with_areas = true
 
 [node name="CameraTarget" type="Node3D" parent="." node_paths=PackedStringArray("target")]
