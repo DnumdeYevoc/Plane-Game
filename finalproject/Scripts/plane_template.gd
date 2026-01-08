@@ -8,6 +8,7 @@ extends Resource
 @export var player_health : int
 #appearance
 @export var mesh : PackedScene
+@export var collision_shape : Shape3D
 #handling
 @export var max_speed : float #in km/h
 @export var acceleration : float

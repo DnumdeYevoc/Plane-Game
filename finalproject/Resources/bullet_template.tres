@@ -4,8 +4,11 @@
 [ext_resource type="Script" uid="uid://celgfdf3x0i2h" path="res://Scripts/bullet_template.gd" id="1_v74cf"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
+resource_local_to_scene = true
+radius = 0.1
 
 [resource]
+resource_local_to_scene = true
 script = ExtResource("1_v74cf")
 speed = 10
 mesh = ExtResource("1_ltmxl")

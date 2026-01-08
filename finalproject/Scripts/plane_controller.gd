@@ -3,6 +3,7 @@ extends CharacterBody3D
 @export var plane_type : Resource
 var plane_id: int 
 
+var player_state : int = 2 #Whether it is plane, person or dead. 2=plane, 1= person, 0= dead
 #multiplayer variables
 #whether or not you are in control of this player
 var owner_id: int
@@ -50,6 +51,7 @@ var roll_input := 0.0
 
 var cur_speed := 0.0
 
+
 @onready var world: Node3D = get_node("/root/Game/World")
 
 #camera
@@ -63,6 +65,8 @@ var cam_index = 0
 @onready var fps_label: Label = $UI/FPS
 @onready var aim_cast: = $AimCast
 @onready var projectile_manager: Node
+@onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
+
 
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
@@ -85,6 +89,7 @@ func _exit_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.disconnect(client_handle_shot)
+	ClientNetworkGlobals.handle_hit.disconnect(client_handle_hit)
 	
 func server_handle_player_position(peer_id:int, player_position: PlayerPosition)->void:
 	if owner_id != peer_id: return
@@ -96,13 +101,12 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if is_authority || owner_id != player_position.id : return
 	#movement for planes other than yours
 	#update rotation locally
-	if global_position != player_position.position:
+	if player_position.position - global_position != Vector3.ZERO:
 		transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
 	#works, but only passively, no accurate roll and unwanted spins happen sometimes
 	#update over network z rotation
 	rotation.z =player_position.rotation_z 
 	#update pos
-	
 	global_position = player_position.position
 	
 func client_handle_shot(shot)-> void:
@@ -126,14 +130,45 @@ func shoot_remote(shot: Shoot)-> void:
 			projectile_manager.add_child(bullet)
 			
 func client_handle_hit(hit: Hit) -> void:
-	if hit.id == owner_id and not is_authority:
+	if hit.id == owner_id and is_authority == false: 
+		
 		cur_health = hit.remaining_health
+		update_health()
 		print(owner_id,"hit, health:", cur_health)
 		
+func take_damage(damage) -> void:
+		cur_health -= damage
+		update_health()
+		
+		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)#sending twice for some reason, Multiple bullets breaks it. Single is fine. Proportinal to amount of bullets squared
+		
+func update_health() -> void:
+	#health bar update code here
+	if cur_health <=0:
+		player_state -= 1
+		match player_state:
+			1:
+				cur_health = player_health
+				#initate immune timer?
+				print("human")
+			0:
+				cur_health ==0
+				print(owner_id,"is dead")
+				die()
+func die():
+	if is_authority:
+		pass
+		#initate respawn screen 
+	else:
+		pass
+		#do some death animation?
+	queue_free()
+	
 func _ready() -> void:
 	if is_authority:
 		ui.visible = true
 		cam.current = true
+	
 	else:
 		ui.visible = false
 		cam.current = false
@@ -141,7 +176,8 @@ func _ready() -> void:
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
 	add_child(mesh)
-	
+	#collision sape
+	collision_shape_3d.shape = plane_type.collision_shape
 	#set health
 	plane_health = plane_type.plane_health
 	player_health = plane_type.player_health
@@ -261,6 +297,7 @@ func shoot() -> void:
 		for barrel in barrel_amount:
 			#create bullet scene
 			var bullet = bullet_scene.instantiate()
+			
 			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 			bullet.dir = bullet.position.direction_to(to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)))
 			bullet.speed = cur_speed/60
@@ -272,16 +309,8 @@ func shoot() -> void:
 			bullet.shooter_id = owner_id
 			
 			#homing was here but needs to be remade
-			
 			projectile_manager.add_child(bullet)
-func take_damage(damage):
-	if is_authority:
-		cur_health -= damage
-		if cur_health <=0:
-			print("dead")
-		
-		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
-	
+
 func _physics_process(delta: float) -> void:
 	#if you are driver
 	if !is_authority: return
@@ -291,7 +320,6 @@ func _physics_process(delta: float) -> void:
 	#UI
 	speed_label.text = str(int(cur_speed/20))+ "km/h"
 	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
-	
 	#rotate
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
 	transform.basis = transform.basis.rotated(transform.basis.x, pitch_input*pitch_speed*delta)

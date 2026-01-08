@@ -18,18 +18,19 @@ var vel : Vector3
 var timer : int
 
 var  shooter_id  : int
-@onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var collision: CollisionShape3D = $CollisionShape3D
 
 func _ready() -> void:
-	
 	add_child(resource.mesh.instantiate())
 	speed += resource.speed
 	damage = resource.damage
 	explode = resource.explode
 	homing = resource.homing
 	timer = resource.lifetime*60
-	collision_shape.shape = resource.collision_shape
-
+	
+	collision.shape = resource.collision_shape
+	body_entered.connect(_on_area_3d_body_entered)
+	
 func _process(delta: float) -> void:
 	timer -=1
 	
@@ -47,7 +48,11 @@ func end():
 		pass
 	queue_free()
 
-func _on_body_entered(body: Node3D) -> void:
-	if body.is_in_group('bullet_collision') and body.owner_id != shooter_id:
-		body.take_damage(damage)
-		end()
+func _on_area_3d_body_entered(body: Node3D) -> void: #problem is this signal triggers all of them even if its just one colliding
+	if body.is_in_group('bullet_collision'):
+		if body.owner_id != shooter_id:
+			if body.is_authority:
+				print("bullet collision with", body.owner_id)
+				body.take_damage(damage)
+				end()
+			end()

@@ -1,8 +1,12 @@
-[gd_resource type="Resource" load_steps=4 format=3 uid="uid://cxs5k0e462c25"]
+[gd_resource type="Resource" load_steps=5 format=3 uid="uid://cxs5k0e462c25"]
 
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_2bwrl"]
 [ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Plane_1.blend" id="2_n65kh"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_rb1fo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rb1fo"]
+resource_local_to_scene = true
+size = Vector3(3, 3, 3)
 
 [resource]
 script = ExtResource("2_rb1fo")
@@ -11,6 +15,7 @@ id = 1
 plane_health = 200
 player_health = 50
 mesh = ExtResource("2_n65kh")
+collision_shape = SubResource("BoxShape3D_rb1fo")
 max_speed = 120.0
 acceleration = 0.6
 deceleration = 0.3
