@@ -1,10 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://bt1r0eadydri3"]
+[gd_scene load_steps=4 format=3 uid="uid://bt1r0eadydri3"]
 
 [ext_resource type="Script" uid="uid://bqgv6pm7pnmb3" path="res://Scripts/bullet.gd" id="1_oduel"]
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="2_ycag2"]
 
-[node name="Bullet" type="Area3D" groups=["bullet_collision"]]
+[sub_resource type="SphereShape3D" id="SphereShape3D_oduel"]
+resource_local_to_scene = true
+radius = 0.1
+
+[node name="Bullet" type="Area3D"]
 script = ExtResource("1_oduel")
 resource = ExtResource("2_ycag2")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_oduel")

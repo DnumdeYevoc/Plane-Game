@@ -121,7 +121,7 @@ func shoot_remote(shot: Shoot)-> void:
 			#variables from packet
 			bullet.dir = shot.dir
 			bullet.speed = shot.plane_speed
-			
+		
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation
@@ -302,7 +302,8 @@ func shoot() -> void:
 			bullet.dir = bullet.position.direction_to(to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)))
 			bullet.speed = cur_speed/60
 			#send packet ASAP
-			Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
+			if barrel == 1: #revise?>
+				Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation

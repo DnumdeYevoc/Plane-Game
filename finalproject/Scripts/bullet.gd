@@ -29,8 +29,9 @@ func _ready() -> void:
 	timer = resource.lifetime*60
 	
 	collision.shape = resource.collision_shape
-	body_entered.connect(_on_area_3d_body_entered)
 	
+	body_entered.connect(_on_area_3d_body_entered)
+
 func _process(delta: float) -> void:
 	timer -=1
 	
@@ -40,7 +41,7 @@ func _process(delta: float) -> void:
 		end()
 	
 	global_position += vel
-
+	
 func end():
 	#add explsoion animation/ particles
 	if explode:
