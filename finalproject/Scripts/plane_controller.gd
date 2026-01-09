@@ -133,18 +133,18 @@ func client_handle_hit(hit: Hit) -> void:
 		
 		cur_health = hit.remaining_health
 		update_health()
-		print(owner_id,"hit, health:", cur_health)
+		print(owner_id,"hit, health:", cur_health, "Client:",  ClientNetworkGlobals.id)
 		
 func take_damage(damage) -> void:
 		cur_health -= damage
-		update_health()
 		
 		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)#sending twice for some reason, Multiple bullets breaks it. Single is fine. Proportinal to amount of bullets squared
-		
+		update_health()
 func update_health() -> void:
 	#health bar update code here
 	if cur_health <=0:
 		player_state -= 1
+		print(player_state, ClientNetworkGlobals.id)
 		match player_state:
 			1:
 				cur_health = player_health
@@ -301,11 +301,11 @@ func shoot() -> void:
 			
 			
 			if aim_cast.is_colliding():
-				if barrel_amount == 1:
-					var collider =aim_cast.get_collider(0)
-					target_pos = collider.global_position + collider.velocity * 30
-				else:
-					to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+				#if barrel_amount == 0 :
+				var collider =aim_cast.get_collider(0)
+				target_pos = collider.position + collider.velocity * 10
+				#else:
+					#to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					
 			else:
 				target_pos = to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))

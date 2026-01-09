@@ -46,6 +46,6 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			
 		PacketInfo.PACKET_TYPE.HIT:
 			Hit.create_from_data(data).broadcast(NetworkHandler.connection)
-			print("server recieved hit")
+			
 		_:
 			push_error("packet type with index", data[0], "unhandled")

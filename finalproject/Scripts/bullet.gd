@@ -53,7 +53,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void: #problem is this signal tri
 	if body.is_in_group('bullet_collision'):
 		if body.owner_id != shooter_id:
 			if body.is_authority:
-				print("bullet collision with", body.owner_id)
+				
 				body.take_damage(damage)
 				end()
 			end()
