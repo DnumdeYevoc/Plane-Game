@@ -66,8 +66,9 @@ var cam_index = 0
 @onready var aim_cast: = $AimCast
 @onready var projectile_manager: Node
 @onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
-
-
+@onready var remote_health_bar: TextureProgressBar = $Health/SubViewport/RemoteHealthBar
+@onready var ui_health_bar: TextureProgressBar = $UI/UIHealthBar
+var health_bar: TextureProgressBar
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
 
@@ -142,12 +143,14 @@ func take_damage(damage) -> void:
 		update_health()
 func update_health() -> void:
 	#health bar update code here
+	health_bar.value = cur_health
 	if cur_health <=0:
 		player_state -= 1
 		print(player_state, ClientNetworkGlobals.id)
 		match player_state:
 			1:
 				cur_health = player_health
+				health_bar.max_value = player_health
 				#initate immune timer?
 				print("human")
 			0:
@@ -167,10 +170,11 @@ func _ready() -> void:
 	if is_authority:
 		ui.visible = true
 		cam.current = true
-	
+		health_bar = ui_health_bar
 	else:
 		ui.visible = false
 		cam.current = false
+		health_bar = remote_health_bar
 	#set variables from resource
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
@@ -181,6 +185,9 @@ func _ready() -> void:
 	plane_health = plane_type.plane_health
 	player_health = plane_type.player_health
 	cur_health = plane_health
+	health_bar.max_value = cur_health
+	health_bar.value = cur_health
+	health_bar.visible = true
 	
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -303,7 +310,7 @@ func shoot() -> void:
 			if aim_cast.is_colliding():
 				#if barrel_amount == 0 :
 				var collider =aim_cast.get_collider(0)
-				target_pos = collider.position + collider.velocity * 10
+				target_pos = collider.position + collider.velocity * (plane_type.aim_assist_range/10)
 				#else:
 					#to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					
@@ -331,8 +338,10 @@ func _physics_process(delta: float) -> void:
 	get_input(delta)
 	
 	#UI
+
 	speed_label.text = str(int(cur_speed/20))+ "km/h"
 	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
+	
 	#rotate
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
 	transform.basis = transform.basis.rotated(transform.basis.x, pitch_input*pitch_speed*delta)

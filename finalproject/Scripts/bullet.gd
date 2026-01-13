@@ -11,6 +11,7 @@ var end_pos:= Vector3.ZERO
 var explode : bool
 var damage : int
 var homing : bool
+var grav : bool
 
 var dir : Vector3
 var vel : Vector3
@@ -27,7 +28,7 @@ func _ready() -> void:
 	explode = resource.explode
 	homing = resource.homing
 	timer = resource.lifetime*60
-	
+	grav = resource.gravity
 	collision.shape = resource.collision_shape
 	
 	body_entered.connect(_on_area_3d_body_entered)
@@ -36,10 +37,11 @@ func _process(delta: float) -> void:
 	timer -=1
 	
 	vel = dir *speed *delta
-	
+	if grav:
+		vel.y -= 9.8*delta
+		
 	if timer <=0:
 		end()
-	
 	global_position += vel
 	
 func end():

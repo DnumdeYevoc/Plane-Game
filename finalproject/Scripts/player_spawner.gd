@@ -1,5 +1,6 @@
 extends Node
 
+
 const PLANE = preload("res://Scenes/plane.tscn")
 
 func _ready() -> void:
@@ -19,4 +20,6 @@ func spawn_player(id: int, type :int = 1) -> void:
 	player.plane_type = ClientNetworkGlobals.plane_resource_list[type]
 	#player.name = str(id) #optional
 	
+	
 	call_deferred("add_child",player)
+	

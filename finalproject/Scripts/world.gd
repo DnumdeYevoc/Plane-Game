@@ -35,6 +35,7 @@ var map_resource_list : Array = [
 ]
 
 func _ready() -> void:
+
 	
 	network_ui.set_popup()
 	environment = world_environment.get_environment()
@@ -44,6 +45,8 @@ func _ready() -> void:
 	ServerNetworkGlobals.seed = noise.seed
 	ServerNetworkGlobals.map_id = map_resource.id
 	generate_mesh()
+	
+	
 	
 func set_map_type(id: int)-> void:
 	map_resource = map_resource_list[id]
@@ -88,7 +91,6 @@ func set_resource_var() -> void:
 		environment.volumetric_fog_enabled = false
 	
 func generate_mesh():
-	
 	#texture mesh
 	var plane := PlaneMesh.new()
 	plane.subdivide_depth = resolution 
@@ -97,7 +99,6 @@ func generate_mesh():
 	
 	var plane_arrays := plane.get_mesh_arrays()
 	var vertex_array : PackedVector3Array= plane_arrays[ArrayMesh.ARRAY_VERTEX]
-	
 	var tangent_array : PackedFloat32Array= plane_arrays[ArrayMesh.ARRAY_TANGENT]
 	for i:int in vertex_array.size():
 		var vertex = vertex_array[i]
@@ -161,14 +162,14 @@ func change_seed(seed) -> void:
 func set_seed_and_id(seed, id):
 	noise.seed = seed
 	#for map syncing
-	ServerNetworkGlobals.seed = seed
-	
 	#do both change_seed() and set_map_id() just without double generating
+	ServerNetworkGlobals.seed = seed
+	ServerNetworkGlobals.map_id = id
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed
 	#for map_sync
-	ServerNetworkGlobals.map_id = id
 	set_resource_var()
+	
 	regenerate_mesh()
 
 func regenerate_mesh() -> void:

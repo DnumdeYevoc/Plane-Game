@@ -1,37 +1,37 @@
 [gd_resource type="Resource" load_steps=5 format=3 uid="uid://cxs5k0e462c25"]
 
-[ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_2bwrl"]
+[ext_resource type="Resource" uid="uid://dhiplq5gen8te" path="res://Resources/bomb.tres" id="1_rb1fo"]
 [ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Plane_1.blend" id="2_n65kh"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_rb1fo"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rb1fo"]
 resource_local_to_scene = true
-size = Vector3(3, 3, 3)
+size = Vector3(3, 1, 4)
 
 [resource]
 script = ExtResource("2_rb1fo")
 name = "Bomber 800M"
 id = 1
-plane_health = 200
+plane_health = 250
 player_health = 50
 mesh = ExtResource("2_n65kh")
 collision_shape = SubResource("BoxShape3D_rb1fo")
 max_speed = 120.0
-acceleration = 0.6
-deceleration = 0.3
-pitch_speed = 1.0
-yaw_speed = 2.0
-roll_speed = 2.0
-sharp_steering = 8.0
+acceleration = 0.4
+deceleration = 0.2
+pitch_speed = 0.5
+yaw_speed = 1.5
+roll_speed = 0.5
+sharp_steering = 4.0
 three_input_steering = true
 fov = 90.0
 turbo = true
-turbo_strength = 50.0
-turbo_max = 3.0
+turbo_strength = 2.0
+turbo_max = 2.0
 turbo_reload_speed = 1.0
 pivotable_gun = false
-aim_assist_radius = 3
+aim_assist_radius = 1
 aim_assist_range = 100
 barrel_amount = 2
 barrel_spread = 1.5
-bullet_type = ExtResource("1_2bwrl")
+bullet_type = ExtResource("1_rb1fo")

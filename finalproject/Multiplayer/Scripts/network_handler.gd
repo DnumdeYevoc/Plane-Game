@@ -61,11 +61,11 @@ func handle_events() -> void:
 				else:#if client
 					connected_to_server(peer)
 			ENetConnection.EVENT_DISCONNECT:
-				if is_server:
-					peer_disconnected(peer)
-				else:#if client
-					disconnected_from_server()
-					return #becuase connection was set to null
+					if is_server:
+						peer_disconnected(peer)
+					else:#if client
+						disconnected_from_server()
+						return #becuase connection was set to null
 			ENetConnection.EVENT_RECEIVE:
 				if is_server:
 					on_server_packet.emit(peer.get_meta("id"), peer.get_packet())

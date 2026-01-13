@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_5r5gl"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
-offsets = PackedFloat32Array(0.587678, 0.63981)
+offsets = PackedFloat32Array(0.308057, 0.43128)
 colors = PackedColorArray(0.798167, 0.678829, 0.451936, 1, 0, 0.537255, 0.117647, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]

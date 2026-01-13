@@ -1,13 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://b6713dtnbcff"]
+[gd_scene load_steps=8 format=3 uid="uid://b6713dtnbcff"]
 
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://Scripts/plane_controller.gd" id="1_f3srd"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://Scripts/3rd_person_cam.gd" id="2_dpar4"]
+[ext_resource type="Texture2D" uid="uid://j1y3uk0j0vnm" path="res://Under.png" id="3_7e1cs"]
+[ext_resource type="Texture2D" uid="uid://cal3o0rmq5vri" path="res://Health.png" id="4_b1bhf"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ly0hq"]
 resource_local_to_scene = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7e1cs"]
+viewport_path = NodePath("Health/SubViewport")
 
 [node name="Plane" type="CharacterBody3D" groups=["bullet_collision"]]
 collision_layer = 3
@@ -34,6 +39,36 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 7)
 current = true
 fov = 90.0
 
+[node name="Health" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.89737, 0)
+billboard = 1
+no_depth_test = true
+texture = SubResource("ViewportTexture_7e1cs")
+
+[node name="SubViewport" type="SubViewport" parent="Health"]
+own_world_3d = true
+transparent_bg = true
+size = Vector2i(350, 25)
+
+[node name="RemoteHealthBar" type="TextureProgressBar" parent="Health/SubViewport"]
+visible = false
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+value = 30.0
+nine_patch_stretch = true
+stretch_margin_left = 6
+stretch_margin_top = 6
+stretch_margin_right = 6
+stretch_margin_bottom = 6
+texture_under = ExtResource("3_7e1cs")
+texture_progress = ExtResource("4_b1bhf")
+
 [node name="UI" type="VBoxContainer" parent="."]
 offset_left = 20.0
 offset_top = 20.0
@@ -48,3 +83,16 @@ layout_mode = 2
 
 [node name="Speed" type="Label" parent="UI"]
 layout_mode = 2
+
+[node name="UIHealthBar" type="TextureProgressBar" parent="UI"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+value = 30.0
+nine_patch_stretch = true
+stretch_margin_left = 6
+stretch_margin_top = 6
+stretch_margin_right = 6
+stretch_margin_bottom = 6
+texture_under = ExtResource("3_7e1cs")
+texture_progress = ExtResource("4_b1bhf")

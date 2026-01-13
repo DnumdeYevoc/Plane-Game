@@ -11,6 +11,7 @@ radius = 0.1
 resource_local_to_scene = true
 script = ExtResource("1_v74cf")
 speed = 100
+gravity = false
 mesh = ExtResource("1_ltmxl")
 damage = 10
 explode = false

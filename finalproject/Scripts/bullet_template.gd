@@ -1,5 +1,6 @@
 extends Resource
 @export var speed : int 
+@export var gravity : bool
 @export var mesh : PackedScene 
 @export var damage : int
 @export var explode : bool
