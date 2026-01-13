@@ -295,9 +295,11 @@ func get_input(delta):
 		cam.position = cam_positions[cam_index]
 		if cam_index == 1:
 			cam.rotation_degrees.y = 180
+			cam.rotation_degrees.x = -25
+
 		else:
 			cam.rotation_degrees.y = 0
-			
+			cam.rotation_degrees.x = 0
 func shoot() -> void:
 	var target_pos : Vector3
 	if barrel_amount >0:
@@ -318,7 +320,8 @@ func shoot() -> void:
 				target_pos = to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 				
 			bullet.dir = bullet.position.direction_to(target_pos)
-			bullet.speed = cur_speed/60
+			if  bullet_type.speed !=0:
+				bullet.speed = cur_speed/60
 			#send packet ASAP
 			if barrel == 1: #revise?>
 				Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)

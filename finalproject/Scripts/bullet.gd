@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
 	
 	vel = dir *speed *delta
 	if grav:
-		vel.y -= 9.8*delta
+		vel.y -= 9.8*delta*2
 		
 	if timer <=0:
 		end()
