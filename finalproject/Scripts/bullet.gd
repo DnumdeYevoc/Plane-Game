@@ -20,7 +20,7 @@ var timer : int
 
 var  shooter_id  : int
 @onready var collision: CollisionShape3D = $CollisionShape3D
-
+var exploding := false
 func _ready() -> void:
 	add_child(resource.mesh.instantiate())
 	speed += resource.speed
@@ -29,26 +29,41 @@ func _ready() -> void:
 	homing = resource.homing
 	timer = resource.lifetime*60
 	grav = resource.gravity
-	collision.shape = resource.collision_shape
+	collision.shape = resource.collision_shape.duplicate()
 	
 	body_entered.connect(_on_area_3d_body_entered)
+	if resource.particles !=null:
+		add_child(resource.particles.instantiate())
 
 func _process(delta: float) -> void:
-	timer -=1
-	
-	vel = dir *speed *delta
-	if grav:
-		vel.y -= 9.8*delta*2
+	if exploding == false: 
+		timer -=1
 		
-	if timer <=0:
-		end()
-	global_position += vel
-	
+		vel = dir *speed *delta
+		if grav:
+			vel.y -= 9.8*delta*2
+			
+		if timer <=0:
+			end()
+		global_position += vel
+		
 func end():
 	#add explsoion animation/ particles
 	if explode:
-		#await
-		pass
+		print('explode')
+		
+		exploding = true
+		#collision
+		collision.shape.radius *= 3 #explosion strength variable?
+		#mesh
+		get_child(1).visible = false
+		var explosion= resource.explosion_particles.instantiate()
+		for particle in explosion.get_children():
+			particle.emitting =true
+		add_child(explosion)
+		await get_tree().create_timer(0.5).timeout
+		collision.disabled = true
+		await get_tree().create_timer(1.5).timeout
 	queue_free()
 
 func _on_area_3d_body_entered(body: Node3D) -> void: #problem is this signal triggers all of them even if its just one colliding

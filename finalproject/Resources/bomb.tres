@@ -1,10 +1,12 @@
-[gd_resource type="Resource" load_steps=4 format=3 uid="uid://dhiplq5gen8te"]
+[gd_resource type="Resource" load_steps=5 format=3 uid="uid://dhiplq5gen8te"]
 
+[ext_resource type="PackedScene" uid="uid://khetxc3us1bb" path="res://Scenes/Particles/explosion_particles.tscn" id="1_g14xu"]
 [ext_resource type="PackedScene" uid="uid://b57kfe6q11860" path="res://Blender/80MB.blend" id="1_xkj18"]
 [ext_resource type="Script" uid="uid://celgfdf3x0i2h" path="res://Scripts/bullet_template.gd" id="2_g14xu"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
 resource_local_to_scene = true
+radius = 0.75
 
 [resource]
 resource_local_to_scene = true
@@ -13,7 +15,8 @@ speed = 0
 gravity = true
 mesh = ExtResource("1_xkj18")
 damage = 50
-explode = false
+explode = true
+explosion_particles = ExtResource("1_g14xu")
 homing = false
-lifetime = 2
+lifetime = 1
 collision_shape = SubResource("SphereShape3D_670gq")

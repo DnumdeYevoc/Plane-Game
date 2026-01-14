@@ -55,7 +55,7 @@ var cur_speed := 0.0
 @onready var world: Node3D = get_node("/root/Game/World")
 
 #camera
-var cam_positions : Array = [Vector3(0,3,7),Vector3(0,3,-10)] #back, front, inside(to add if wanted)
+var cam_positions : Array = [Vector3(0,3,7),Vector3(0,1,-10)] #back, front, inside(to add if wanted)
 var cam_index = 0
 #children
 @onready var cam: Camera3D = $"CameraTarget/Camera3D"
@@ -295,11 +295,11 @@ func get_input(delta):
 		cam.position = cam_positions[cam_index]
 		if cam_index == 1:
 			cam.rotation_degrees.y = 180
-			cam.rotation_degrees.x = -25
+
 
 		else:
 			cam.rotation_degrees.y = 0
-			cam.rotation_degrees.x = 0
+
 func shoot() -> void:
 	var target_pos : Vector3
 	if barrel_amount >0:
