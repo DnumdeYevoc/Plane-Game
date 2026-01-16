@@ -54,7 +54,8 @@ func end():
 		
 		exploding = true
 		#collision
-		collision.shape.radius *= 3 #explosion strength variable?
+		collision.shape.radius *= 4 #explosion strength variable?
+		 #make it check more area to get triggered to explode easier
 		#mesh
 		get_child(1).visible = false
 		var explosion= resource.explosion_particles.instantiate()
@@ -63,14 +64,15 @@ func end():
 		add_child(explosion)
 		await get_tree().create_timer(0.5).timeout
 		collision.disabled = true
-		await get_tree().create_timer(1.5).timeout
+		await get_tree().create_timer(3.5).timeout
 	queue_free()
 
 func _on_area_3d_body_entered(body: Node3D) -> void: #problem is this signal triggers all of them even if its just one colliding
 	if body.is_in_group('bullet_collision'):
 		if body.owner_id != shooter_id:
 			if body.is_authority:
-				
 				body.take_damage(damage)
 				end()
 			end()
+	else:
+		end()

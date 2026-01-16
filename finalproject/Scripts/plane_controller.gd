@@ -68,7 +68,8 @@ var cam_index = 0
 @onready var collision_shape_3d: CollisionShape3D = $CollisionShape3D
 @onready var remote_health_bar: TextureProgressBar = $Health/SubViewport/RemoteHealthBar
 @onready var ui_health_bar: TextureProgressBar = $UI/UIHealthBar
-var health_bar: TextureProgressBar
+var health_bar: TextureProgressBar #current health bar
+@onready var turbo_manager: Node3D = $TurboManager
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
 
@@ -181,6 +182,15 @@ func _ready() -> void:
 	add_child(mesh)
 	#collision sape
 	collision_shape_3d.shape = plane_type.collision_shape
+	#set turbo particles
+	
+	for jet in plane_type.jet_amount:
+		var turbo_particles=  plane_type.turbo_particles.instantiate()
+		turbo_particles.position.x = (jet*2-(plane_type.jet_amount/2)) * plane_type.jet_spread
+		turbo_particles.position.y = plane_type.jet_position.y
+		turbo_particles.position.z = plane_type.jet_position.x
+		turbo_manager.add_child(turbo_particles)
+		
 	#set health
 	plane_health = plane_type.plane_health
 	player_health = plane_type.player_health
@@ -245,6 +255,7 @@ func get_input(delta):
 	if turbo:
 		if t_cooldown <=0:
 			if Input.is_action_pressed("turbo"):
+					turbo_manager.visible =true
 					turbo_meter.value -= acceleration*delta
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
 					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
@@ -257,14 +268,17 @@ func get_input(delta):
 				turbo_meter.value += turbo_reload_speed*delta
 	#turbo cooldown
 	if Input.is_action_just_released("turbo"):
+		
 		t_cooldown = 100
 	if t_cooldown:
 		#reverse effects
+		turbo_manager.visible =true
 		t_cooldown -=1
 		cur_speed = lerp(cur_speed, clamp(max_speed,0,cur_speed), acceleration *delta)
 		cam.fov = lerp(cam.fov, fov, acceleration*4 *delta)
 	if t_cooldown == 1:
 		#end effects
+		turbo_manager.visible =false
 		cur_speed = clamp(max_speed,0,cur_speed)
 		cam.fov = fov
 	
@@ -312,7 +326,8 @@ func shoot() -> void:
 			if aim_cast.is_colliding():
 				#if barrel_amount == 0 :
 				var collider =aim_cast.get_collider(0)
-				target_pos = collider.position + collider.velocity * (plane_type.aim_assist_range/10)
+				if collider == CharacterBody3D:
+					target_pos = collider.position + collider.velocity * (plane_type.aim_assist_range/10)
 				#else:
 					#to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					

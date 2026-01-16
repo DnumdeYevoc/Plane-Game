@@ -13,8 +13,7 @@ particle_flag_align_y = true
 spread = 180.0
 initial_velocity_min = 12.0
 initial_velocity_max = 14.0
-scale_min = 0.5
-scale_max = 1.5
+scale_max = 3.0
 scale_curve = SubResource("CurveTexture_2wn7i")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e4lcq"]
@@ -51,14 +50,13 @@ curve = SubResource("Curve_sdpa3")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ai3ko"]
 emission_shape = 1
-emission_sphere_radius = 1.0
+emission_sphere_radius = 2.0
 direction = Vector3(0, -1, 0)
 spread = 180.0
 initial_velocity_min = 0.5
 initial_velocity_max = 3.0
-gravity = Vector3(0, 3, 0)
-scale_min = 0.5
-scale_max = 3.0
+gravity = Vector3(0, 6, 0)
+scale_max = 6.0
 scale_curve = SubResource("CurveTexture_fsokj")
 color = Color(0.80619, 0.594588, 1.92523e-07, 1)
 color_ramp = SubResource("GradientTexture1D_m8xda")
@@ -74,7 +72,7 @@ radial_segments = 8
 rings = 4
 
 [sub_resource type="Curve" id="Curve_mktf1"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.426829, 0.426966), -0.354365, -0.354365, 0, 0, Vector2(1, 0), -0.243887, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.256098, 0.460674), -1.46332, -1.46332, 0, 0, Vector2(1, 0), -0.243887, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_s23xr"]
@@ -97,14 +95,15 @@ curve = SubResource("Curve_mlacg")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84oi3"]
 emission_shape = 1
-emission_sphere_radius = 1.0
+emission_sphere_radius = 2.0
 direction = Vector3(0, -1, 0)
 spread = 20.0
 flatness = 0.696
 initial_velocity_min = 1.0
 initial_velocity_max = 2.0
-gravity = Vector3(0, 3, 0)
-scale_max = 2.0
+gravity = Vector3(0, 2, 0)
+scale_min = 2.0
+scale_max = 6.0
 scale_curve = SubResource("CurveTexture_sc16i")
 color = Color(0.125895, 0.114356, 0.0834367, 1)
 alpha_curve = SubResource("CurveTexture_s23xr")
@@ -115,7 +114,6 @@ emission_curve = SubResource("CurveTexture_nxgms")
 [node name="Debris" type="GPUParticles3D" parent="."]
 emitting = false
 amount = 20
-lifetime = 0.5
 one_shot = true
 explosiveness = 0.9
 interpolate = false
@@ -133,10 +131,10 @@ process_material = SubResource("ParticleProcessMaterial_ai3ko")
 draw_pass_1 = SubResource("SphereMesh_ou1n4")
 
 [node name="Smoke" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0420384, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83275, 0)
 emitting = false
 amount = 24
-lifetime = 3.0
+lifetime = 4.0
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_84oi3")

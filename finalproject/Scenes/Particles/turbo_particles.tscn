@@ -1,0 +1,57 @@
+[gd_scene load_steps=11 format=3 uid="uid://324bo7nbe6pc"]
+
+[ext_resource type="Script" uid="uid://iymwjggxr5ts" path="res://Scenes/Particles/turbo_particles.gd" id="1_w3kuo"]
+
+[sub_resource type="Curve" id="Curve_w3kuo"]
+_data = [Vector2(0, 0.138993), 0.0, 0.0, 0, 0, Vector2(0.250608, 0.145056), 0.0, 0.0, 0, 0, Vector2(0.3309, 0.0419776), 0.0, 0.0, 0, 0, Vector2(0.632603, 0.0359142), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_vfht0"]
+curve = SubResource("Curve_w3kuo")
+
+[sub_resource type="Gradient" id="Gradient_vfht0"]
+offsets = PackedFloat32Array(0, 0.0207792, 0.0415584, 0.179221, 0.25974, 0.914286)
+colors = PackedColorArray(0.964706, 1, 0, 1, 1, 0.447059, 0, 1, 0.968627, 0.333333, 0, 1, 0.85567, 0.00566, 0, 1, 0, 0, 0, 1, 0.176419, 0.176419, 0.176419, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_50nju"]
+gradient = SubResource("Gradient_vfht0")
+
+[sub_resource type="Curve" id="Curve_w618w"]
+_data = [Vector2(0, 0.125903), 0.0, 0.0, 0, 0, Vector2(0.396594, 0.624549), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_w3kuo"]
+curve = SubResource("Curve_w618w")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w618w"]
+lifetime_randomness = 0.45
+direction = Vector3(0, 0, 1)
+spread = 2.0
+initial_velocity_min = 5.0
+initial_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.01
+scale_max = 1.5
+scale_curve = SubResource("CurveTexture_w3kuo")
+color_ramp = SubResource("GradientTexture1D_50nju")
+alpha_curve = SubResource("CurveTexture_vfht0")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2ep6"]
+transparency = 1
+vertex_color_use_as_albedo = true
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_operator = 1
+
+[sub_resource type="SphereMesh" id="SphereMesh_w3kuo"]
+material = SubResource("StandardMaterial3D_h2ep6")
+
+[node name="TurboParticles" type="GPUParticles3D"]
+amount = 1000
+lifetime = 4.0
+interpolate = false
+fract_delta = false
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_w618w")
+draw_pass_1 = SubResource("SphereMesh_w3kuo")
+script = ExtResource("1_w3kuo")

@@ -93,3 +93,4 @@ SwitchCam={
 [layer_names]
 
 3d_physics/layer_2="Aim Assist"
+3d_physics/layer_3="Bullet Collision"

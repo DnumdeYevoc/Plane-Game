@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=5 format=3 uid="uid://cxs5k0e462c25"]
+[gd_resource type="Resource" load_steps=6 format=3 uid="uid://cxs5k0e462c25"]
 
 [ext_resource type="Resource" uid="uid://dhiplq5gen8te" path="res://Resources/bomb.tres" id="1_rb1fo"]
 [ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Plane_1.blend" id="2_n65kh"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_rb1fo"]
+[ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="4_n65kh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rb1fo"]
 resource_local_to_scene = true
@@ -25,6 +26,10 @@ roll_speed = 0.5
 sharp_steering = 4.0
 three_input_steering = true
 fov = 90.0
+turbo_particles = ExtResource("4_n65kh")
+jet_amount = 2
+jet_spread = 1
+jet_position = Vector2(0, 0)
 turbo = true
 turbo_strength = 3.0
 turbo_max = 2.5
@@ -33,5 +38,5 @@ pivotable_gun = false
 aim_assist_radius = 1
 aim_assist_range = 100
 barrel_amount = 2
-barrel_spread = 1.5
+barrel_spread = 2.0
 bullet_type = ExtResource("1_rb1fo")

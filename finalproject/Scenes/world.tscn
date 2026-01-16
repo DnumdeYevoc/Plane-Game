@@ -94,6 +94,7 @@ mesh = SubResource("PlaneMesh_go701")
 skeleton = NodePath("../..")
 
 [node name="CollsionChunkManager" type="StaticBody3D" parent="."]
+collision_layer = 5
 
 [node name="Collision" type="CollisionShape3D" parent="CollsionChunkManager"]
 shape = SubResource("HeightMapShape3D_fj7yv")

@@ -18,5 +18,5 @@ damage = 50
 explode = true
 explosion_particles = ExtResource("1_g14xu")
 homing = false
-lifetime = 1
+lifetime = 3
 collision_shape = SubResource("SphereShape3D_670gq")
