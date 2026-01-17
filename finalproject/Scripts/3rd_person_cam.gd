@@ -5,5 +5,5 @@ extends Node3D
 
 func _physics_process(delta: float) -> void:
 	global_position = lerp(global_position, target.global_position, movement_sharpness*delta)
-	transform.basis = lerp(transform.basis, target.transform.basis, movement_sharpness*delta)
-	transform.basis = transform.basis.orthonormalized()
+	var bas = lerp(transform.basis, target.transform.basis, movement_sharpness*delta)
+	transform.basis = bas.orthonormalized()

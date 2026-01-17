@@ -72,6 +72,7 @@ var health_bar: TextureProgressBar #current health bar
 @onready var turbo_manager: Node3D = $TurboManager
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
+@onready var crosshair: AnimatedSprite2D = $Crosshair
 
 #ultity variables
 var target : Node3D
@@ -169,6 +170,12 @@ func die():
 	
 func _ready() -> void:
 	if is_authority:
+		#set screen_center
+		screen_center = cam.get_viewport().size /2.0
+		get_tree().root.size_changed.connect(_on_viewport_size_changed)
+		#set crosshair
+		crosshair.visible = true
+		crosshair.position = screen_center
 		ui.visible = true
 		cam.current = true
 		health_bar = ui_health_bar
@@ -176,6 +183,7 @@ func _ready() -> void:
 		ui.visible = false
 		cam.current = false
 		health_bar = remote_health_bar
+		crosshair.visible = false
 	#set variables from resource
 	#add mesh
 	var mesh = plane_type.mesh.instantiate()
@@ -236,11 +244,8 @@ func _ready() -> void:
 	if pivotable_gun == false:
 		aim_cast.target_position = Vector3(0,0,-plane_type.aim_assist_range) #Make Crosshair
 	#pivotable settings?
-	
-	#set screen_center
-	screen_center = cam.get_viewport().size /2.0
-	get_tree().root.size_changed.connect(_on_viewport_size_changed)
-	
+
+
 func _on_viewport_size_changed():
 	screen_center = cam.get_viewport().size /2.0
 
@@ -255,7 +260,9 @@ func get_input(delta):
 	if turbo:
 		if t_cooldown <=0:
 			if Input.is_action_pressed("turbo"):
-					turbo_manager.visible =true
+					
+					for child in turbo_manager.get_children():
+						child.emitting = true
 					turbo_meter.value -= acceleration*delta
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
 					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
@@ -272,13 +279,14 @@ func get_input(delta):
 		t_cooldown = 100
 	if t_cooldown:
 		#reverse effects
-		turbo_manager.visible =true
+		for child in turbo_manager.get_children():
+						child.emitting = false
 		t_cooldown -=1
 		cur_speed = lerp(cur_speed, clamp(max_speed,0,cur_speed), acceleration *delta)
 		cam.fov = lerp(cam.fov, fov, acceleration*4 *delta)
 	if t_cooldown == 1:
 		#end effects
-		turbo_manager.visible =false
+		
 		cur_speed = clamp(max_speed,0,cur_speed)
 		cam.fov = fov
 	
@@ -297,7 +305,16 @@ func get_input(delta):
 	if pivotable_gun:
 		#FIX DIS
 		pass
-		
+	
+	if aim_cast.is_colliding():
+		var tar = aim_cast.get_collider(0)
+		if tar != null:
+			crosshair.position = cam.unproject_position(tar.global_position)
+			crosshair.frame = 1
+	else:
+		crosshair.position = cam.unproject_position(to_global(aim_cast.target_position))
+		crosshair.frame = 0
+	
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
 		
@@ -305,13 +322,14 @@ func get_input(delta):
 	if Input.is_action_just_pressed("SwitchCam"):
 		cam_index+=1
 		if cam_index >=2:
+			
 			cam_index = 0
 		cam.position = cam_positions[cam_index]
 		if cam_index == 1:
+			crosshair.visible = false
 			cam.rotation_degrees.y = 180
-
-
 		else:
+			crosshair.visible = true
 			cam.rotation_degrees.y = 0
 
 func shoot() -> void:
@@ -322,12 +340,11 @@ func shoot() -> void:
 			var bullet = bullet_scene.instantiate()
 			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 			
-			
 			if aim_cast.is_colliding():
 				#if barrel_amount == 0 :
 				var collider =aim_cast.get_collider(0)
-				if collider == CharacterBody3D:
-					target_pos = collider.position + collider.velocity * (plane_type.aim_assist_range/10)
+				#if collider == CharacterBody3D:
+				target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+ collider.velocity*(plane_type.aim_assist_range/10)
 				#else:
 					#to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					
@@ -350,7 +367,8 @@ func shoot() -> void:
 			projectile_manager.add_child(bullet)
 
 func _physics_process(delta: float) -> void:
-	#if you are driver
+	#NEED TO ADD REMOTE TURBO PARTICLES
+	#if you are pilot
 	if !is_authority: return
 	#input
 	get_input(delta)

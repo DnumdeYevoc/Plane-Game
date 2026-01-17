@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://b6713dtnbcff"]
+[gd_scene load_steps=11 format=3 uid="uid://b6713dtnbcff"]
 
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://Scripts/plane_controller.gd" id="1_f3srd"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://Scripts/3rd_person_cam.gd" id="2_dpar4"]
-[ext_resource type="Texture2D" uid="uid://j1y3uk0j0vnm" path="res://Under.png" id="3_7e1cs"]
-[ext_resource type="Texture2D" uid="uid://cal3o0rmq5vri" path="res://Health.png" id="4_b1bhf"]
+[ext_resource type="Texture2D" uid="uid://j1y3uk0j0vnm" path="res://Textures/Under.png" id="3_7e1cs"]
+[ext_resource type="Texture2D" uid="uid://cal3o0rmq5vri" path="res://Textures/Health.png" id="4_b1bhf"]
+[ext_resource type="Texture2D" uid="uid://bhxvlea3s2kmc" path="res://Textures/CrosshairPassive.png" id="5_um8y7"]
+[ext_resource type="Texture2D" uid="uid://ltjohev12kdl" path="res://Textures/CrosshairActive.png" id="6_qxauk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
 size = Vector3(1, 0.5, 2.07367)
@@ -13,6 +15,20 @@ resource_local_to_scene = true
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_7e1cs"]
 viewport_path = NodePath("Health/SubViewport")
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7e1cs"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_um8y7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_qxauk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Plane" type="CharacterBody3D" groups=["bullet_collision"]]
 collision_layer = 7
@@ -30,7 +46,6 @@ collision_mask = 2
 collide_with_areas = true
 
 [node name="TurboManager" type="Node3D" parent="."]
-visible = false
 
 [node name="CameraTarget" type="Node3D" parent="." node_paths=PackedStringArray("target")]
 top_level = true
@@ -99,3 +114,8 @@ stretch_margin_right = 6
 stretch_margin_bottom = 6
 texture_under = ExtResource("3_7e1cs")
 texture_progress = ExtResource("4_b1bhf")
+
+[node name="Crosshair" type="AnimatedSprite2D" parent="."]
+visible = false
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_7e1cs")

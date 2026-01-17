@@ -54,7 +54,7 @@ func end():
 		
 		exploding = true
 		#collision
-		collision.shape.radius *= 4 #explosion strength variable?
+		collision.shape.radius *= 2 #explosion strength variable?
 		 #make it check more area to get triggered to explode easier
 		#mesh
 		get_child(1).visible = false

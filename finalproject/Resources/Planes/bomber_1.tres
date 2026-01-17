@@ -38,5 +38,5 @@ pivotable_gun = false
 aim_assist_radius = 1
 aim_assist_range = 100
 barrel_amount = 2
-barrel_spread = 2.0
+barrel_spread = 2.25
 bullet_type = ExtResource("1_rb1fo")
