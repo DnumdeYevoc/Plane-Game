@@ -51,6 +51,7 @@ var roll_input := 0.0
 
 var cur_speed := 0.0
 
+var gravity := 1
 
 @onready var world: Node3D = get_node("/root/Game/World")
 
@@ -59,6 +60,7 @@ var cam_positions : Array = [Vector3(0,3,7),Vector3(0,1,-10)] #back, front, insi
 var cam_index = 0
 #children
 @onready var cam: Camera3D = $"CameraTarget/Camera3D"
+@onready var cam_target: Node3D = $"CameraTarget"
 @onready var turbo_meter: ProgressBar = $UI/TurboMeter
 @onready var speed_label: Label = $UI/Speed
 @onready var ui: VBoxContainer = $UI
@@ -73,14 +75,21 @@ var health_bar: TextureProgressBar #current health bar
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
 @onready var crosshair: AnimatedSprite2D = $Crosshair
+@onready var person_mesh = preload("res://Blender/Person.blend")
+@onready var parachute_scene = preload("res://Blender/Parachute.blend")
 
 #ultity variables
+var random := RandomNumberGenerator.new()
+var plane_mesh : Node3D
+var parachute_mesh : Node3D
+var parachute_on : = false
 var target : Node3D
-
 var screen_center : Vector2
 
 var t_cooldown := 0
 var h_cooldown := 0
+
+var jump_timer :=0
 #handle multiplayer
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
@@ -106,9 +115,15 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	#update rotation locally
 	if player_position.position - global_position != Vector3.ZERO:
 		transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
-	#works, but only passively, no accurate roll and unwanted spins happen sometimes
+
 	#update over network z rotation
 	rotation.z =player_position.rotation_z 
+	#remote parachute
+	if parachute_on:
+		if player_position.position.y- global_position.y >=-0.01:
+			parachute_on = false
+			remove_child(parachute_mesh)
+			
 	#update pos
 	global_position = player_position.position
 	
@@ -140,12 +155,17 @@ func client_handle_hit(hit: Hit) -> void:
 		
 func take_damage(damage) -> void:
 		cur_health -= damage
-		
-		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)#sending twice for some reason, Multiple bullets breaks it. Single is fine. Proportinal to amount of bullets squared
+		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
 		update_health()
+		
 func update_health() -> void:
 	#health bar update code here
 	health_bar.value = cur_health
+	if not is_authority:
+		if health_bar.value ==0  or health_bar.value == health_bar.max_value:
+			health_bar.visible = false
+		else:
+			health_bar.visible = true
 	if cur_health <=0:
 		player_state -= 1
 		print(player_state, ClientNetworkGlobals.id)
@@ -154,6 +174,19 @@ func update_health() -> void:
 				cur_health = player_health
 				health_bar.max_value = player_health
 				#initate immune timer?
+				#SWITCH MESH
+				remove_child(plane_mesh)
+				add_child(person_mesh.instantiate())
+				#switch collision
+				
+				#turn on parachute
+				parachute_mesh =parachute_scene.instantiate()
+				add_child(parachute_mesh)
+				parachute_on = true
+				rotation.z = 0
+				rotation.x = 0
+				#capture mouse
+				
 				print("human")
 			0:
 				cur_health ==0
@@ -169,9 +202,15 @@ func die():
 	queue_free()
 	
 func _ready() -> void:
+
 	if is_authority:
+		#random spawn position
+		global_position.y = world.map_resource.mountain_height*4
+		var angle = random.randi_range(0,360)
+		global_position.x = cos(deg_to_rad(angle)) * world.map_resource.size.x/4
+		global_position.z = sin(deg_to_rad(angle)) * world.map_resource.size.y/4
 		#set screen_center
-		screen_center = cam.get_viewport().size /2.0
+		screen_center = get_viewport().size /2.0
 		get_tree().root.size_changed.connect(_on_viewport_size_changed)
 		#set crosshair
 		crosshair.visible = true
@@ -179,6 +218,7 @@ func _ready() -> void:
 		ui.visible = true
 		cam.current = true
 		health_bar = ui_health_bar
+		
 	else:
 		ui.visible = false
 		cam.current = false
@@ -186,8 +226,8 @@ func _ready() -> void:
 		crosshair.visible = false
 	#set variables from resource
 	#add mesh
-	var mesh = plane_type.mesh.instantiate()
-	add_child(mesh)
+	plane_mesh = plane_type.mesh.instantiate()
+	add_child(plane_mesh)
 	#collision sape
 	collision_shape_3d.shape = plane_type.collision_shape
 	#set turbo particles
@@ -206,6 +246,7 @@ func _ready() -> void:
 	health_bar.max_value = cur_health
 	health_bar.value = cur_health
 	health_bar.visible = true
+	update_health()
 	
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -244,13 +285,19 @@ func _ready() -> void:
 	if pivotable_gun == false:
 		aim_cast.target_position = Vector3(0,0,-plane_type.aim_assist_range) #Make Crosshair
 	#pivotable settings?
-
-
+	
 func _on_viewport_size_changed():
-	screen_center = cam.get_viewport().size /2.0
+	screen_center = get_viewport().size /2.0
 
-func get_input(delta):
+func get_plane_input(delta):
 	cam.current = true
+	#check for collision with ground (crash)
+	if is_on_floor():
+		cur_health = 0
+		#crash()
+		Hit.create(owner_id,cur_health).send(NetworkHandler.server_peer)
+		update_health()
+		
 	#speed
 	if Input.is_action_pressed("speed_up"):
 		cur_speed = lerp(cur_speed, max_speed, acceleration *delta)
@@ -320,18 +367,20 @@ func get_input(delta):
 		
 	#handle multiple camera povs
 	if Input.is_action_just_pressed("SwitchCam"):
-		cam_index+=1
-		if cam_index >=2:
-			
-			cam_index = 0
-		cam.position = cam_positions[cam_index]
-		if cam_index == 1:
-			crosshair.visible = false
-			cam.rotation_degrees.y = 180
-		else:
-			crosshair.visible = true
-			cam.rotation_degrees.y = 0
+		switch_cam()
 
+func switch_cam()->void:
+	cam_index+=1
+	if cam_index >=2:
+		cam_index = 0
+	cam.position = cam_positions[cam_index]
+	if cam_index == 1:
+		crosshair.visible = false
+		cam.rotation_degrees.y = 180
+	else:
+		crosshair.visible = true
+		cam.rotation_degrees.y = 0
+	
 func shoot() -> void:
 	var target_pos : Vector3
 	if barrel_amount >0:
@@ -344,7 +393,7 @@ func shoot() -> void:
 				#if barrel_amount == 0 :
 				var collider =aim_cast.get_collider(0)
 				#if collider == CharacterBody3D:
-				target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+ collider.velocity*(plane_type.aim_assist_range/10)
+				target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+(collider.velocity/bullet_type.speed*plane_type.aim_assist_range)
 				#else:
 					#to_global(target_pos+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					
@@ -366,25 +415,80 @@ func shoot() -> void:
 			#homing was here but needs to be remade
 			projectile_manager.add_child(bullet)
 
-func _physics_process(delta: float) -> void:
-	#NEED TO ADD REMOTE TURBO PARTICLES
-	#if you are pilot
-	if !is_authority: return
-	#input
-	get_input(delta)
-	
-	#UI
-
-	speed_label.text = str(int(cur_speed/20))+ "km/h"
-	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
-	
-	#rotate
+func rotate_plane(delta)->Vector3:
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
 	transform.basis = transform.basis.rotated(transform.basis.x, pitch_input*pitch_speed*delta)
 	transform.basis = transform.basis.rotated(transform.basis.y, yaw_input*yaw_speed*delta)
 	transform.basis = transform.basis.orthonormalized()
 	
+	#move forward
+	var vel = -transform.basis.z*cur_speed*delta
+	return vel
+	
+func get_person_input(delta) ->Vector3:
+	var dir = Vector3.ZERO
+	cam.current = true
+	#turning parachute off
+	if is_on_floor() and parachute_on:
+		parachute_on = false
+		remove_child(parachute_mesh)
+			
+	#rotation:
+	#left right
+	yaw_input = lerp(yaw_input, Input.get_action_strength("yaw_left")-Input.get_action_strength("yaw_right"), 12.0*delta)
+	transform.basis = transform.basis.rotated(transform.basis.y, yaw_input*yaw_speed*delta)
+	transform.basis = transform.basis.orthonormalized()
+	#forward backward movement
+	pitch_input = lerp(pitch_input, Input.get_action_strength("pitch_up")-Input.get_action_strength("pitch_down"), 12.0*delta)
+	dir =-pitch_input* -transform.basis.z
+	
+	#ADD UP DOWN MOVEMENT AND SHOOTING
+	
+	#gravity
+	if not is_on_floor():
+		if parachute_on:
+			dir.y -= gravity
+		else:
+			dir.y -= gravity
+	
+	if Input.is_action_pressed("jump") and is_on_floor():
+		jump_timer = 20
+		
+	if jump_timer>0:
+		jump_timer -= 1
+		dir.y = 0.1*sqrt(jump_timer) #jump velocity?
+	else:
+		jump_timer =0
+	#handle multiple camera povs
+	if Input.is_action_just_pressed("SwitchCam"):
+		switch_cam()
+	
+	return dir
+
+func _physics_process(delta: float) -> void:
+	#NEED TO ADD REMOTE TURBO PARTICLES
+	#if you are pilot
+	if !is_authority: return
+	#input
+	if player_state ==2:
+		get_plane_input(delta)
+		#rotate
+		velocity = rotate_plane(delta)
+	elif player_state == 1:
+		var dir = get_person_input(delta)
+		velocity = dir*delta*1000
+	
+	move_and_slide()
+	
+	PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)
+	
+	#UI
+	speed_label.text = str(int(cur_speed/20))+ "km/h"
+	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
 	#border
+	border_check(delta)
+
+func border_check(delta)-> void:
 	#FIX THIS COME UP WITH CREATIVE SOLUTION
 	if global_position.x > world.size.x*0.75 or global_position.x < -world.size.x*0.75 or global_position.z > world.size.y*0.75 or global_position.z < -world.size.y*0.75:
 		world.sun.light_energy -= delta
@@ -393,8 +497,3 @@ func _physics_process(delta: float) -> void:
 	else:
 		world.sun.light_energy = 1
 		
-	#move forward
-	velocity = -transform.basis.z*cur_speed*delta
-	move_and_slide()
-	
-	PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)
