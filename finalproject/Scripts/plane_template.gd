@@ -26,7 +26,7 @@ extends Resource
 #turbo
 @export var turbo_particles : PackedScene
 @export var jet_amount : int #number of jet engines
-@export var jet_spread : int #how far from, the centre they are
+@export var jet_spread : float #how far from, the centre they are
 @export var jet_position : Vector2 #x,y from areil view
 @export var turbo: bool
 @export var turbo_strength : float #your turbo speed = top speed * turbo strength

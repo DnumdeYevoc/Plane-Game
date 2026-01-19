@@ -332,7 +332,7 @@ func _ready() -> void:
 	
 	if turbo:
 		turbo_meter.max_value = turbo_max
-		ui.size.x= turbo_max*100
+		ui.size.x= turbo_max*10
 		turbo_meter.value = 0.0
 		t_cooldown = 100
 	
@@ -366,7 +366,7 @@ func get_plane_input(delta):
 					
 					for child in turbo_manager.get_children():
 						child.emitting = true
-					turbo_meter.value -= acceleration*delta
+					turbo_meter.value -= acceleration*delta*10
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
 					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
 					
@@ -376,6 +376,7 @@ func get_plane_input(delta):
 			#reload meter
 			elif turbo_meter.value != turbo_meter.max_value:
 				turbo_meter.value += turbo_reload_speed*delta
+			
 	#turbo cooldown
 	if Input.is_action_just_released("turbo"):
 		
