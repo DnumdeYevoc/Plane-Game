@@ -18,6 +18,7 @@ var vel : Vector3
 
 var timer : int
 
+var target : Node3D
 var  shooter_id  : int
 @onready var collision: CollisionShape3D = $CollisionShape3D
 var exploding := false
@@ -33,14 +34,20 @@ func _ready() -> void:
 	
 	body_entered.connect(_on_area_3d_body_entered)
 	if resource.particles !=null:
-		add_child(resource.particles.instantiate())
+		var particles =resource.particles.instantiate()
+		particles.emitting = true
+		add_child(particles)
 
 func _process(delta: float) -> void:
+	if homing and target!= null:
+		grav = false
+		dir = global_position.direction_to(target.global_position)
 	if exploding == false: 
 		timer -=1
 		
 		vel = dir *speed *delta
 		if grav:
+			vel =Vector3.ZERO
 			vel.y -= 9.8*delta*2
 			
 		if timer <=0:
@@ -50,7 +57,6 @@ func _process(delta: float) -> void:
 func end():
 	#add explsoion animation/ particles
 	if explode:
-		print('explode')
 		
 		exploding = true
 		#collision

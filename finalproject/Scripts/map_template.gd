@@ -16,6 +16,7 @@ extends Resource
 #environment
 @export var water_color : Color
 @export var water_glow_strength : float
+@export var drown_damage:int
 
 @export var sun_strength : float
 @export var sun_color : Color

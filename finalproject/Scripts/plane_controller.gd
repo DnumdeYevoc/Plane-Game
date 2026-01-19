@@ -37,7 +37,8 @@ var turbo_max : float
 var turbo_reload_speed: float
 
 #shooting
-
+var reload_speed : int
+var amo : int
 var barrel_amount : int
 var barrel_spread : float
 
@@ -54,14 +55,14 @@ var cur_speed := 0.0
 var gravity := 0.1
 
 @onready var world: Node3D = get_node("/root/Game/World")
-
+@onready var player_spawner:Node = get_parent()
 #camera
 var cam_positions : Array = [Vector3(0,3,7),Vector3(0,1,-10)] #back, front, inside(to add if wanted)
 var cam_index = 0
 #children
 @onready var cam: Camera3D = $"CameraTarget/Camera3D"
 @onready var cam_target: Node3D = $"CameraTarget"
-@onready var turbo_meter: ProgressBar = $UI/TurboMeter
+@onready var turbo_meter: TextureProgressBar = $UI/TurboMeter
 @onready var speed_label: Label = $UI/Speed
 @onready var ui: VBoxContainer = $UI
 @onready var fps_label: Label = $UI/FPS
@@ -72,6 +73,8 @@ var cam_index = 0
 @onready var remote_health_bar: TextureProgressBar = $Health/SubViewport/RemoteHealthBar
 @onready var ui_health_bar: TextureProgressBar = $UI/UIHealthBar
 var health_bar: TextureProgressBar #current health bar
+@onready var reload_bar: TextureProgressBar = $ReloadBar
+
 @onready var turbo_manager: Node3D = $TurboManager
 #scenes
 @onready var bullet_scene = preload("res://Scenes/bullet.tscn")
@@ -95,6 +98,9 @@ var h_cooldown := 0
 
 var jump_timer :=0
 var drown_timer := 0
+
+var reloading : int = 0
+var cur_amo:int 
 #handle multiplayer
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
@@ -146,6 +152,14 @@ func shoot_remote(shot: Shoot)-> void:
 			#variables from packet
 			bullet.dir = shot.dir
 			bullet.speed = shot.plane_speed
+			bullet.target = null
+			for player in player_spawner.get_children():
+				if player.owner_id == shot.target_id:
+					bullet.target = player
+			
+			
+			
+			
 			#finish setting variables
 			bullet.resource = bullet_type
 			bullet.rotation = rotation
@@ -244,6 +258,7 @@ func _ready() -> void:
 		cam.current = true
 		health_bar = ui_health_bar
 		
+		
 	else:
 		ui.visible = false
 		cam.current = false
@@ -289,6 +304,18 @@ func _ready() -> void:
 	turbo_reload_speed = plane_type.turbo_reload_speed
 
 	aim_cast.shape.radius = plane_type.aim_assist_radius
+	aim_manager.rotation_degrees.x = plane_type.aim_angle
+	
+	reload_speed = plane_type.reload_speed
+	amo = plane_type.amo
+	cur_amo = amo
+	if is_authority:
+		#set reload bar
+		reload_bar.max_value = amo
+		reload_bar.size.x =16*amo
+		reload_bar.texture_progress.region.size =Vector2( 16*amo , 16)
+	else:
+		reload_bar.visible = false
 	barrel_amount = plane_type.barrel_amount
 	barrel_spread = plane_type.barrel_spread
 	bullet_type = plane_type.bullet_type
@@ -392,42 +419,51 @@ func switch_cam()->void:
 		cam.rotation_degrees.y = 0
 	
 func shoot() -> void:
+	
 	var target_pos : Vector3
+	
 	if barrel_amount >0:
 		for barrel in barrel_amount:
+			cur_amo -=1
+			reload_bar.value = cur_amo 
+			if cur_amo >=0 and reloading <=0:
 			#create bullet scene
-			var bullet = bullet_scene.instantiate()
-			bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-			
-			if aim_cast.is_colliding():
-			
-				
-				var collider =aim_cast.get_collider(0)
-				if collider.is_in_group("player") and collider.owner_id != owner_id:
-					if player_state == 2:
-						target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+((collider.velocity/bullet_type.speed)*plane_type.aim_assist_range)
-					elif player_state == 1:
-						target_pos = collider.global_position
-				
+				var bullet = bullet_scene.instantiate()
+				bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+				var target_id :int = -1
+				if aim_cast.is_colliding():
 					
-			else:
-				target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+					var collider =aim_cast.get_collider(0)
+					if collider.is_in_group("player") and collider.owner_id != owner_id:
+						if player_state == 2:
+							target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+((collider.velocity/bullet_type.speed)*plane_type.aim_assist_range)
+						elif player_state == 1:
+							target_pos = collider.global_position
+						if bullet_type.homing:
+							target_id = collider.owner_id
+							bullet.target = collider
+						
+				else:
+					target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+					
+					 
+				bullet.dir = bullet.position.direction_to(target_pos)
+				if  bullet_type.speed !=0:
+					bullet.speed = cur_speed/60
+				#send packet ASAP
+				if barrel == 0: #revise?>
+					Shoot.create(owner_id,target_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
 				
-				 
-			bullet.dir = bullet.position.direction_to(target_pos)
-			if  bullet_type.speed !=0:
-				bullet.speed = cur_speed/60
-			#send packet ASAP
-			if barrel == 0: #revise?>
-				Shoot.create(owner_id, bullet.speed, bullet.dir).send(NetworkHandler.server_peer)
-			
-			#finish setting variables
-			bullet.resource = bullet_type
-			bullet.rotation = rotation
-			bullet.shooter_id = owner_id
-			
-			#homing was here but needs to be remade
-			projectile_manager.add_child(bullet)
+				#finish setting variables
+				bullet.resource = bullet_type
+				bullet.rotation = rotation
+				bullet.shooter_id = owner_id
+				
+				#homing was here but needs to be remade
+				projectile_manager.add_child(bullet)
+			else: #no amo, start reload
+				if reloading ==0:
+					reloading = reload_speed*60
 
 func rotate_plane(delta)->Vector3:
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
@@ -486,17 +522,28 @@ func get_person_input(delta) ->Vector3:
 	return dir
 func similar_inputs()->void:
 	
+	#reload
 	
-	
+	if reloading>0:
+		reloading -=1
+		
+		reload_bar.value =(((reload_speed*60.0 -reloading)/(reload_speed*60.0)) * (amo))-0.6
+		
+	if reloading == 1:
+		cur_amo = amo
+		reload_bar.value =cur_amo
 	#crosshair
-	if aim_cast.is_colliding() :
+	if aim_cast.is_colliding():
 		var tar = aim_cast.get_collider(0)
 		if tar != null and tar.is_in_group("player") and tar.owner_id != owner_id:
 			crosshair.position = cam.unproject_position(tar.global_position)
 			crosshair.frame = 1
 	else:
-		crosshair.position = cam.unproject_position(aim_manager.to_global(aim_cast.target_position))
-		crosshair.frame = 0
+		var mouse_pos = get_viewport().get_mouse_position()
+		# Acheck to fix error
+		if get_viewport().get_visible_rect().has_point(mouse_pos):
+			crosshair.position = cam.unproject_position(aim_manager.to_global(aim_cast.target_position))
+			crosshair.frame = 0
 	#shooting
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
@@ -506,7 +553,7 @@ func similar_inputs()->void:
 		cur_speed*=0.9 +0.01 * global_position.y
 		drown_timer +=1
 		if drown_timer == 100:
-			take_damage(10)
+			take_damage(world.map_resource.drown_damage)
 			drown_timer =0
 	else:
 		drown_timer = 0

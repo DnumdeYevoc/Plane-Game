@@ -36,7 +36,10 @@ extends Resource
 #shooting
 @export var aim_assist_radius : int
 @export var aim_assist_range : int
+@export var aim_angle : int
 
+@export var reload_speed :int
+@export var amo :int
 @export_range(0,10) var barrel_amount : int
 @export var barrel_spread : float
 @export var bullet_type : Resource

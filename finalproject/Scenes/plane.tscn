@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://b6713dtnbcff"]
+[gd_scene load_steps=14 format=3 uid="uid://b6713dtnbcff"]
 
 [ext_resource type="Script" uid="uid://ce5d0x4sl3t4g" path="res://Scripts/plane_controller.gd" id="1_f3srd"]
 [ext_resource type="Script" uid="uid://6dqxvuqamtge" path="res://Scripts/3rd_person_cam.gd" id="2_dpar4"]
 [ext_resource type="Texture2D" uid="uid://j1y3uk0j0vnm" path="res://Textures/Under.png" id="3_7e1cs"]
 [ext_resource type="Texture2D" uid="uid://cal3o0rmq5vri" path="res://Textures/Health.png" id="4_b1bhf"]
+[ext_resource type="Texture2D" uid="uid://bymrnpao4egp3" path="res://Textures/Turbo.png" id="5_33mim"]
 [ext_resource type="Texture2D" uid="uid://bhxvlea3s2kmc" path="res://Textures/CrosshairPassive.png" id="5_um8y7"]
+[ext_resource type="Texture2D" uid="uid://dnkmbdiwatyg2" path="res://Textures/Amo.png" id="6_a1wmr"]
 [ext_resource type="Texture2D" uid="uid://ltjohev12kdl" path="res://Textures/CrosshairActive.png" id="6_qxauk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uw3ql"]
@@ -29,6 +31,11 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jjfu8"]
+resource_local_to_scene = true
+atlas = ExtResource("6_a1wmr")
+region = Rect2(0, 0, 64, 16)
 
 [node name="Plane" type="CharacterBody3D" groups=["bullet_collision", "player"]]
 collision_layer = 6
@@ -82,10 +89,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 value = 30.0
 nine_patch_stretch = true
-stretch_margin_left = 6
-stretch_margin_top = 6
-stretch_margin_right = 6
-stretch_margin_bottom = 6
+stretch_margin_left = 8
+stretch_margin_top = 8
+stretch_margin_right = 8
+stretch_margin_bottom = 8
 texture_under = ExtResource("3_7e1cs")
 texture_progress = ExtResource("4_b1bhf")
 
@@ -98,8 +105,17 @@ offset_bottom = 101.0
 [node name="FPS" type="Label" parent="UI"]
 layout_mode = 2
 
-[node name="TurboMeter" type="ProgressBar" parent="UI"]
+[node name="TurboMeter" type="TextureProgressBar" parent="UI"]
+texture_filter = 1
 layout_mode = 2
+value = 30.0
+nine_patch_stretch = true
+stretch_margin_left = 8
+stretch_margin_top = 8
+stretch_margin_right = 8
+stretch_margin_bottom = 8
+texture_under = ExtResource("3_7e1cs")
+texture_progress = ExtResource("5_33mim")
 
 [node name="Speed" type="Label" parent="UI"]
 layout_mode = 2
@@ -110,10 +126,10 @@ layout_mode = 2
 size_flags_vertical = 3
 value = 30.0
 nine_patch_stretch = true
-stretch_margin_left = 6
-stretch_margin_top = 6
-stretch_margin_right = 6
-stretch_margin_bottom = 6
+stretch_margin_left = 8
+stretch_margin_top = 8
+stretch_margin_right = 8
+stretch_margin_bottom = 8
 texture_under = ExtResource("3_7e1cs")
 texture_progress = ExtResource("4_b1bhf")
 
@@ -121,3 +137,19 @@ texture_progress = ExtResource("4_b1bhf")
 visible = false
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_7e1cs")
+
+[node name="ReloadBar" type="TextureProgressBar" parent="."]
+texture_filter = 1
+texture_repeat = 2
+offset_left = 20.0
+offset_top = 118.0
+offset_right = 84.0
+offset_bottom = 134.0
+value = 100.0
+nine_patch_stretch = true
+stretch_margin_left = 8
+stretch_margin_top = 8
+stretch_margin_right = 8
+stretch_margin_bottom = 8
+texture_under = ExtResource("3_7e1cs")
+texture_progress = SubResource("AtlasTexture_jjfu8")

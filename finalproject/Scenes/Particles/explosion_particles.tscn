@@ -11,9 +11,10 @@ curve = SubResource("Curve_x0cbl")
 lifetime_randomness = 1.0
 particle_flag_align_y = true
 spread = 180.0
-initial_velocity_min = 12.0
-initial_velocity_max = 14.0
-scale_max = 3.0
+initial_velocity_min = 14.0
+initial_velocity_max = 15.0
+scale_min = 2.0
+scale_max = 4.0
 scale_curve = SubResource("CurveTexture_2wn7i")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e4lcq"]
@@ -50,13 +51,14 @@ curve = SubResource("Curve_sdpa3")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ai3ko"]
 emission_shape = 1
-emission_sphere_radius = 2.0
+emission_sphere_radius = 4.0
 direction = Vector3(0, -1, 0)
 spread = 180.0
 initial_velocity_min = 0.5
 initial_velocity_max = 3.0
 gravity = Vector3(0, 6, 0)
-scale_max = 6.0
+scale_min = 3.0
+scale_max = 8.0
 scale_curve = SubResource("CurveTexture_fsokj")
 color = Color(0.80619, 0.594588, 1.92523e-07, 1)
 color_ramp = SubResource("GradientTexture1D_m8xda")
@@ -95,12 +97,10 @@ curve = SubResource("Curve_mlacg")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_84oi3"]
 emission_shape = 1
-emission_sphere_radius = 2.0
-direction = Vector3(0, -1, 0)
+emission_sphere_radius = 4.0
+direction = Vector3(0, 0, 0)
 spread = 20.0
 flatness = 0.696
-initial_velocity_min = 1.0
-initial_velocity_max = 2.0
 gravity = Vector3(0, 2, 0)
 scale_min = 2.0
 scale_max = 6.0
@@ -131,7 +131,7 @@ process_material = SubResource("ParticleProcessMaterial_ai3ko")
 draw_pass_1 = SubResource("SphereMesh_ou1n4")
 
 [node name="Smoke" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83275, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.652775, 0)
 emitting = false
 amount = 24
 lifetime = 4.0

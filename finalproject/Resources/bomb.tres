@@ -6,17 +6,17 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
 resource_local_to_scene = true
-radius = 1.5
+radius = 4.0
 
 [resource]
 resource_local_to_scene = true
 script = ExtResource("2_g14xu")
-speed = 0
+speed = 10
 gravity = true
 mesh = ExtResource("1_xkj18")
-damage = 50
+damage = 25
 explode = true
 explosion_particles = ExtResource("1_g14xu")
-homing = false
+homing = true
 lifetime = 5
 collision_shape = SubResource("SphereShape3D_670gq")
