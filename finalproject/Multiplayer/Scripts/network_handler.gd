@@ -83,7 +83,7 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 		connection = null
 		return
 	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed)
-	get_node("/root/Game/Network_UI").visible = false#ADD SPECTATING MODE HERE?
+	#ADD SPECTATING MODE HERE?
 	print("server started")
 	is_server = true
 
@@ -124,7 +124,7 @@ func disconnect_client() -> void: #When player hits disconnect button
 func connected_to_server(peer: ENetPacketPeer) -> void:
 	print("Successfully connected to server")
 	on_connected_to_server.emit()
-	IDAssignment.create(-1, plane_type, [],[]).send(server_peer)
+	IDAssignment.create(-1, plane_type,2, [],[],[]).send(server_peer)
 	
 func disconnected_from_server() -> void:
 	print("successfully disconnected from server")

@@ -1,19 +1,29 @@
 extends Control
-@onready var start_server: Button = $VBoxContainer/StartServer
-@onready var join_server: Button = $VBoxContainer/JoinServer
+@onready var start_server: Button = $ServerButtons/StartServer
+@onready var join_server: Button = $ClientButtons/JoinServer
 
-@onready var seed_button: Button = $"VBoxContainer/Randomize Seed"
+@onready var client_buttons: VBoxContainer = $ClientButtons
+@onready var server_buttons: VBoxContainer = $ServerButtons
+
+@onready var seed_button: Button = $"ServerButtons/Randomize Seed"
 @onready var world: Node3D = $"../World"
-@onready var map_list: MenuButton = $VBoxContainer/MapList
-@onready var plane_selector: MenuButton = $VBoxContainer/PlaneSelector
-@onready var plane_display: SubViewport = $VBoxContainer/SubViewportContainer/PlaneDisplay
-var plane_type : int = -1
+@onready var player_spawner : Node = $"../player_spawner"
+@onready var map_list: MenuButton = $ServerButtons/MapList
+@onready var plane_selector: MenuButton = $ClientButtons/PlaneSelector
+@onready var plane_display: SubViewport = $ClientButtons/SubViewportContainer/PlaneDisplay
 
+@onready var spectate: Button = $ClientButtons/Spectate
+@onready var respawn: Button = $ClientButtons/Respawn
+
+var plane_type : int = -1
+var spectate_id : int = 0
 func _ready() -> void:
 	plane_type = 0
 	seed_button.text = "Randomize Seed"
 	map_list.get_popup().id_pressed.connect(on_world_popup_pressed)
 	plane_selector.get_popup().id_pressed.connect(on_plane_popup_pressed)
+	ClientNetworkGlobals.on_death.connect(on_death)
+	ClientNetworkGlobals.respawn.connect(remote_respawn)
 	set_plane_popup()
 	
 func set_popup():
@@ -38,6 +48,8 @@ func on_plane_popup_pressed(id):
 
 func _on_start_server_pressed() -> void:
 	NetworkHandler.start_server()
+	visible = false
+	
 
 func _on_join_server_client_pressed() -> void:
 	NetworkHandler.plane_type = plane_type
@@ -50,3 +62,29 @@ func _on_randomize_seed_pressed() -> void:
 	seed_button.text = "World seed: " + str(seed)
 	#change seed
 	world.change_seed(seed)
+
+func on_death()->void:
+	visible = true
+	server_buttons.visible = false
+	client_buttons.visible = true
+	join_server.visible = false
+	spectate.visible = true
+	respawn.visible = true
+
+func _on_spectate_pressed() -> void:
+	spectate.text = "Spectate Next"
+	if spectate_id <= player_spawner.get_child_count()-1:
+		var player = player_spawner.get_child(spectate_id)
+		player.cam.current = true
+		spectate_id += 1
+	else:
+		spectate_id = 0
+
+
+func _on_respawn_pressed() -> void:
+	player_spawner.spawn_player(ClientNetworkGlobals.id, plane_type)
+	Respawn.create(ClientNetworkGlobals.id, plane_type).send(NetworkHandler.server_peer)
+	visible  = false
+
+func remote_respawn(id,type)->void:
+	player_spawner.spawn_player(id, type)

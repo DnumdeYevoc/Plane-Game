@@ -6,51 +6,58 @@
 
 [sub_resource type="World3D" id="World3D_v1uh1"]
 
-[node name="Network_UI" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
+[node name="Network_UI" type="VBoxContainer"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -233.0
+offset_right = 675.0
+offset_bottom = 233.0
 grow_vertical = 2
+size_flags_vertical = 3
 script = ExtResource("1_utfyr")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -576.0
-offset_top = -124.0
-offset_right = -176.0
-offset_bottom = 251.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="ServerButtons" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
 
-[node name="StartServer" type="Button" parent="VBoxContainer"]
+[node name="StartServer" type="Button" parent="ServerButtons"]
 layout_mode = 2
 text = "Start Server"
 
-[node name="Randomize Seed" type="Button" parent="VBoxContainer"]
+[node name="Randomize Seed" type="Button" parent="ServerButtons"]
 layout_mode = 2
 tooltip_text = "Click to Randomize"
 text = "Seed:"
 
-[node name="MapList" type="MenuButton" parent="VBoxContainer"]
+[node name="MapList" type="MenuButton" parent="ServerButtons"]
 layout_mode = 2
 text = "Choose Map"
 
-[node name="JoinServer" type="Button" parent="VBoxContainer"]
+[node name="ClientButtons" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Spectate" type="Button" parent="ClientButtons"]
+visible = false
+layout_mode = 2
+text = "Spectate"
+
+[node name="Respawn" type="Button" parent="ClientButtons"]
+visible = false
+layout_mode = 2
+text = "Respawn"
+
+[node name="JoinServer" type="Button" parent="ClientButtons"]
 layout_mode = 2
 text = "Join Server
 "
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="ClientButtons"]
 layout_mode = 2
 
-[node name="PlaneDisplay" type="SubViewport" parent="VBoxContainer/SubViewportContainer"]
+[node name="PlaneDisplay" type="SubViewport" parent="ClientButtons/SubViewportContainer"]
 own_world_3d = true
 world_3d = SubResource("World3D_v1uh1")
 transparent_bg = true
@@ -59,29 +66,31 @@ size = Vector2i(625, 291)
 render_target_update_mode = 4
 script = ExtResource("2_v1uh1")
 
-[node name="Camera3D" type="Camera3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+[node name="Camera3D" type="Camera3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771308, 3.97872, 2.74746, -4.42177)
 current = true
 fov = 40.0
 
-[node name="OmniLight3D" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+[node name="OmniLight3D" type="OmniLight3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.11382, 2.734, -1.73)
 light_color = Color(0.690416, 0.793427, 1, 1)
 light_energy = 6.0
 omni_range = 60.0
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="VBoxContainer/SubViewportContainer/PlaneDisplay"]
+[node name="OmniLight3D2" type="OmniLight3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.80193, 2.888, 2.626)
 light_color = Color(1, 0.840027, 0.813055, 1)
 light_energy = 6.0
 omni_range = 60.0
 
-[node name="Plane_1" parent="VBoxContainer/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
+[node name="Plane_1" parent="ClientButtons/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
 
-[node name="PlaneSelector" type="MenuButton" parent="VBoxContainer"]
+[node name="PlaneSelector" type="MenuButton" parent="ClientButtons"]
 layout_mode = 2
 text = "Choose Plane"
 
-[connection signal="pressed" from="VBoxContainer/StartServer" to="." method="_on_start_server_pressed"]
-[connection signal="pressed" from="VBoxContainer/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
-[connection signal="pressed" from="VBoxContainer/JoinServer" to="." method="_on_join_server_client_pressed"]
+[connection signal="pressed" from="ServerButtons/StartServer" to="." method="_on_start_server_pressed"]
+[connection signal="pressed" from="ServerButtons/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
+[connection signal="pressed" from="ClientButtons/Spectate" to="." method="_on_spectate_pressed"]
+[connection signal="pressed" from="ClientButtons/Respawn" to="." method="_on_respawn_pressed"]
+[connection signal="pressed" from="ClientButtons/JoinServer" to="." method="_on_join_server_client_pressed"]

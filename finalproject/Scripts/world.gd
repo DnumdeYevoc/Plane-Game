@@ -35,8 +35,6 @@ var map_resource_list : Array = [
 ]
 
 func _ready() -> void:
-
-	
 	network_ui.set_popup()
 	environment = world_environment.get_environment()
 	set_resource_var()

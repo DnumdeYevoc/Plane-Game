@@ -7,6 +7,8 @@ enum PACKET_TYPE {
 	PLANE_TYPE = 3,
 	SHOOT = 4,
 	HIT = 5,
+	RESPAWN = 6,
+	UPDATESTATE =7,
 }
 
 var packet_type: PACKET_TYPE

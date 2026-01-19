@@ -34,12 +34,9 @@ extends Resource
 @export var turbo_reload_speed: float
 
 #shooting
-@export var pivotable_gun : bool #change to make whether or not you're able to shoot behind you
-
-#hitscan
 @export var aim_assist_radius : int
 @export var aim_assist_range : int
-#projectile
+
 @export_range(0,10) var barrel_amount : int
 @export var barrel_spread : float
 @export var bullet_type : Resource

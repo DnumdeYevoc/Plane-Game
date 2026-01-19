@@ -34,7 +34,6 @@ turbo = true
 turbo_strength = 3.0
 turbo_max = 2.5
 turbo_reload_speed = 1.0
-pivotable_gun = false
 aim_assist_radius = 1
 aim_assist_range = 100
 barrel_amount = 2

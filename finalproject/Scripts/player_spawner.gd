@@ -12,11 +12,12 @@ func _ready() -> void:
 	#for player who is already connected
 	ClientNetworkGlobals.handle_remote_id_assignment.connect(spawn_player)
 
-func spawn_player(id: int, type :int = 1) -> void:
+func spawn_player(id: int, type :int = 1, state:int = 2) -> void:
 	
 	#need to make specific spawning locations
 	var player = PLANE.instantiate()
 	player.owner_id = id
+	player.player_state = state
 	player.plane_type = ClientNetworkGlobals.plane_resource_list[type]
 	#player.name = str(id) #optional
 	
