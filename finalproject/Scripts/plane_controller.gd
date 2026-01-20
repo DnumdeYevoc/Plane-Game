@@ -100,7 +100,10 @@ var jump_timer :=0
 var drown_timer := 0
 
 var reloading : int = 0
-var cur_amo:int 
+var cur_amo:int =1
+
+var cur_wall : StaticBody3D
+var disable_timer : int
 #handle multiplayer
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
@@ -153,12 +156,10 @@ func shoot_remote(shot: Shoot)-> void:
 			bullet.dir = shot.dir
 			bullet.speed = shot.plane_speed
 			bullet.target = null
-			for player in player_spawner.get_children():
-				if player.owner_id == shot.target_id:
-					bullet.target = player
-			
-			
-			
+			if shot.target_id != -1:
+				for player in player_spawner.get_children():
+					if player.owner_id == shot.target_id:
+						bullet.target = player
 			
 			#finish setting variables
 			bullet.resource = bullet_type
@@ -176,6 +177,7 @@ func client_handle_hit(hit: Hit) -> void:
 		
 func take_damage(damage) -> void:
 		cur_health -= damage
+		print(cur_health)
 		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
 		update_health()
 		
@@ -215,14 +217,24 @@ func update_state()-> void:
 				rotation.x = 0
 				#turn off turbo
 				turbo_manager.queue_free()
-				#set aim_cast pivot point
+				#set aim_cast a
 				aim_cast.position = Vector3(0,0,0)
-				aim_manager.position = Vector3(0,0,-18)
+				aim_manager.position = Vector3(0,0,0)
+				aim_cast.target_position = Vector3(0,0, -200)
 				#set gun paramters
+				amo = 10
+				cur_amo = 10
+				reload_speed = 2
+				if is_authority:
+					reload_bar.max_value = amo
+					reload_bar.size.x =16*amo
+					reload_bar.texture_progress.region.size =Vector2( 16*amo , 16)
 				barrel_amount = 1
 				barrel_spread =1
 				bullet_type = generic_bullet_type#change to basooka?
-				
+				#Update UI
+				speed_label.queue_free()
+				turbo_meter.queue_free()
 				#explode stays the same
 				print("human")
 			0:
@@ -240,8 +252,10 @@ func die():
 	queue_free()
 	
 func _ready() -> void:
-
+	floor_max_angle = deg_to_rad(60)
 	if is_authority:
+		#make ray not collider with self
+		aim_cast.add_exception(self)
 		#random spawn position
 		global_position.y = world.map_resource.mountain_height*4
 		var angle = random.randi_range(0,360)
@@ -283,11 +297,9 @@ func _ready() -> void:
 	plane_health = plane_type.plane_health
 	player_health = plane_type.player_health
 	cur_health = plane_health
-	health_bar.max_value = cur_health
-	health_bar.value = cur_health
 	health_bar.visible = true
-	update_health()
-	update_state()
+	health_bar.max_value =  plane_health
+	health_bar.value = plane_health
 	
 	max_speed = plane_type.max_speed
 	acceleration = plane_type.acceleration
@@ -309,16 +321,21 @@ func _ready() -> void:
 	reload_speed = plane_type.reload_speed
 	amo = plane_type.amo
 	cur_amo = amo
-	if is_authority:
+	if is_authority: #udpate UI values
 		#set reload bar
 		reload_bar.max_value = amo
 		reload_bar.size.x =16*amo
 		reload_bar.texture_progress.region.size =Vector2( 16*amo , 16)
+
+		
 	else:
 		reload_bar.visible = false
 	barrel_amount = plane_type.barrel_amount
 	barrel_spread = plane_type.barrel_spread
 	bullet_type = plane_type.bullet_type
+	
+	update_health()
+	update_state()
 	
 	#set other values
 	cam.fov = fov
@@ -326,7 +343,7 @@ func _ready() -> void:
 	
 	max_speed *= 20
 	#starting speed
-	cur_speed = 900
+	cur_speed = (plane_type.min_speed+1)*20
 	
 	projectile_manager = get_node("/root/Game/ProjectileManager") 
 	
@@ -345,7 +362,7 @@ func _on_viewport_size_changed():
 	screen_center = get_viewport().get_visible_rect().size/2
 
 func get_plane_input(delta):
-	
+	speed_label.text = str(int(cur_speed/20))+ "km/h"
 	cam.current = true
 	#check for collision with ground (crash)
 	if is_on_floor():
@@ -431,7 +448,7 @@ func shoot() -> void:
 			#create bullet scene
 				var bullet = bullet_scene.instantiate()
 				bullet.position = to_global(to_local(position) + Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
-				var target_id :int = -1
+				var target_id :int 
 				if aim_cast.is_colliding():
 					
 					var collider =aim_cast.get_collider(0)
@@ -445,6 +462,7 @@ func shoot() -> void:
 							bullet.target = collider
 						
 				else:
+					target_id = -1
 					target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
 					
 					 
@@ -462,9 +480,7 @@ func shoot() -> void:
 				
 				#homing was here but needs to be remade
 				projectile_manager.add_child(bullet)
-			else: #no amo, start reload
-				if reloading ==0:
-					reloading = reload_speed*60
+			
 
 func rotate_plane(delta)->Vector3:
 	transform.basis = transform.basis.rotated(transform.basis.z, roll_input*roll_speed*delta)
@@ -479,6 +495,7 @@ func rotate_plane(delta)->Vector3:
 func get_person_input(delta) ->Vector3:
 	if Input.is_action_pressed("shift"):
 		cur_speed = lerp(cur_speed, 1400.0, 1.0)#sprinting speed
+		fov = lerp(fov, 120.0, 1.0)
 	else:
 		cur_speed= 800.0#walking speed
 	cam.current = true
@@ -524,11 +541,13 @@ func get_person_input(delta) ->Vector3:
 func similar_inputs()->void:
 	
 	#reload
-	
+	#auto reload
+	if reloading ==0 and cur_amo ==0:
+			reloading = reload_speed*60
 	if reloading>0:
 		reloading -=1
 		
-		reload_bar.value =(((reload_speed*60.0 -reloading)/(reload_speed*60.0)) * (amo))-0.6
+		reload_bar.value =(((reload_speed*60.0 -reloading)/(reload_speed*60.0)) * (amo))
 		
 	if reloading == 1:
 		cur_amo = amo
@@ -548,7 +567,6 @@ func similar_inputs()->void:
 	#shooting
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
-
 	#handle water/ droawning
 	if global_position.y <= 7:
 		cur_speed*=0.9 +0.01 * global_position.y
@@ -574,8 +592,8 @@ func _physics_process(delta: float) -> void:
 		
 		velocity = rotate_plane(delta)
 
-		if cur_speed<800:
-			velocity.y -= gravity*delta*5000
+		if cur_speed<plane_type.min_speed*20:
+			velocity.y -= gravity*delta*(plane_type.min_speed*20-cur_speed)*50
 	elif player_state == 1:
 		var dir = get_person_input(delta)
 		velocity = dir*delta*cur_speed
@@ -586,17 +604,23 @@ func _physics_process(delta: float) -> void:
 	elif player_state == 1:
 		PlayerPosition.create(owner_id, global_position, rotation.y).send(NetworkHandler.server_peer)
 	#UI
-	speed_label.text = str(int(cur_speed/20))+ "km/h"
+	
 	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
 	#border
 	border_check(delta)
 
 func border_check(delta)-> void:
-	#FIX THIS COME UP WITH CREATIVE SOLUTION
-	if global_position.x > world.size.x*0.75 or global_position.x < -world.size.x*0.75 or global_position.z > world.size.y*0.75 or global_position.z < -world.size.y*0.75:
-		world.sun.light_energy -= delta
+	disable_timer -=1
+	if aim_cast.is_colliding():
+		var wall = aim_cast.get_collider(0)
+		if wall.is_in_group("border"):
+			
+			wall.visible = true
+			disable_timer =1
+			cur_wall = wall
+			
+			
+	if disable_timer <=0 and cur_wall != null:
 		
-		fov = 80
-	else:
-		world.sun.light_energy = 1
-		
+		cur_wall.visible = false
+		cur_wall = null

@@ -87,7 +87,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-value = 30.0
 nine_patch_stretch = true
 stretch_margin_left = 8
 stretch_margin_top = 8
@@ -124,7 +123,6 @@ layout_mode = 2
 [node name="UIHealthBar" type="TextureProgressBar" parent="UI"]
 texture_filter = 1
 layout_mode = 2
-size_flags_vertical = 3
 value = 30.0
 nine_patch_stretch = true
 stretch_margin_left = 8

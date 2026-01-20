@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://mbpmm2hagsc7"]
+[gd_scene load_steps=19 format=3 uid="uid://mbpmm2hagsc7"]
 
 [ext_resource type="Script" uid="uid://dbpun3275s1yu" path="res://Scripts/world.gd" id="1_go701"]
 [ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/Maps/0_beach.tres" id="2_5a7ea"]
+[ext_resource type="Material" uid="uid://nh1dwp0d0ram" path="res://Textures/border_standard_material_3d.tres" id="3_5a7ea"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go701"]
 sky_top_color = Color(0.158828, 0.416281, 0.88099, 1)
@@ -31,6 +32,34 @@ emission = Color(1, 1, 1, 1)
 material = SubResource("StandardMaterial3D_go701")
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_fj7yv"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_5a7ea"]
+resource_local_to_scene = true
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_go701"]
+plane = Plane(0, 0, 1, 0)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8j60k"]
+material = ExtResource("3_5a7ea")
+size = Vector2(1500, 500)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_8j60k"]
+plane = Plane(0, 0, -1, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_fo5ed"]
+plane = Plane(1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_5ukr8"]
+plane = Plane(-1, 0, 0, 0)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_o06y3"]
+plane = Plane(0, -1, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fo5ed"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5ukr8"]
+material = SubResource("StandardMaterial3D_fo5ed")
+size = Vector2(1500, 1500)
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_go701")
@@ -98,3 +127,78 @@ collision_layer = 5
 
 [node name="Collision" type="CollisionShape3D" parent="CollsionChunkManager"]
 shape = SubResource("HeightMapShape3D_fj7yv")
+
+[node name="Border" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="Floor" type="CollisionShape3D" parent="Border"]
+shape = SubResource("WorldBoundaryShape3D_5a7ea")
+
+[node name="Border2" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="-z" type="CollisionShape3D" parent="Border2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -750)
+shape = SubResource("WorldBoundaryShape3D_go701")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Border2/-z"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 250, 0)
+mesh = SubResource("PlaneMesh_8j60k")
+skeleton = NodePath("")
+surface_material_override/0 = ExtResource("3_5a7ea")
+
+[node name="Border3" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="z" type="CollisionShape3D" parent="Border3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 750)
+shape = SubResource("WorldBoundaryShape3D_8j60k")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Border3/z"]
+transform = Transform3D(1, 0, 0, 0, 1.19249e-08, 1, 0, -1, 1.19249e-08, 0, 250, 0)
+mesh = SubResource("PlaneMesh_8j60k")
+skeleton = NodePath("")
+surface_material_override/0 = ExtResource("3_5a7ea")
+
+[node name="Border4" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="-x" type="CollisionShape3D" parent="Border4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -750, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_fo5ed")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Border4/-x"]
+transform = Transform3D(1.19249e-08, 1, 0, 4.37114e-08, -5.21253e-16, -1, -1, 1.19249e-08, -4.37114e-08, 0, 250, 0)
+mesh = SubResource("PlaneMesh_8j60k")
+skeleton = NodePath("")
+
+[node name="Border5" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="x" type="CollisionShape3D" parent="Border5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 750, 0, 0)
+shape = SubResource("WorldBoundaryShape3D_5ukr8")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Border5/x"]
+transform = Transform3D(-4.37114e-08, -1, 0, -4.37114e-08, 1.91069e-15, -1, 1, -4.37114e-08, -4.37114e-08, 0, 250, 0)
+mesh = SubResource("PlaneMesh_8j60k")
+skeleton = NodePath("")
+
+[node name="Border6" type="StaticBody3D" parent="." groups=["border"]]
+visible = false
+collision_layer = 3
+
+[node name="roof" type="CollisionShape3D" parent="Border6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
+shape = SubResource("WorldBoundaryShape3D_o06y3")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Border6/roof"]
+transform = Transform3D(-1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("PlaneMesh_5ukr8")
+skeleton = NodePath("")
+surface_material_override/0 = ExtResource("3_5a7ea")

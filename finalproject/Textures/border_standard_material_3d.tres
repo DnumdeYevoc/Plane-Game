@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://nh1dwp0d0ram"]
+
+[ext_resource type="Texture2D" uid="uid://1qtnuxg3u8f5" path="res://Textures/Border.png" id="1_i57vh"]
+
+[resource]
+transparency = 1
+albedo_texture = ExtResource("1_i57vh")
+uv1_scale = Vector3(0.1, 0.1, 0.1)
+uv1_triplanar = true

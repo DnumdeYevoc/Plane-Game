@@ -11,6 +11,8 @@ const collision_chunk_scene = preload("res://Scenes/collision_chunk.tscn")
 @onready var water:  = $Water
 @onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var sun: DirectionalLight3D = $Sun
+@onready var border: StaticBody3D = $Border
+
 
 var noise : Noise
 var size : Vector2i
@@ -45,7 +47,8 @@ func _ready() -> void:
 	generate_mesh()
 	
 	
-	
+
+		
 func set_map_type(id: int)-> void:
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed
@@ -87,6 +90,7 @@ func set_resource_var() -> void:
 		environment.volumetric_fog_albedo = fog_color
 	else:
 		environment.volumetric_fog_enabled = false
+
 	
 func generate_mesh():
 	#texture mesh

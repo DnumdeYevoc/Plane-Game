@@ -11,6 +11,7 @@ extends Resource
 @export var collision_shape : Shape3D
 #handling
 @export var max_speed : float #in km/h
+@export var min_speed : float #in km/h
 @export var acceleration : float
 @export var deceleration : float
 
