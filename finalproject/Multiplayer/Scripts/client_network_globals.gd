@@ -11,7 +11,8 @@ signal respawn()
 
 var plane_resource_list : Array = [
 	preload("res://Resources/Planes/cardinal_0.tres"),
-	preload("res://Resources/Planes/bomber_1.tres"),
+	preload("res://Resources/Planes/raven_1.tres"),
+	preload("res://Resources/Planes/pandacopter_2.tres"),
 ]
 
 var plane_ids: Array[int]  #plane types, listed in order of Peer IDs
@@ -73,5 +74,5 @@ func manage_ids(id_assignment:IDAssignment )-> void:
 		handle_remote_id_assignment.emit(id_assignment.id,  id_assignment.remoted_types[id_assignment.id], id_assignment.remoted_states[id_assignment.id])
 		
 func set_world(on_server_start:OnServerStart) -> void:
-	world.set_seed_and_id( on_server_start.seed, on_server_start.map_id)
+	world.set_seed_and_id( on_server_start.map_seed, on_server_start.map_id)
 	

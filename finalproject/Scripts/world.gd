@@ -165,7 +165,7 @@ func set_seed_and_id(map_seed, id):
 	noise.seed = map_seed
 	#for map syncing
 	#do both change_seed() and set_map_id() just without double generating
-	ServerNetworkGlobals.seed = map_seed
+	ServerNetworkGlobals.map_seed = map_seed
 	ServerNetworkGlobals.map_id = id
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed

@@ -41,6 +41,8 @@ extends Resource
 
 @export var reload_speed :int
 @export var amo :int
+@export var plane_explosion : Resource
+
 @export_range(0,10) var barrel_amount : int
 @export var barrel_spread : float
 @export var bullet_type : Resource

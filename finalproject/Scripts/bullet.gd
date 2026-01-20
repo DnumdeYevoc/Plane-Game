@@ -40,6 +40,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if homing and target!= null:
+		look_at(target.global_position)
 		grav = false
 		dir = global_position.direction_to(target.global_position)
 	if exploding == false: 

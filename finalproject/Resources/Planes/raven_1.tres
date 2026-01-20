@@ -1,0 +1,47 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://cxs5k0e462c25"]
+
+[ext_resource type="Resource" uid="uid://dhiplq5gen8te" path="res://Resources/bomb.tres" id="1_7tg76"]
+[ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Plane_1.blend" id="2_powrv"]
+[ext_resource type="Resource" uid="uid://ca6dm4pla54fv" path="res://Resources/plane_explosion.tres" id="3_tbx0l"]
+[ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="4_yspxc"]
+[ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="5_0on04"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rb1fo"]
+resource_local_to_scene = true
+size = Vector3(3, 1, 4)
+
+[resource]
+script = ExtResource("4_yspxc")
+name = "Raven 800M"
+id = 1
+plane_health = 75
+player_health = 10
+mesh = ExtResource("2_powrv")
+collision_shape = SubResource("BoxShape3D_rb1fo")
+max_speed = 140.0
+min_speed = 75.0
+acceleration = 1.0
+deceleration = 0.7
+pitch_speed = 0.5
+yaw_speed = 1.5
+roll_speed = 0.5
+sharp_steering = 4.0
+three_input_steering = true
+fov = 90.0
+turbo_particles = ExtResource("5_0on04")
+jet_amount = 2
+jet_spread = 0.9
+jet_position = Vector2(0, 0)
+turbo = true
+turbo_strength = 4.0
+turbo_max = 10.0
+turbo_reload_speed = 15.0
+aim_assist_radius = 10
+aim_assist_range = 50
+aim_angle = -55
+reload_speed = 4
+amo = 6
+plane_explosion = ExtResource("3_tbx0l")
+barrel_amount = 2
+barrel_spread = 2.25
+bullet_type = ExtResource("1_7tg76")

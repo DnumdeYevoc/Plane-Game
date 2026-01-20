@@ -1,8 +1,9 @@
-[gd_resource type="Resource" load_steps=6 format=3 uid="uid://bkkxvevnoj7ks"]
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://bkkxvevnoj7ks"]
 
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_tm7rb"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_6tx43"]
 [ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="2_xy6yy"]
+[ext_resource type="Resource" uid="uid://ca6dm4pla54fv" path="res://Resources/plane_explosion.tres" id="3_pmvas"]
 [ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="4_k05eo"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_prv2g"]
@@ -13,8 +14,8 @@ size = Vector3(1.25, 1, 2)
 script = ExtResource("2_6tx43")
 name = "Cardinal 360"
 id = 0
-plane_health = 10
-player_health = 5
+plane_health = 20
+player_health = 10
 mesh = ExtResource("2_xy6yy")
 collision_shape = SubResource("BoxShape3D_prv2g")
 max_speed = 160.0
@@ -24,7 +25,7 @@ deceleration = 0.3
 pitch_speed = 1.0
 yaw_speed = 2.0
 roll_speed = 2.0
-sharp_steering = 8.0
+sharp_steering = 10.0
 three_input_steering = true
 fov = 90.0
 turbo_particles = ExtResource("4_k05eo")
@@ -39,7 +40,8 @@ aim_assist_radius = 10
 aim_assist_range = 100
 aim_angle = 0
 reload_speed = 2
-amo = 10
+amo = 8
+plane_explosion = ExtResource("3_pmvas")
 barrel_amount = 2
 barrel_spread = 0.75
 bullet_type = ExtResource("1_tm7rb")

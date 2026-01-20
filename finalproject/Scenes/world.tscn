@@ -130,7 +130,6 @@ shape = SubResource("HeightMapShape3D_fj7yv")
 
 [node name="Border" type="StaticBody3D" parent="." groups=["border"]]
 visible = false
-collision_layer = 3
 
 [node name="Floor" type="CollisionShape3D" parent="Border"]
 shape = SubResource("WorldBoundaryShape3D_5a7ea")

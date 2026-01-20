@@ -39,6 +39,8 @@ var turbo_reload_speed: float
 #shooting
 var reload_speed : int
 var amo : int
+var plane_explosion: Resource
+
 var barrel_amount : int
 var barrel_spread : float
 
@@ -81,7 +83,7 @@ var health_bar: TextureProgressBar #current health bar
 @onready var crosshair: AnimatedSprite2D = $Crosshair
 @onready var person_mesh = preload("res://Blender/Person.blend")
 @onready var parachute_scene = preload("res://Blender/Parachute.blend")
-@onready var generic_bullet_type = preload("res://Resources/bullet_template.tres")
+@onready var generic_bullet_type = preload("res://Resources/ground_bullet.tres")
 #ultity variables
 var dir := Vector3.ZERO
 var g_dir :float
@@ -102,8 +104,11 @@ var drown_timer := 0
 var reloading : int = 0
 var cur_amo:int =1
 
-var cur_wall : StaticBody3D
+var cur_wall : Array[StaticBody3D]
 var disable_timer : int
+var immunity_timer :int =0
+var immunity_length :int = 80
+var immunity : bool = false
 #handle multiplayer
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
@@ -136,7 +141,7 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 		rotation.y =player_position.rotation_z 
 	#remote parachute
 	if parachute_on:
-		if player_position.position.y- global_position.y >=-0.01:
+		if player_position.position.y- global_position.y >=0.1:
 			parachute_on = false
 			remove_child(parachute_mesh)
 			
@@ -176,10 +181,10 @@ func client_handle_hit(hit: Hit) -> void:
 		print(owner_id,"hit, health:", cur_health, "Client:",  ClientNetworkGlobals.id)
 		
 func take_damage(damage) -> void:
-		cur_health -= damage
-		print(cur_health)
-		Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
-		update_health()
+		if immunity == false:
+			cur_health -= damage
+			Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
+			update_health()
 		
 func update_health() -> void:
 	#health bar update code here
@@ -193,13 +198,18 @@ func update_health() -> void:
 		player_state -= 1
 		if is_authority:
 			UpdateState.create(owner_id, player_state).send(NetworkHandler.server_peer)
-		print(player_state, ClientNetworkGlobals.id)
+		
 		update_state()
 func update_state()-> void:
 		match player_state:
 			1:
+				
+				immunity_timer = immunity_length
+				
+				#health
 				cur_health = player_health
 				health_bar.max_value = player_health
+				update_health()
 				#initate immune timer?
 				
 				#set up player 
@@ -231,6 +241,10 @@ func update_state()-> void:
 					reload_bar.texture_progress.region.size =Vector2( 16*amo , 16)
 				barrel_amount = 1
 				barrel_spread =1
+				#explosion
+				bullet_type = plane_explosion
+				shoot()
+				
 				bullet_type = generic_bullet_type#change to basooka?
 				#Update UI
 				speed_label.queue_free()
@@ -330,6 +344,8 @@ func _ready() -> void:
 		
 	else:
 		reload_bar.visible = false
+		
+	plane_explosion = plane_type.plane_explosion
 	barrel_amount = plane_type.barrel_amount
 	barrel_spread = plane_type.barrel_spread
 	bullet_type = plane_type.bullet_type
@@ -353,10 +369,8 @@ func _ready() -> void:
 		turbo_meter.value = 0.0
 		t_cooldown = 100
 	
-
 	#set aim target pos
 	aim_cast.target_position = Vector3(0,0,-plane_type.aim_assist_range)
-
 	
 func _on_viewport_size_changed():
 	screen_center = get_viewport().get_visible_rect().size/2
@@ -460,6 +474,10 @@ func shoot() -> void:
 						if bullet_type.homing:
 							target_id = collider.owner_id
 							bullet.target = collider
+					else:
+						target_id = -1
+						target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+					
 						
 				else:
 					target_id = -1
@@ -478,7 +496,7 @@ func shoot() -> void:
 				bullet.rotation = rotation
 				bullet.shooter_id = owner_id
 				
-				#homing was here but needs to be remade
+				
 				projectile_manager.add_child(bullet)
 			
 
@@ -505,7 +523,6 @@ func get_person_input(delta) ->Vector3:
 		remove_child(parachute_mesh)
 			
 	#rotation:
-	
 	var rel_mouse_pos= screen_center- get_viewport().get_mouse_position()
 	#up/down cam rotation
 	cam_target.rotation_degrees.x=rel_mouse_pos.y/5
@@ -523,7 +540,6 @@ func get_person_input(delta) ->Vector3:
 	pitch_input = lerp(pitch_input, Input.get_action_strength("pitch_up")-Input.get_action_strength("pitch_down"), 12.0*delta)
 	dir =-pitch_input* -transform.basis.z
 	
-	
 	#gravity
 	if not is_on_floor():
 		if parachute_on:
@@ -531,15 +547,24 @@ func get_person_input(delta) ->Vector3:
 		else:
 			g_dir -= gravity/2
 	
-	if Input.is_action_pressed("jump") and is_on_floor():
-		g_dir = 1.0
+	if Input.is_action_pressed("jump"):
+		if is_on_floor():
+			g_dir = 1.0
+		#swimming
+		if global_position.y <=13:
+			g_dir =0.5
 	
 
 	similar_inputs()
 	dir.y = g_dir*delta*60*800/cur_speed
 	return dir
 func similar_inputs()->void:
-	
+	#immunity
+	immunity_timer -= 1
+	if immunity_timer>0:
+		immunity = true
+	else:
+		immunity = false
 	#reload
 	#auto reload
 	if reloading ==0 and cur_amo ==0:
@@ -555,7 +580,7 @@ func similar_inputs()->void:
 	#crosshair
 	if aim_cast.is_colliding():
 		var tar = aim_cast.get_collider(0)
-		if tar != null and tar.is_in_group("player") and tar.owner_id != owner_id:
+		if tar.is_in_group("player"):
 			crosshair.position = cam.unproject_position(tar.global_position)
 			crosshair.frame = 1
 	else:
@@ -568,9 +593,11 @@ func similar_inputs()->void:
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
 	#handle water/ droawning
-	if global_position.y <= 7:
-		cur_speed*=0.9 +0.01 * global_position.y
+	if global_position.y <= 13:
+		cur_speed *=0.9
+		
 		drown_timer +=1
+		
 		if drown_timer == 100:
 			take_damage(world.map_resource.drown_damage)
 			drown_timer =0
@@ -591,12 +618,13 @@ func _physics_process(delta: float) -> void:
 		#rotate
 		
 		velocity = rotate_plane(delta)
-
+		
 		if cur_speed<plane_type.min_speed*20:
 			velocity.y -= gravity*delta*(plane_type.min_speed*20-cur_speed)*50
 	elif player_state == 1:
 		var d = get_person_input(delta)
 		velocity = d*delta*cur_speed
+	#swimming
 	
 	move_and_slide()
 	if player_state == 2:
@@ -617,10 +645,10 @@ func border_check()-> void:
 			
 			wall.visible = true
 			disable_timer =1
-			cur_wall = wall
+			cur_wall.append(wall)
 			
 			
 	if disable_timer <=0 and cur_wall != null:
-		
-		cur_wall.visible = false
-		cur_wall = null
+		for w in cur_wall:
+			w.visible = false
+			w = null

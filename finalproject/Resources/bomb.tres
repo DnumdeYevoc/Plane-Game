@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=5 format=3 uid="uid://dhiplq5gen8te"]
 
 [ext_resource type="PackedScene" uid="uid://khetxc3us1bb" path="res://Scenes/Particles/explosion_particles.tscn" id="1_g14xu"]
-[ext_resource type="PackedScene" uid="uid://b57kfe6q11860" path="res://Blender/80MB.blend" id="1_xkj18"]
+[ext_resource type="PackedScene" uid="uid://qje8mougkw0a" path="res://Blender/80MB.blend" id="1_xkj18"]
 [ext_resource type="Script" uid="uid://celgfdf3x0i2h" path="res://Scripts/bullet_template.gd" id="2_g14xu"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
@@ -14,7 +14,7 @@ script = ExtResource("2_g14xu")
 speed = 10
 gravity = true
 mesh = ExtResource("1_xkj18")
-damage = 3
+damage = 4
 explode = true
 explosion_particles = ExtResource("1_g14xu")
 homing = true

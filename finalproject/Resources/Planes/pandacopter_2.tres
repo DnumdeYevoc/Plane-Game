@@ -1,0 +1,46 @@
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://b8ndxrmughws3"]
+
+[ext_resource type="Resource" uid="uid://bq0x7jkno20eb" path="res://Resources/missle.tres" id="1_5n2cv"]
+[ext_resource type="PackedScene" uid="uid://cucshew3yieko" path="res://Blender/Helicopter.blend" id="2_obfnk"]
+[ext_resource type="Resource" uid="uid://ca6dm4pla54fv" path="res://Resources/plane_explosion.tres" id="3_e04o3"]
+[ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="4_36omk"]
+[ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="5_ijwba"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5n2cv"]
+size = Vector3(2.5, 1.3, 3.5)
+
+[resource]
+script = ExtResource("4_36omk")
+name = "Pandacopter"
+id = 2
+plane_health = 45
+player_health = 10
+mesh = ExtResource("2_obfnk")
+collision_shape = SubResource("BoxShape3D_5n2cv")
+max_speed = 120.0
+min_speed = 15.0
+acceleration = 0.4
+deceleration = 0.2
+pitch_speed = 0.7
+yaw_speed = 2.0
+roll_speed = 0.5
+sharp_steering = 10.0
+three_input_steering = true
+fov = 90.0
+turbo_particles = ExtResource("5_ijwba")
+jet_amount = 2
+jet_spread = 0.8
+jet_position = Vector2(1.9, 0.4)
+turbo = true
+turbo_strength = 3.0
+turbo_max = 15.0
+turbo_reload_speed = 5.0
+aim_assist_radius = 5
+aim_assist_range = 200
+aim_angle = 0
+reload_speed = 2
+amo = 2
+plane_explosion = ExtResource("3_e04o3")
+barrel_amount = 2
+barrel_spread = 2.25
+bullet_type = ExtResource("1_5n2cv")

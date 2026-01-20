@@ -82,7 +82,7 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 		print("Server starting failed" , error_string(error))
 		connection = null
 		return
-	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.seed)
+	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.map_seed)
 	#ADD SPECTATING MODE HERE?
 	print("server started")
 	is_server = true
