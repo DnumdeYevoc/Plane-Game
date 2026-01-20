@@ -6,14 +6,14 @@ var plane_speed : int # is this needed? or can we pull it from plane type?
 var dir : Vector3
 
 
-static func create(id: int,target_id:int, plane_speed : int, dir: Vector3, ) -> Shoot:
+static func create(id_: int,target_id_:int, plane_speed_ : int, dir_: Vector3, ) -> Shoot:
 	var info : Shoot  = Shoot.new()
 	info.packet_type = PACKET_TYPE.SHOOT
 	info.flag = ENetPacketPeer.FLAG_RELIABLE
-	info.id = id
-	info.target_id = target_id
-	info.plane_speed = plane_speed
-	info.dir = dir
+	info.id = id_
+	info.target_id = target_id_
+	info.plane_speed = plane_speed_
+	info.dir = dir_
 	
 	return info
 	

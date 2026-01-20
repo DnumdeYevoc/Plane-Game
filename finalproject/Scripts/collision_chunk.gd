@@ -45,7 +45,7 @@ func generate_mesh():
 	col_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, col_arrays)
 	shape = col_mesh.create_trimesh_shape()
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	#if within chunk + margin
 	if ! player :
 		if len( player_spawner.get_children()) != 0:

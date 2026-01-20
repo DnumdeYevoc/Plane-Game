@@ -7,16 +7,16 @@ var remoted_ids : Array[int]
 var remoted_types: Array[int]
 var remoted_states: Array[int]
 
-static func create(id: int, plane_type: int, state: int, remote_ids: Array[int], remote_types: Array[int], remote_states: Array[int]) -> IDAssignment:
+static func create(id_: int, plane_type_: int, state_: int, remote_ids_: Array[int], remote_types_: Array[int], remote_states_: Array[int]) -> IDAssignment:
 	var info : IDAssignment = IDAssignment.new()
 	info.packet_type = PACKET_TYPE.ID_ASSIGNMENT
 	info.flag = ENetPacketPeer.FLAG_RELIABLE
-	info.id = id
-	info.plane_type = plane_type
-	info.state = state
-	info.remoted_ids = remote_ids
-	info.remoted_types = remote_types
-	info.remoted_states = remote_states
+	info.id = id_
+	info.plane_type = plane_type_
+	info.state = state_
+	info.remoted_ids = remote_ids_
+	info.remoted_types = remote_types_
+	info.remoted_states = remote_states_
 	return info
 	
 static func create_from_data(data: PackedByteArray) -> IDAssignment:
@@ -31,14 +31,14 @@ func encode() -> PackedByteArray:
 	data.encode_u8(2, plane_type)
 	data.encode_u8(3, state)
 	for i in remoted_ids.size():
-		var id: int = remoted_ids[i]
-		data.encode_u8(4+i, id)
+		var _id: int = remoted_ids[i]
+		data.encode_u8(4+i, _id)
 	for i in remoted_types.size():
-		var type: int = remoted_types[i]
-		data.encode_u8(4+remoted_ids.size()+i, type)
+		var _type: int = remoted_types[i]
+		data.encode_u8(4+remoted_ids.size()+i, _type)
 	for i in remoted_states.size():
-		var state: int = remoted_states[i]
-		data.encode_u8(4+remoted_ids.size()+remoted_types.size()+i, state)
+		var _state: int = remoted_states[i]
+		data.encode_u8(4+remoted_ids.size()+remoted_types.size()+i, _state)
 	return data 
 
 func decode(data: PackedByteArray) -> void:

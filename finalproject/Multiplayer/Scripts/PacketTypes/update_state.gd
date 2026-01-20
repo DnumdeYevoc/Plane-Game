@@ -3,12 +3,12 @@ class_name UpdateState extends PacketInfo
 var id: int
 var state: int
 
-static func create(id: int, state: int) -> UpdateState:
+static func create(id_: int, state_: int) -> UpdateState:
 	var info : UpdateState = UpdateState.new()
 	info.packet_type = PACKET_TYPE.UPDATESTATE
 	info.flag = ENetPacketPeer.FLAG_RELIABLE
-	info.id = id
-	info.state = state
+	info.id = id_
+	info.state = state_
 
 	return info
 	

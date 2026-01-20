@@ -58,10 +58,10 @@ func _on_join_server_client_pressed() -> void:
 	visible = false
 
 func _on_randomize_seed_pressed() -> void:
-	var seed = randi_range(0, 99999999)
+	var map_seed = randi_range(0, 99999999)
 	seed_button.text = "World seed: " + str(seed)
 	#change seed
-	world.change_seed(seed)
+	world.change_seed(map_seed)
 
 func on_death()->void:
 	visible = true

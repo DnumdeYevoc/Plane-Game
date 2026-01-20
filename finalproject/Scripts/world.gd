@@ -42,7 +42,7 @@ func _ready() -> void:
 	set_resource_var()
 	noise.seed = randi_range(0,99999999)
 	#for map syncing
-	ServerNetworkGlobals.seed = noise.seed
+	ServerNetworkGlobals.map_seed = noise.seed
 	ServerNetworkGlobals.map_id = map_resource.id
 	generate_mesh()
 	
@@ -155,17 +155,17 @@ func generate_mesh():
 			chunk.position = (Vector3(x,0,y)*chunk_size)-(Vector3(size.x, 0, size.y)/2)+ (Vector3(chunk_size,0, chunk_size)/2)
 			collision_chunk_manager.add_child(chunk)
 
-func change_seed(seed) -> void:
-	noise.seed = seed
+func change_seed(map_seed) -> void:
+	noise.seed = map_seed
 	#for map syncing
-	ServerNetworkGlobals.seed = seed
+	ServerNetworkGlobals.seed = map_seed
 	regenerate_mesh()
 
-func set_seed_and_id(seed, id):
-	noise.seed = seed
+func set_seed_and_id(map_seed, id):
+	noise.seed = map_seed
 	#for map syncing
 	#do both change_seed() and set_map_id() just without double generating
-	ServerNetworkGlobals.seed = seed
+	ServerNetworkGlobals.seed = map_seed
 	ServerNetworkGlobals.map_id = id
 	map_resource = map_resource_list[id]
 	map_resource.noise.seed = noise.seed

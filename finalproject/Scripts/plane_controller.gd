@@ -238,7 +238,7 @@ func update_state()-> void:
 				#explode stays the same
 				print("human")
 			0:
-				cur_health ==0
+				cur_health =0
 				print(owner_id,"is dead")
 				die()
 func die():
@@ -595,8 +595,8 @@ func _physics_process(delta: float) -> void:
 		if cur_speed<plane_type.min_speed*20:
 			velocity.y -= gravity*delta*(plane_type.min_speed*20-cur_speed)*50
 	elif player_state == 1:
-		var dir = get_person_input(delta)
-		velocity = dir*delta*cur_speed
+		var d = get_person_input(delta)
+		velocity = d*delta*cur_speed
 	
 	move_and_slide()
 	if player_state == 2:
@@ -607,9 +607,9 @@ func _physics_process(delta: float) -> void:
 	
 	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
 	#border
-	border_check(delta)
+	border_check()
 
-func border_check(delta)-> void:
+func border_check()-> void:
 	disable_timer -=1
 	if aim_cast.is_colliding():
 		var wall = aim_cast.get_collider(0)

@@ -3,12 +3,12 @@ class_name Hit extends PacketInfo
 var id: int
 var remaining_health : int
 
-static func create(id: int, remaining_health : int) -> Hit:
+static func create(id_: int, remaining_health_ : int) -> Hit:
 	var info : Hit = Hit.new()
 	info.packet_type = PACKET_TYPE.HIT
 	info.flag = ENetPacketPeer.FLAG_RELIABLE
-	info.id = id
-	info.remaining_health = remaining_health 
+	info.id = id_
+	info.remaining_health = remaining_health_
 	return info
 	
 static func create_from_data(data: PackedByteArray) -> Hit:

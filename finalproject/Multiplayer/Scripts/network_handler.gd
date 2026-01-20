@@ -41,7 +41,7 @@ func get_wifi_ip_address() -> String:
 					local_ip = address 
 	return local_ip
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if connection == null: return
 	handle_events() #handle incoming packets
 
@@ -121,7 +121,7 @@ func disconnect_client() -> void: #When player hits disconnect button
 	server_peer.peer_disconnected()
 	#happens automatically if you close, but this is nice if you want main screen again
 	
-func connected_to_server(peer: ENetPacketPeer) -> void:
+func connected_to_server(_peer: ENetPacketPeer) -> void:
 	print("Successfully connected to server")
 	on_connected_to_server.emit()
 	IDAssignment.create(-1, plane_type,2, [],[],[]).send(server_peer)

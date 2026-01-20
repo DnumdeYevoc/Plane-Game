@@ -3,12 +3,12 @@ class_name Respawn extends PacketInfo
 var id: int
 var plane_type: int
 
-static func create(id: int, plane_type: int) -> Respawn:
+static func create(id_: int, plane_type_: int) -> Respawn:
 	var info : Respawn = Respawn.new()
 	info.packet_type = PACKET_TYPE.RESPAWN
 	info.flag = ENetPacketPeer.FLAG_RELIABLE
-	info.id = id
-	info.plane_type = plane_type
+	info.id = id_
+	info.plane_type = plane_type_
 
 	return info
 	

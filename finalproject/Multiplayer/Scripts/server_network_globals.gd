@@ -6,7 +6,7 @@ var peer_ids: Array[int]
 var peer_types: Array[int]
 var peer_states: Array[int]
 var map_id : int
-var seed : int
+var map_seed : int
 
 var plane_ids: Array[int]
 var on_server_start_packet :OnServerStart

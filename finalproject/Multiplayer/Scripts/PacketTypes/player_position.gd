@@ -4,13 +4,13 @@ var id: int
 var position: Vector3
 var rotation_z : float
 
-static func create(id: int, position: Vector3, rotation_z : float) -> PlayerPosition:
+static func create(id_: int, position_: Vector3, rotation_z_: float) -> PlayerPosition:
 	var info : PlayerPosition = PlayerPosition.new()
 	info.packet_type = PACKET_TYPE.PLAYER_POSITION
 	info.flag = ENetPacketPeer.FLAG_UNSEQUENCED
-	info.id = id
-	info.position = position
-	info.rotation_z = rotation_z
+	info.id = id_
+	info.position = position_
+	info.rotation_z = rotation_z_
 	return info
 	
 static func create_from_data(data: PackedByteArray) -> PlayerPosition:
