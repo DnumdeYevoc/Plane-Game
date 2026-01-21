@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bumjqmkvm21f"
-path="res://.godot/imported/Plane.blend-bc1bdf652991be64723d1161876c0a61.scn"
+uid="uid://b6qd8dxqx3i1s"
+path="res://.godot/imported/Raven.blend-9d7b56bb2d5431c7e64832dd60ab91af.scn"
 
 [deps]
 
-source_file="res://Blender/Plane.blend"
-dest_files=["res://.godot/imported/Plane.blend-bc1bdf652991be64723d1161876c0a61.scn"]
+source_file="res://Blender/Raven.blend"
+dest_files=["res://.godot/imported/Raven.blend-9d7b56bb2d5431c7e64832dd60ab91af.scn"]
 
 [params]
 
@@ -32,7 +32,16 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
-_subresources={}
+_subresources={
+"nodes": {
+"PATH:Camera": {
+"import/skip_import": true
+},
+"PATH:Light": {
+"import/skip_import": true
+}
+}
+}
 blender/nodes/visible=0
 blender/nodes/active_collection_only=false
 blender/nodes/punctual_lights=true

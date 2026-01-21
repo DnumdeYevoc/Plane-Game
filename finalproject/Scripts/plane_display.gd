@@ -11,5 +11,5 @@ func _ready() -> void:
 	
 func update_display() -> void:
 	remove_child(get_children()[-1])
-	var mesh = plane_resource.mesh.instantiate()
+	var mesh = plane_resource.display_scene.instantiate()
 	add_child(mesh)

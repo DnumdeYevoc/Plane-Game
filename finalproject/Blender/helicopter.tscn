@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://4xka7k24ocy5"]
+
+[ext_resource type="PackedScene" uid="uid://cucshew3yieko" path="res://Blender/Helicopter.blend" id="1_s2bpi"]
+
+[node name="Helicopter" instance=ExtResource("1_s2bpi")]
+
+[node name="Body" parent="." index="0"]
+transform = Transform3D(-0.000330245, 0.00036314, 0.763085, 0.190631, 0.756542, -0.000337452, -1.44631, 0.0997159, -0.000218718, 0.0327702, 0.459318, 0.977814)
+
+[node name="Prop" parent="." index="2"]
+transform = Transform3D(-0.000219983, 0.000336685, 0.763085, -0.00265959, 0.763081, -0.00033745, -0.763081, -0.00265969, -0.000218809, 0.0437235, 1.33059, 0.0558695)
+
+[node name="Guns" parent="." index="3"]
+transform = Transform3D(-0.00036314, -0.000172678, 0.763085, -0.756542, 0.099716, -0.000337461, -0.0997159, -0.756542, -0.00021865, 0.0437235, 1.32897, 0.0558695)
+
+[node name="AnimationPlayer" parent="." index="4"]
+autoplay = "Spin "

@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctcrrd1iamlyr"]
+
+[ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Raven.blend" id="1_0epdv"]
+[ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="2_wat47"]
+
+[node name="Plane_1" instance=ExtResource("1_0epdv")]
+
+[node name="TurboParticles" parent="." index="7" instance=ExtResource("2_wat47")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.900984, 0, 0.313638)
+emitting = true
+
+[node name="TurboParticles2" parent="." index="8" instance=ExtResource("2_wat47")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.940238, 0, 0.00575686)
+emitting = true
+
+[node name="Camera3D" type="Camera3D" parent="." index="9"]
+transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771308, 3.979, 3.812, -4.422)
+current = true
+fov = 43.5

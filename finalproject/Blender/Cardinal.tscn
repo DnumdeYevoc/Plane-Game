@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dq7uix14vu2w"]
+
+[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Cardinal.blend" id="1_v3nf3"]
+
+[node name="Plane_1" instance=ExtResource("1_v3nf3")]
+
+[node name="Face" parent="." index="18"]
+transform = Transform3D(-0.0762718, 0, 0, 0, 3.33395e-09, 0.0762718, 0, -0.0762718, 3.33395e-09, -0.00674865, 0.907619, -0.559785)
+
+[node name="AnimationPlayer" parent="." index="19"]
+autoplay = "Spin"

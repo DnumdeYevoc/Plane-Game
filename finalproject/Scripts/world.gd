@@ -158,7 +158,7 @@ func generate_mesh():
 func change_seed(map_seed) -> void:
 	noise.seed = map_seed
 	#for map syncing
-	ServerNetworkGlobals.seed = map_seed
+	ServerNetworkGlobals.map_seed = map_seed
 	regenerate_mesh()
 
 func set_seed_and_id(map_seed, id):

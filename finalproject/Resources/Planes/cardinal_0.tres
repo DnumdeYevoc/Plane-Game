@@ -2,7 +2,7 @@
 
 [ext_resource type="Resource" uid="uid://cyiy4vmnkqjxw" path="res://Resources/bullet_template.tres" id="1_tm7rb"]
 [ext_resource type="Script" uid="uid://03ic7s02j0yp" path="res://Scripts/plane_template.gd" id="2_6tx43"]
-[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="2_xy6yy"]
+[ext_resource type="PackedScene" uid="uid://dq7uix14vu2w" path="res://Blender/Cardinal.tscn" id="2_pmvas"]
 [ext_resource type="Resource" uid="uid://ca6dm4pla54fv" path="res://Resources/plane_explosion.tres" id="3_pmvas"]
 [ext_resource type="PackedScene" uid="uid://324bo7nbe6pc" path="res://Scenes/Particles/turbo_particles.tscn" id="4_k05eo"]
 
@@ -14,9 +14,10 @@ size = Vector3(1.25, 1, 2)
 script = ExtResource("2_6tx43")
 name = "Cardinal 360"
 id = 0
+display_scene = ExtResource("2_pmvas")
 plane_health = 20
 player_health = 10
-mesh = ExtResource("2_xy6yy")
+mesh = ExtResource("2_pmvas")
 collision_shape = SubResource("BoxShape3D_prv2g")
 max_speed = 160.0
 min_speed = 50.0
@@ -33,8 +34,8 @@ jet_amount = 2
 jet_spread = 0.4
 jet_position = Vector2(0, 0)
 turbo = true
-turbo_strength = 2.0
-turbo_max = 30.0
+turbo_strength = 1.5
+turbo_max = 20.0
 turbo_reload_speed = 10.0
 aim_assist_radius = 10
 aim_assist_range = 100

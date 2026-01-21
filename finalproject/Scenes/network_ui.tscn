@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://rtr6y61uhb04"]
+[gd_scene load_steps=7 format=3 uid="uid://rtr6y61uhb04"]
 
+[ext_resource type="Theme" uid="uid://bddfvfrin52oi" path="res://Textures/new_theme.tres" id="1_ibrow"]
 [ext_resource type="Script" uid="uid://1obfl4uvhton" path="res://Multiplayer/Scripts/network_ui.gd" id="1_utfyr"]
 [ext_resource type="Script" uid="uid://28885lac7uog" path="res://Scripts/plane_display.gd" id="2_v1uh1"]
-[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Plane.blend" id="3_7p3bk"]
+[ext_resource type="Texture2D" uid="uid://cprq380otbqjv" path="res://Textures/Title.png" id="3_6jp8d"]
+[ext_resource type="PackedScene" uid="uid://bumjqmkvm21f" path="res://Blender/Cardinal.blend" id="3_7p3bk"]
 
 [sub_resource type="World3D" id="World3D_v1uh1"]
 
@@ -10,54 +12,66 @@
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 50.0
-offset_top = -233.0
-offset_right = 675.0
-offset_bottom = 233.0
+offset_top = -424.0
+offset_right = 625.0
+offset_bottom = 424.0
 grow_vertical = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme = ExtResource("1_ibrow")
 script = ExtResource("1_utfyr")
 
-[node name="ServerButtons" type="VBoxContainer" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
+clip_contents = true
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+texture = ExtResource("3_6jp8d")
+
+[node name="ServerButtons" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
 
 [node name="StartServer" type="Button" parent="ServerButtons"]
 layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("1_ibrow")
 text = "Start Server"
 
 [node name="Randomize Seed" type="Button" parent="ServerButtons"]
 layout_mode = 2
+size_flags_horizontal = 4
 tooltip_text = "Click to Randomize"
 text = "Seed:"
 
-[node name="MapList" type="MenuButton" parent="ServerButtons"]
+[node name="MapList" type="MenuButton" parent="."]
 layout_mode = 2
+size_flags_horizontal = 4
 text = "Choose Map"
 
-[node name="ClientButtons" type="VBoxContainer" parent="."]
+[node name="ClientButtons" type="HBoxContainer" parent="."]
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 2
 
 [node name="Spectate" type="Button" parent="ClientButtons"]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "Spectate"
 
 [node name="Respawn" type="Button" parent="ClientButtons"]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 text = "Respawn"
 
-[node name="JoinServer" type="Button" parent="ClientButtons"]
-layout_mode = 2
-text = "Join Server
-"
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="ClientButtons"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 2
 
-[node name="PlaneDisplay" type="SubViewport" parent="ClientButtons/SubViewportContainer"]
+[node name="PlaneDisplay" type="SubViewport" parent="SubViewportContainer"]
 own_world_3d = true
 world_3d = SubResource("World3D_v1uh1")
 transparent_bg = true
@@ -66,31 +80,37 @@ size = Vector2i(625, 291)
 render_target_update_mode = 4
 script = ExtResource("2_v1uh1")
 
-[node name="Camera3D" type="Camera3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
-transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771308, 3.97872, 2.74746, -4.42177)
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/PlaneDisplay"]
+transform = Transform3D(-0.874099, -0.263381, 0.408144, -0.034699, 0.871948, 0.488368, -0.484507, 0.41272, -0.771308, 2.78834, 3.47079, -4.42177)
 current = true
-fov = 40.0
+fov = 30.0
 
-[node name="OmniLight3D" type="OmniLight3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewportContainer/PlaneDisplay"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.11382, 2.734, -1.73)
 light_color = Color(0.690416, 0.793427, 1, 1)
 light_energy = 6.0
 omni_range = 60.0
 
-[node name="OmniLight3D2" type="OmniLight3D" parent="ClientButtons/SubViewportContainer/PlaneDisplay"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.80193, 2.888, 2.626)
+[node name="OmniLight3D2" type="OmniLight3D" parent="SubViewportContainer/PlaneDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.80193, 2.888, 0.488392)
 light_color = Color(1, 0.840027, 0.813055, 1)
 light_energy = 6.0
 omni_range = 60.0
 
-[node name="Plane_1" parent="ClientButtons/SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
+[node name="Plane_1" parent="SubViewportContainer/PlaneDisplay" instance=ExtResource("3_7p3bk")]
 
-[node name="PlaneSelector" type="MenuButton" parent="ClientButtons"]
+[node name="PlaneSelector" type="MenuButton" parent="."]
 layout_mode = 2
 text = "Choose Plane"
+
+[node name="JoinServer" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Join Server
+"
 
 [connection signal="pressed" from="ServerButtons/StartServer" to="." method="_on_start_server_pressed"]
 [connection signal="pressed" from="ServerButtons/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
 [connection signal="pressed" from="ClientButtons/Spectate" to="." method="_on_spectate_pressed"]
 [connection signal="pressed" from="ClientButtons/Respawn" to="." method="_on_respawn_pressed"]
-[connection signal="pressed" from="ClientButtons/JoinServer" to="." method="_on_join_server_client_pressed"]
+[connection signal="pressed" from="JoinServer" to="." method="_on_join_server_client_pressed"]

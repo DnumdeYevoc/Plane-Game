@@ -399,8 +399,9 @@ func get_plane_input(delta):
 						child.emitting = true
 					turbo_meter.value -= acceleration*delta*10
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
-					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
 					
+					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
+					cam_target.movement_sharpness = 100
 					#if empty meter
 					if turbo_meter.value <= 0:
 						t_cooldown = 100
@@ -418,10 +419,11 @@ func get_plane_input(delta):
 						child.emitting = false
 		t_cooldown -=1
 		cur_speed = lerp(cur_speed, clamp(max_speed,0,cur_speed), acceleration *delta)
+		
 		cam.fov = lerp(cam.fov, fov, acceleration*4 *delta)
 	if t_cooldown == 1:
 		#end effects
-		
+		cam_target.movement_sharpness = 12
 		cur_speed = clamp(max_speed,0,cur_speed)
 		cam.fov = fov
 	

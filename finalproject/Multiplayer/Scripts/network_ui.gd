@@ -1,19 +1,20 @@
 extends Control
 @onready var start_server: Button = $ServerButtons/StartServer
-@onready var join_server: Button = $ClientButtons/JoinServer
+@onready var join_server: Button = $JoinServer
 
-@onready var client_buttons: VBoxContainer = $ClientButtons
-@onready var server_buttons: VBoxContainer = $ServerButtons
+@onready var client_buttons: HBoxContainer = $ClientButtons
+@onready var server_buttons: HBoxContainer = $ServerButtons
 
 @onready var seed_button: Button = $"ServerButtons/Randomize Seed"
 @onready var world: Node3D = $"../World"
 @onready var player_spawner : Node = $"../player_spawner"
-@onready var map_list: MenuButton = $ServerButtons/MapList
-@onready var plane_selector: MenuButton = $ClientButtons/PlaneSelector
-@onready var plane_display: SubViewport = $ClientButtons/SubViewportContainer/PlaneDisplay
+@onready var map_list: MenuButton = $MapList
+@onready var plane_selector: MenuButton = $PlaneSelector
+@onready var plane_display: SubViewport = $SubViewportContainer/PlaneDisplay
 
 @onready var spectate: Button = $ClientButtons/Spectate
 @onready var respawn: Button = $ClientButtons/Respawn
+
 
 var plane_type : int = -1
 var spectate_id : int = 0
@@ -59,7 +60,7 @@ func _on_join_server_client_pressed() -> void:
 
 func _on_randomize_seed_pressed() -> void:
 	var map_seed = randi_range(0, 99999999)
-	seed_button.text = "World seed: " + str(seed)
+	seed_button.text = "World seed: " + str(map_seed)
 	#change seed
 	world.change_seed(map_seed)
 
