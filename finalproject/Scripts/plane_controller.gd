@@ -267,6 +267,7 @@ func die():
 	else:
 		pass
 		#do some death animation?
+	border_check()
 	queue_free()
 	
 func _ready() -> void:

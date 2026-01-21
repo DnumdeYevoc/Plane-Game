@@ -103,7 +103,15 @@ omni_range = 60.0
 layout_mode = 2
 text = "Choose Plane"
 
-[node name="JoinServer" type="Button" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ServerIPtext" type="LineEdit" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("1_ibrow")
+
+[node name="JoinServer" type="Button" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Join Server
@@ -113,4 +121,5 @@ text = "Join Server
 [connection signal="pressed" from="ServerButtons/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
 [connection signal="pressed" from="ClientButtons/Spectate" to="." method="_on_spectate_pressed"]
 [connection signal="pressed" from="ClientButtons/Respawn" to="." method="_on_respawn_pressed"]
-[connection signal="pressed" from="JoinServer" to="." method="_on_join_server_client_pressed"]
+[connection signal="text_changed" from="HBoxContainer/ServerIPtext" to="." method="_on_server_i_ptext_text_changed"]
+[connection signal="pressed" from="HBoxContainer/JoinServer" to="." method="_on_join_server_client_pressed"]

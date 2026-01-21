@@ -20,11 +20,11 @@ var plane_type : int =-1
 #general variables
 var connection : ENetConnection
 var is_server : bool = false
+var my_ip : String ="no ip"
 
-var cur_ip : String 
-
+var server_ip : String 
 func _ready() -> void:
-	cur_ip = get_wifi_ip_address()
+	my_ip = get_wifi_ip_address()
 
 func get_wifi_ip_address() -> String:
 	var potential_ips: PackedStringArray = IP.get_local_addresses()
@@ -75,7 +75,7 @@ func handle_events() -> void:
 		packet_event = connection.service()
 		event_type = packet_event[0]
 
-func start_server(ip_adress: String = cur_ip , port : int = 42069):
+func start_server(ip_adress: String = my_ip , port : int = 42069):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:
@@ -83,7 +83,7 @@ func start_server(ip_adress: String = cur_ip , port : int = 42069):
 		connection = null
 		return
 	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.map_seed)
-	#ADD SPECTATING MODE HERE?
+	
 	print("server started")
 	is_server = true
 
@@ -103,17 +103,18 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(ip_adress: String = cur_ip, port : int = 42069):
-	connection = ENetConnection.new()
-	var error : Error = connection.create_host(1)
-	if error:
-		print("Client starting failed" , error_string(error))
-		connection = null
-		return
-	print("client started")
-	#variable for server from perspectove of clients
-	
-	server_peer = connection.connect_to_host(ip_adress, port)
+func start_client(ip_adress: String = server_ip, port : int = 42069):
+	if ip_adress!= "no ip":
+		connection = ENetConnection.new()
+		var error : Error = connection.create_host(1)
+		if error:
+			print("Client starting failed" , error_string(error))
+			connection = null
+			return
+		print("client started")
+		#variable for server from perspectove of clients
+		
+		server_peer = connection.connect_to_host(ip_adress, port)
 	
 	
 func disconnect_client() -> void: #When player hits disconnect button

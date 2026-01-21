@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=33 format=3 uid="uid://bddfvfrin52oi"]
+[gd_resource type="Theme" load_steps=35 format=3 uid="uid://bddfvfrin52oi"]
+
+[sub_resource type="SystemFont" id="SystemFont_7hdac"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7hdac"]
 content_margin_left = 5.0
@@ -72,6 +74,8 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 expand_margin_bottom = 5.0
+
+[sub_resource type="SystemFont" id="SystemFont_th8f7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7snnr"]
 
@@ -373,6 +377,7 @@ Button/constants/h_separation = 4
 Button/constants/icon_max_width = 0
 Button/constants/outline_size = 0
 Button/font_sizes/font_size = 25
+Button/fonts/font = SubResource("SystemFont_7hdac")
 Button/styles/disabled = SubResource("StyleBoxFlat_7hdac")
 Button/styles/focus = SubResource("StyleBoxFlat_th8f7")
 Button/styles/hover = SubResource("StyleBoxFlat_w7q0p")
@@ -387,6 +392,7 @@ Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/font_sizes/font_size = 30
+Label/fonts/font = SubResource("SystemFont_th8f7")
 Label/styles/normal = SubResource("StyleBoxEmpty_7snnr")
 MenuButton/styles/disabled = SubResource("StyleBoxFlat_7snnr")
 MenuButton/styles/pressed = SubResource("StyleBoxFlat_fquee")

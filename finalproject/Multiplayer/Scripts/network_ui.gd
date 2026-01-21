@@ -1,6 +1,6 @@
 extends Control
 @onready var start_server: Button = $ServerButtons/StartServer
-@onready var join_server: Button = $JoinServer
+@onready var join_server: Button = $HBoxContainer/JoinServer
 
 @onready var client_buttons: HBoxContainer = $ClientButtons
 @onready var server_buttons: HBoxContainer = $ServerButtons
@@ -14,6 +14,7 @@ extends Control
 
 @onready var spectate: Button = $ClientButtons/Spectate
 @onready var respawn: Button = $ClientButtons/Respawn
+
 
 
 var plane_type : int = -1
@@ -49,6 +50,11 @@ func on_plane_popup_pressed(id):
 
 func _on_start_server_pressed() -> void:
 	NetworkHandler.start_server()
+	var join_ip_text := Label.new()
+	join_ip_text.text= str("IP = ", NetworkHandler.my_ip)
+	join_ip_text.theme = load("res://Textures/new_theme.tres")
+	add_sibling(join_ip_text)
+	
 	visible = false
 	
 
@@ -89,3 +95,8 @@ func _on_respawn_pressed() -> void:
 
 func remote_respawn(id,type)->void:
 	player_spawner.spawn_player(id, type)
+
+
+func _on_server_i_ptext_text_changed(new_text: String) -> void:
+	NetworkHandler.server_ip = new_text
+	print(new_text)
