@@ -102,10 +102,12 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 60.0
 offset_bottom = 101.0
+size_flags_horizontal = 3
 theme = ExtResource("3_a1wmr")
 
 [node name="FPS" type="Label" parent="UI"]
 layout_mode = 2
+text = "text"
 
 [node name="TurboMeter" type="TextureProgressBar" parent="UI"]
 texture_filter = 1
@@ -122,6 +124,7 @@ texture_progress = ExtResource("5_33mim")
 
 [node name="Speed" type="Label" parent="UI"]
 layout_mode = 2
+text = "text"
 
 [node name="UIHealthBar" type="TextureProgressBar" parent="UI"]
 texture_filter = 1
@@ -144,9 +147,10 @@ sprite_frames = SubResource("SpriteFrames_7e1cs")
 texture_filter = 1
 texture_repeat = 2
 offset_left = 20.0
-offset_top = 118.0
+offset_top = 175.0
 offset_right = 84.0
-offset_bottom = 134.0
+offset_bottom = 191.0
+scale = Vector2(2, 2)
 theme = ExtResource("3_a1wmr")
 value = 100.0
 nine_patch_stretch = true

@@ -83,7 +83,7 @@ var health_bar: TextureProgressBar #current health bar
 @onready var crosshair: AnimatedSprite2D = $Crosshair
 @onready var person_mesh = preload("res://Blender/Person.blend")
 @onready var parachute_scene = preload("res://Blender/Parachute.blend")
-@onready var generic_bullet_type = preload("res://Resources/ground_bullet.tres")
+@onready var generic_bullet_type = preload("res://Resources/Bullet/ground_bullet.tres")
 #ultity variables
 var dir := Vector3.ZERO
 var g_dir :float
@@ -401,7 +401,8 @@ func get_plane_input(delta):
 					cur_speed = lerp(cur_speed, max_speed*turbo_strength, acceleration *delta)
 					
 					cam.fov = lerp(cam.fov, fov + 40.0, acceleration*2 *delta)
-					cam_target.movement_sharpness = 100
+					if cam_index== 1:
+						cam_target.movement_sharpness = 100
 					#if empty meter
 					if turbo_meter.value <= 0:
 						t_cooldown = 100
@@ -553,7 +554,7 @@ func get_person_input(delta) ->Vector3:
 		if is_on_floor():
 			g_dir = 1.0
 		#swimming
-		if global_position.y <=13:
+		if global_position.y <=14:
 			g_dir =0.5
 	
 
@@ -595,7 +596,7 @@ func similar_inputs()->void:
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
 	#handle water/ droawning
-	if global_position.y <= 13:
+	if global_position.y <= 14:
 		cur_speed *=0.9
 		
 		drown_timer +=1
@@ -610,6 +611,7 @@ func similar_inputs()->void:
 	if Input.is_action_just_pressed("SwitchCam"):
 		switch_cam()
 func _physics_process(delta: float) -> void:
+	
 	#NEED TO ADD REMOTE TURBO PARTICLES
 	#if you are pilot
 	if !is_authority: return

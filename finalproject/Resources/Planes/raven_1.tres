@@ -1,6 +1,6 @@
 [gd_resource type="Resource" load_steps=8 format=3 uid="uid://cxs5k0e462c25"]
 
-[ext_resource type="Resource" uid="uid://dhiplq5gen8te" path="res://Resources/bomb.tres" id="1_7tg76"]
+[ext_resource type="Resource" uid="uid://dhiplq5gen8te" path="res://Resources/Bullet/bomb.tres" id="1_7tg76"]
 [ext_resource type="PackedScene" uid="uid://ctcrrd1iamlyr" path="res://Blender/raven.tscn" id="2_powrv"]
 [ext_resource type="Resource" uid="uid://ca6dm4pla54fv" path="res://Resources/plane_explosion.tres" id="3_tbx0l"]
 [ext_resource type="PackedScene" uid="uid://b6qd8dxqx3i1s" path="res://Blender/Raven.blend" id="3_yspxc"]

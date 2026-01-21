@@ -180,3 +180,8 @@ func regenerate_mesh() -> void:
 	mesh.mesh  = null
 	array_mesh = ArrayMesh.new()
 	generate_mesh()
+	
+#func _physics_process(delta: float) -> void:
+	#day night cycle
+	#sun.rotation.x+=delta**2
+	#not implemented becuase would have to sync times
