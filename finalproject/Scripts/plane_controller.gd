@@ -143,7 +143,7 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 	if parachute_on:
 		if player_position.position.y- global_position.y >=0.1:
 			parachute_on = false
-			remove_child(parachute_mesh)
+			remove_child(parachute_mesh)  
 			
 	#update pos
 	global_position = player_position.position
@@ -194,6 +194,10 @@ func update_health() -> void:
 			health_bar.visible = false
 		else:
 			health_bar.visible = true
+	elif health_bar.value ==0:
+		health_bar.visible = false
+	else:
+		health_bar.visible = true
 	if cur_health <=0:
 		player_state -= 1
 		if is_authority:
@@ -209,7 +213,7 @@ func update_state()-> void:
 				#health
 				cur_health = player_health
 				health_bar.max_value = player_health
-				update_health()
+				
 				#initate immune timer?
 				
 				#set up player 
