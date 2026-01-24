@@ -1,7 +1,9 @@
 extends Node
 
 signal handle_player_position(peer_id:int, player_position: PlayerPosition)
-
+signal leaderboard_add_player(peer_ids : Array[int], player_name :String)
+signal leaderboard_on_kill(killed :int, killer:int)
+signal leaderboard_set_name(id:int, player_name : String)
 var peer_ids: Array[int]
 var peer_types: Array[int]
 var peer_states: Array[int]
@@ -11,11 +13,13 @@ var map_seed : int
 var plane_ids: Array[int]
 var on_server_start_packet :OnServerStart
 var id_assignment_packet: IDAssignment
+
 func _ready() -> void:
 	NetworkHandler.on_peer_connected.connect(on_peer_connected)
 	NetworkHandler.on_peer_disconnected.connect(on_peer_disconnected)
 
 	NetworkHandler.on_server_packet.connect(on_server_packet)
+	
 
 func on_peer_connected (peer_id: int) -> void:
 	peer_ids.append(peer_id)
@@ -44,6 +48,12 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 			id_assignment_packet.broadcast(NetworkHandler.connection)
 			print("server broadcasted plane id:", id_assignment_packet.id,"type:", id_assignment_packet.plane_type)
 			id_assignment_packet = null
+			leaderboard_add_player.emit(peer_ids)
+		PacketInfo.PACKET_TYPE.PLAYER_NAME:
+			var player_name = PlayerName.create_from_data(data)
+			player_name.id =peer_id
+			leaderboard_set_name.emit(player_name.id , player_name.player_name)
+			player_name.broadcast(NetworkHandler.connection)
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(peer_id, PlayerPosition.create_from_data(data))
 		PacketInfo.PACKET_TYPE.SHOOT:
@@ -56,5 +66,14 @@ func on_server_packet(peer_id: int, data: PackedByteArray) -> void:
 		PacketInfo.PACKET_TYPE.UPDATESTATE:
 			var update_state= UpdateState.create_from_data(data)
 			peer_states[update_state.id] = update_state.state
+		PacketInfo.PACKET_TYPE.DEATH:
+			var death = Death.create_from_data(data)
+			death.broadcast(NetworkHandler.connection)
+			#non player deaths
+			leaderboard_on_kill.emit(death.id, death.killer)
+			
+			
+			print (death.killer, "killed", death.id)
+			
 		_:
 			push_error("packet type with index", data[0], "unhandled")

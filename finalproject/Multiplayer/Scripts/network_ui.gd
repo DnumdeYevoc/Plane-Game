@@ -16,9 +16,11 @@ extends Control
 @onready var respawn: Button = $ClientButtons/Respawn
 
 var plane_type : int = -1
+var player_name : String = "player"
 var spectate_id : int = 0
-
+var leaderboard :ItemList
 func _ready() -> void:
+	leaderboard = get_node("../Leaderboard")
 	plane_type = 0
 	seed_button.text = "Randomize Seed"
 	map_list.get_popup().id_pressed.connect(on_world_popup_pressed)
@@ -56,12 +58,21 @@ func _on_start_server_pressed() -> void:
 	join_ip_text.editable = false
 	join_ip_text.expand_to_text_length = true
 	add_sibling(join_ip_text)
+
+	leaderboard.visible = true
+	leaderboard.add_theme_font_size_override("font_size", 40)
+	
+	leaderboard.position.y = 50
+	
+	
 	queue_free()
 
 	
 
 func _on_join_server_client_pressed() -> void:
 	NetworkHandler.plane_type = plane_type
+	NetworkHandler.player_name = player_name
+	leaderboard.visible = true
 	NetworkHandler.start_client(NetworkHandler.server_ip)
 	
 	visible = false
@@ -104,3 +115,8 @@ func remote_respawn(id,type)->void:
 
 func _on_server_i_ptext_text_changed(new_text: String) -> void:
 	NetworkHandler.server_ip = new_text
+
+
+func _on_name_text_changed(new_text: String) -> void:
+	player_name = new_text
+	

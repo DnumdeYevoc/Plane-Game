@@ -17,6 +17,7 @@ var client_peers: Dictionary [int, ENetPacketPeer] #list of peers with ids as ke
 #client variables
 var server_peer : ENetPacketPeer
 var plane_type : int =-1
+var player_name : String = "player"
 #general variables
 var connection : ENetConnection
 var is_server : bool = false
@@ -125,7 +126,8 @@ func connected_to_server(_peer: ENetPacketPeer) -> void:
 	print("Successfully connected to server")
 	on_connected_to_server.emit()
 	IDAssignment.create(-1, plane_type,2, [],[],[]).send(server_peer)
-	
+	PlayerName.create(-1 ,player_name).send(server_peer)
+
 func disconnected_from_server() -> void:
 	print("successfully disconnected from server")
 	on_disconnected_to_server.emit()

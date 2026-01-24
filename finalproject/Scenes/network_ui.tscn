@@ -103,6 +103,10 @@ omni_range = 60.0
 layout_mode = 2
 text = "Choose Plane"
 
+[node name="Name" type="LineEdit" parent="."]
+layout_mode = 2
+text = "Player Name"
+
 [node name="JoinServerContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
@@ -121,5 +125,6 @@ text = "Join Server
 [connection signal="pressed" from="ServerButtons/Randomize Seed" to="." method="_on_randomize_seed_pressed"]
 [connection signal="pressed" from="ClientButtons/Spectate" to="." method="_on_spectate_pressed"]
 [connection signal="pressed" from="ClientButtons/Respawn" to="." method="_on_respawn_pressed"]
+[connection signal="text_changed" from="Name" to="." method="_on_name_text_changed"]
 [connection signal="text_changed" from="JoinServerContainer/ServerIPtext" to="." method="_on_server_i_ptext_text_changed"]
 [connection signal="pressed" from="JoinServerContainer/JoinServer" to="." method="_on_join_server_client_pressed"]

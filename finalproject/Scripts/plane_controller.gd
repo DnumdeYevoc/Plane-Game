@@ -186,19 +186,23 @@ func shoot_remote(shot: Shoot)-> void:
 			
 func client_handle_hit(hit: Hit) -> void:
 	if hit.id == owner_id and is_authority == false: 
-		
 		cur_health = hit.remaining_health
+		#send kill information
 		
 		#make explode
 		update_health()
-		print(owner_id,"hit, health:", cur_health, "Client:",  ClientNetworkGlobals.id)
+
+		print(owner_id,"hit, health:", player_state,":",cur_health, "Client:",  ClientNetworkGlobals.id)
 		
-func take_damage(damage) -> void:
+func take_damage(damage, shooter_id) -> void:
 		if immunity == false:
 			cur_health -= damage
 			if cur_health <= 0:
 				cur_health = 0
-			Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
+			if player_state == 1 and cur_health ==0:
+				
+				Death.create(owner_id,shooter_id).send(NetworkHandler.server_peer)
+			Hit.create(owner_id, cur_health ).send(NetworkHandler.server_peer)
 			update_health()
 		
 func update_health() -> void:
@@ -629,7 +633,7 @@ func similar_inputs()->void:
 		drown_timer +=1
 		
 		if drown_timer == 100:
-			take_damage(world.map_resource.drown_damage)
+			take_damage(world.map_resource.drown_damage, 50)
 			drown_timer =0
 	else:
 		drown_timer = 0
@@ -665,7 +669,7 @@ func _physics_process(delta: float) -> void:
 		
 		move_and_slide()
 		pp_packet_timer += 1
-		if pp_packet_timer >= 5:
+		if pp_packet_timer >= 3:
 			if player_state == 2:
 				PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)
 			elif player_state == 1:
@@ -681,12 +685,13 @@ func border_check()-> void:
 	disable_timer -=1
 	if aim_cast.is_colliding():
 		var wall = aim_cast.get_collider(0)
-		if wall.is_in_group("border"):
-			
-			wall.visible = true
-			disable_timer =1
-			cur_wall.append(wall)
-			
+		if wall != null:
+			if wall.is_in_group("border"):
+				
+				wall.visible = true
+				disable_timer =1
+				cur_wall.append(wall)
+				
 			
 	if disable_timer <=0 and cur_wall != null:
 		for w in cur_wall:

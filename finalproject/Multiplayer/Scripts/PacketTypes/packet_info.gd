@@ -9,6 +9,8 @@ enum PACKET_TYPE {
 	HIT = 5,
 	RESPAWN = 6,
 	UPDATESTATE =7,
+	DEATH = 8,
+	PLAYER_NAME=9,
 }
 
 var packet_type: PACKET_TYPE

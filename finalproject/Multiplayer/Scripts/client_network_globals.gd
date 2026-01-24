@@ -8,7 +8,9 @@ signal handle_shot(shot : Shoot)
 signal handle_hit(hit : Hit)
 signal on_death()
 signal respawn()
-
+signal client_leaderboard_on_kill(killed :int, killer : int)
+signal client_leaderboard_add_player(ids: Array[int])
+signal client_leaderboard_set_name(id:int, player_name:String)
 var plane_resource_list : Array = [
 	preload("res://Resources/Planes/cardinal_0.tres"),
 	preload("res://Resources/Planes/raven_1.tres"),
@@ -28,6 +30,8 @@ var world: Node3D
 
 func _ready() -> void:
 	NetworkHandler.on_client_packet.connect(on_client_packet)
+	client_leaderboard_add_player.emit()
+
 	world = get_node("/root/Game/World")
 	
 func on_client_packet(data: PackedByteArray)-> void:
@@ -36,6 +40,10 @@ func on_client_packet(data: PackedByteArray)-> void:
 	match packet_type:
 		PacketInfo.PACKET_TYPE.ID_ASSIGNMENT:
 			manage_ids(IDAssignment.create_from_data(data))
+			client_leaderboard_add_player.emit(remote_ids)
+		PacketInfo.PACKET_TYPE.PLAYER_NAME:
+			var player_name_packet= PlayerName.create_from_data(data)
+			client_leaderboard_set_name.emit(player_name_packet.id,player_name_packet.player_name )
 		PacketInfo.PACKET_TYPE.PLAYER_POSITION:
 			handle_player_position.emit(PlayerPosition.create_from_data(data))
 		PacketInfo.PACKET_TYPE.ON_SERVER_START:
@@ -53,6 +61,9 @@ func on_client_packet(data: PackedByteArray)-> void:
 			var r = Respawn.create_from_data(data)
 			if id != r.id:
 				respawn.emit(r.id,r.plane_type)
+		PacketInfo.PACKET_TYPE.DEATH:
+			var death = Death.create_from_data(data)
+			client_leaderboard_on_kill.emit(death.id, death.killer)
 		_:
 			push_error("Packet type with index", data[0], "unhandled")
 

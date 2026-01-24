@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_nnfuk"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
-offsets = PackedFloat32Array(0.4375, 0.55)
-colors = PackedColorArray(0.96168, 0, 0.00490029, 1, 0.0529427, 0.00636274, 0, 1)
+offsets = PackedFloat32Array(0.469333, 0.490667, 0.568)
+colors = PackedColorArray(1, 0.364706, 0, 1, 0.96168, 0, 0.00490029, 1, 0.0529427, 0.00636274, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
 gradient = SubResource("Gradient_onvjc")

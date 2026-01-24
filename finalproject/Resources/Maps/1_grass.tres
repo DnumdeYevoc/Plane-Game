@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_5r5gl"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
-offsets = PackedFloat32Array(0.536, 0.570667, 0.642667, 0.688)
+offsets = PackedFloat32Array(0.554667, 0.594667, 0.642667, 0.688)
 colors = PackedColorArray(0.798167, 0.678829, 0.451936, 1, 3.36915e-07, 0.529464, 0.122347, 1, 0, 0.354706, 0.0644328, 1, 5.41471e-08, 0.268098, 0.0391762, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
@@ -37,7 +37,7 @@ noise = SubResource("FastNoiseLite_s13g3")
 material = SubResource("ShaderMaterial_l273t")
 size = Vector2i(800, 800)
 height_of_details = 100
-mountain_height = 60
+mountain_height = 50
 steepness = 0.3
 water_color = Color(0.121569, 0.509804, 1, 0.443137)
 water_glow_strength = 0.0

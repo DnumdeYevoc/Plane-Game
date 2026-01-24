@@ -40,7 +40,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if homing and target!= null:
-		look_at(target.global_position)
+		if target.global_position != global_position:
+			look_at(target.global_position)
 		grav = false
 		dir = global_position.direction_to(target.global_position)
 	if exploding == false: 
@@ -78,7 +79,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void: #problem is this signal tri
 	if body.is_in_group('bullet_collision'):
 		if body.owner_id != shooter_id:
 			if body.is_authority:
-				body.take_damage(damage)
+				body.take_damage(damage, shooter_id)
 				end()
 			end()
 	else:
