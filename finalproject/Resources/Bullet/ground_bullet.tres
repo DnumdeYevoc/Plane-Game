@@ -6,6 +6,7 @@
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_670gq"]
 resource_local_to_scene = true
+radius = 0.2
 
 [resource]
 resource_local_to_scene = true

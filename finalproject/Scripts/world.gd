@@ -71,7 +71,7 @@ func set_resource_var() -> void:
 	fog_color = map_resource.fog_color
 	fog_density = map_resource.fog_density
 	
-	water.scale  =Vector3( size.x,0.5, size.y)*3 
+	water.scale  =Vector3( size.x,1, size.y)*3 
 	var water_mesh_mat = water.get_child(0).mesh.surface_get_material(0)
 	water_mesh_mat.albedo_color = map_resource.water_color
 	if map_resource.water_glow_strength >0:
@@ -85,11 +85,11 @@ func set_resource_var() -> void:
 	sun.light_energy = map_resource.sun_strength
 	sun.light_color = map_resource.sun_color
 	if fog_density >0:
-		environment.volumetric_fog_enabled = true
-		environment.volumetric_fog_density = fog_density
-		environment.volumetric_fog_albedo = fog_color
+		environment.fog_enabled = true
+		environment.fog_density = fog_density
+		environment.fog_light_color = fog_color
 	else:
-		environment.volumetric_fog_enabled = false
+		environment.fog_enabled = false
 
 	
 func generate_mesh():

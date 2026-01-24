@@ -109,6 +109,12 @@ var disable_timer : int
 var immunity_timer :int =0
 var immunity_length :int = 80
 var immunity : bool = false
+
+var pp_packet_timer : int
+
+var updated_pos : Vector3
+var updated_rotation_z : float
+var updated_rotation_y : float
 #handle multiplayer
 func _enter_tree() -> void:
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
@@ -136,9 +142,12 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 		if player_position.position - global_position != Vector3.ZERO:
 			transform.basis = Basis.looking_at(player_position.position- global_position, Vector3.UP)
 		#update over network z rotation
-		rotation.z =player_position.rotation_z 
+		updated_rotation_z =player_position.rotation_z 
 	elif player_state == 1:
-		rotation.y =player_position.rotation_z 
+		updated_rotation_y =player_position.rotation_z 
+		
+		
+	
 	#remote parachute
 	if parachute_on:
 		if player_position.position.y- global_position.y >=0.1:
@@ -146,7 +155,8 @@ func client_handle_player_position(player_position: PlayerPosition)-> void:
 			remove_child(parachute_mesh)  
 			
 	#update pos
-	global_position = player_position.position
+	updated_pos = player_position.position
+	
 	
 func client_handle_shot(shot)-> void:
 	if shot.id == owner_id and not is_authority:
@@ -168,6 +178,7 @@ func shoot_remote(shot: Shoot)-> void:
 			
 			#finish setting variables
 			bullet.resource = bullet_type
+			
 			bullet.rotation = rotation
 			bullet.shooter_id = owner_id
 			#homing was here but needs to be remade
@@ -177,17 +188,21 @@ func client_handle_hit(hit: Hit) -> void:
 	if hit.id == owner_id and is_authority == false: 
 		
 		cur_health = hit.remaining_health
+		
+		#make explode
 		update_health()
 		print(owner_id,"hit, health:", cur_health, "Client:",  ClientNetworkGlobals.id)
 		
 func take_damage(damage) -> void:
 		if immunity == false:
 			cur_health -= damage
+			if cur_health <= 0:
+				cur_health = 0
 			Hit.create(owner_id, cur_health).send(NetworkHandler.server_peer)
 			update_health()
 		
 func update_health() -> void:
-	#health bar update code here
+	#health bar update code 
 	health_bar.value = cur_health
 	if not is_authority:
 		if health_bar.value ==0  or health_bar.value == health_bar.max_value:
@@ -207,14 +222,15 @@ func update_health() -> void:
 func update_state()-> void:
 		match player_state:
 			1:
-				
+				#initate immune timer
 				immunity_timer = immunity_length
 				
 				#health
 				cur_health = player_health
 				health_bar.max_value = player_health
 				
-				#initate immune timer?
+				#set cam
+				cam_target.movement_sharpness = 12
 				
 				#set up player 
 				#SWITCH MESH
@@ -271,15 +287,15 @@ func die():
 	queue_free()
 	
 func _ready() -> void:
-	floor_max_angle = deg_to_rad(60)
+	floor_max_angle = deg_to_rad(75)
 	if is_authority:
 		#make ray not collider with self
 		aim_cast.add_exception(self)
 		#random spawn position
 		global_position.y = world.map_resource.mountain_height*4
 		var angle = random.randi_range(0,360)
-		global_position.x = cos(deg_to_rad(angle)) * world.map_resource.size.x/4
-		global_position.z = sin(deg_to_rad(angle)) * world.map_resource.size.y/4
+		global_position.x = cos(deg_to_rad(angle)) * world.size.x/4
+		global_position.z = sin(deg_to_rad(angle)) * world.size.y/4
 		
 		#set screen_center
 		screen_center =  get_viewport().get_visible_rect().size/2
@@ -474,14 +490,19 @@ func shoot() -> void:
 				if aim_cast.is_colliding():
 					
 					var collider =aim_cast.get_collider(0)
-					if collider.is_in_group("player") and collider.owner_id != owner_id:
-						if player_state == 2:
-							target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+((collider.velocity/bullet_type.speed)*plane_type.aim_assist_range)
-						elif player_state == 1:
-							target_pos = collider.global_position
-						if bullet_type.homing:
-							target_id = collider.owner_id
-							bullet.target = collider
+					if collider != null:
+						if collider.is_in_group("player") and collider.owner_id != owner_id:
+							if player_state == 2:
+								target_pos = collider.global_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0)+((collider.velocity/bullet_type.speed)*plane_type.aim_assist_range)
+							elif player_state == 1:
+								target_pos = collider.global_position
+							if bullet_type.homing:
+								target_id = collider.owner_id
+								bullet.target = collider
+						else:
+							target_id = -1
+							target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
+					
 					else:
 						target_id = -1
 						target_pos = aim_manager.to_global(aim_cast.target_position+Vector3((barrel+0.5 - barrel_amount/2)*barrel_spread,0,0))
@@ -533,8 +554,8 @@ func get_person_input(delta) ->Vector3:
 	#rotation:
 	var rel_mouse_pos= screen_center- get_viewport().get_mouse_position()
 	#up/down cam rotation
-	cam_target.rotation_degrees.x=rel_mouse_pos.y/5
-	cam_target.rotation_degrees.x = clamp(cam_target.rotation_degrees.x, -35, 55)
+	cam_target.rotation_degrees.x= rel_mouse_pos.y/5
+	cam_target.rotation_degrees.x = clamp(cam_target.rotation_degrees.x, -35, 45)
 	#rotation of gun aim
 	aim_manager.rotation_degrees.x=rel_mouse_pos.y/3
 	aim_manager.rotation_degrees.y=rel_mouse_pos.x/7
@@ -588,9 +609,10 @@ func similar_inputs()->void:
 	#crosshair
 	if aim_cast.is_colliding():
 		var tar = aim_cast.get_collider(0)
-		if tar.is_in_group("player"):
-			crosshair.position = cam.unproject_position(tar.global_position)
-			crosshair.frame = 1
+		if tar != null:
+			if tar.is_in_group("player"):
+				crosshair.position = cam.unproject_position(tar.global_position)
+				crosshair.frame = 1
 	else:
 		var mouse_pos = get_viewport().get_mouse_position()
 		# Acheck to fix error
@@ -619,32 +641,41 @@ func _physics_process(delta: float) -> void:
 	
 	#NEED TO ADD REMOTE TURBO PARTICLES
 	#if you are pilot
-	if !is_authority: return
-	#input
-	
-	if player_state ==2:
-		get_plane_input(delta)
-		#rotate
+	if not is_authority:
+		global_position = lerp(global_position,updated_pos, 0.1)
+		if player_state ==2:
+			rotation.z= lerp(rotation.z, updated_rotation_z, 0.1)
+		elif player_state == 1:
+			rotation.y= lerp(rotation.y, updated_rotation_y, 0.1)
+	else:
+		#input
 		
-		velocity = rotate_plane(delta)
+		if player_state ==2:
+			get_plane_input(delta)
+			#rotate
+			
+			velocity = rotate_plane(delta)
+			
+			if cur_speed<plane_type.min_speed*20:
+				velocity.y -= gravity*delta*(plane_type.min_speed*20-cur_speed)*50
+		elif player_state == 1:
+			var d = get_person_input(delta)
+			velocity = d*delta*cur_speed
+		#swimming
 		
-		if cur_speed<plane_type.min_speed*20:
-			velocity.y -= gravity*delta*(plane_type.min_speed*20-cur_speed)*50
-	elif player_state == 1:
-		var d = get_person_input(delta)
-		velocity = d*delta*cur_speed
-	#swimming
-	
-	move_and_slide()
-	if player_state == 2:
-		PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)
-	elif player_state == 1:
-		PlayerPosition.create(owner_id, global_position, rotation.y).send(NetworkHandler.server_peer)
-	#UI
-	
-	fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
-	#border
-	border_check()
+		move_and_slide()
+		pp_packet_timer += 1
+		if pp_packet_timer >= 5:
+			if player_state == 2:
+				PlayerPosition.create(owner_id, global_position, rotation.z).send(NetworkHandler.server_peer)
+			elif player_state == 1:
+				PlayerPosition.create(owner_id, global_position, rotation.y).send(NetworkHandler.server_peer)
+			pp_packet_timer = 0
+		#UI
+		
+		fps_label.text = str(Engine.get_frames_per_second()) + "FPS"
+		#border
+		border_check()
 
 func border_check()-> void:
 	disable_timer -=1

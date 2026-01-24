@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://bh1dsd1htyl57" path="res://Scripts/collision_chunk.gd" id="1_kx1bf"]
 
 [node name="CollisionChunk" type="CollisionShape3D"]
+disabled = true
 script = ExtResource("1_kx1bf")

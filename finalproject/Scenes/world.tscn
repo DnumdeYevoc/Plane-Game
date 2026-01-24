@@ -1,7 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://mbpmm2hagsc7"]
+[gd_scene load_steps=18 format=3 uid="uid://mbpmm2hagsc7"]
 
 [ext_resource type="Script" uid="uid://dbpun3275s1yu" path="res://Scripts/world.gd" id="1_go701"]
-[ext_resource type="Resource" uid="uid://2yymn03klern" path="res://Resources/Maps/0_beach.tres" id="2_5a7ea"]
+[ext_resource type="Resource" uid="uid://hw6bm1wrttnq" path="res://Resources/Maps/1_grass.tres" id="2_5a7ea"]
 [ext_resource type="Material" uid="uid://nh1dwp0d0ram" path="res://Textures/border_standard_material_3d.tres" id="3_5a7ea"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_go701"]
@@ -19,7 +19,8 @@ background_mode = 2
 sky = SubResource("Sky_3dryh")
 ambient_light_energy = 3.39
 glow_intensity = 8.0
-fog_sun_scatter = 0.36
+fog_light_color = Color(1, 1, 1, 1)
+fog_light_energy = 0.2
 fog_density = 0.001
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_go701"]
@@ -31,8 +32,6 @@ emission = Color(1, 1, 1, 1)
 [sub_resource type="PlaneMesh" id="PlaneMesh_go701"]
 material = SubResource("StandardMaterial3D_go701")
 
-[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_fj7yv"]
-
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_5a7ea"]
 resource_local_to_scene = true
 
@@ -41,7 +40,7 @@ plane = Plane(0, 0, 1, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8j60k"]
 material = ExtResource("3_5a7ea")
-size = Vector2(1500, 500)
+size = Vector2(1000, 500)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_8j60k"]
 plane = Plane(0, 0, -1, 0)
@@ -59,7 +58,7 @@ plane = Plane(0, -1, 0, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_5ukr8"]
 material = SubResource("StandardMaterial3D_fo5ed")
-size = Vector2(1500, 1500)
+size = Vector2(1000, 1000)
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_go701")
@@ -71,11 +70,12 @@ map_resource = ExtResource("2_5a7ea")
 environment = SubResource("Environment_5a7ea")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.642788, 0.766045, 0, -0.766045, -0.642788, 0, 180, 0)
+transform = Transform3D(1, 0, 0, 0, -0.173648, 0.984808, 0, -0.984808, -0.173648, 0, 180, 0)
+light_energy = 2.0
 light_specular = 0.0
 
 [node name="Water" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="Water" type="MeshInstance3D" parent="Water"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
@@ -125,9 +125,6 @@ skeleton = NodePath("../..")
 [node name="CollsionChunkManager" type="StaticBody3D" parent="."]
 collision_layer = 5
 
-[node name="Collision" type="CollisionShape3D" parent="CollsionChunkManager"]
-shape = SubResource("HeightMapShape3D_fj7yv")
-
 [node name="Border" type="StaticBody3D" parent="." groups=["border"]]
 visible = false
 
@@ -140,7 +137,7 @@ visible = false
 collision_layer = 3
 
 [node name="-z" type="CollisionShape3D" parent="Border2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -750)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -500)
 shape = SubResource("WorldBoundaryShape3D_go701")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Border2/-z"]
@@ -154,7 +151,7 @@ visible = false
 collision_layer = 3
 
 [node name="z" type="CollisionShape3D" parent="Border3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 750)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 500)
 shape = SubResource("WorldBoundaryShape3D_8j60k")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Border3/z"]
@@ -168,7 +165,7 @@ visible = false
 collision_layer = 3
 
 [node name="-x" type="CollisionShape3D" parent="Border4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -750, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -500, 0, 0)
 shape = SubResource("WorldBoundaryShape3D_fo5ed")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Border4/-x"]
@@ -181,7 +178,7 @@ visible = false
 collision_layer = 3
 
 [node name="x" type="CollisionShape3D" parent="Border5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 750, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 500, 0, 0)
 shape = SubResource("WorldBoundaryShape3D_5ukr8")
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="Border5/x"]

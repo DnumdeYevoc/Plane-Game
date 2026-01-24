@@ -10,10 +10,13 @@ config_version=5
 
 [application]
 
-config/name="FinalProject"
+config/name="PlaneGame"
 run/main_scene="uid://dxk644sdwqkir"
 config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.341508, 0.704649, 0.999999, 1)
+boot_splash/use_filter=false
+boot_splash/image="uid://dj7ty803g4b5h"
+config/icon="uid://chx2rbht1rj"
 
 [autoload]
 
@@ -26,6 +29,7 @@ ServerNetworkGlobals="*res://Multiplayer/Scripts/server_network_globals.gd"
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/stretch/scale=0.75
+window/vsync/vsync_mode=0
 
 [global_group]
 
@@ -137,4 +141,3 @@ shift={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-textures/canvas_textures/default_texture_repeat=1

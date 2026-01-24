@@ -20,9 +20,8 @@ var plane_type : int =-1
 #general variables
 var connection : ENetConnection
 var is_server : bool = false
-var my_ip : String ="no ip"
-
-var server_ip : String 
+var my_ip : String 
+var server_ip : String
 func _ready() -> void:
 	my_ip = get_wifi_ip_address()
 
@@ -75,12 +74,13 @@ func handle_events() -> void:
 		packet_event = connection.service()
 		event_type = packet_event[0]
 
-func start_server(ip_adress: String = my_ip , port : int = 42069):
+func start_server(ip_adress: String , port : int = 7001):
 	connection = ENetConnection.new()
 	var error : Error = connection.create_host_bound(ip_adress,port)
 	if error:
 		print("Server starting failed" , error_string(error))
 		connection = null
+		get_tree().quit()
 		return
 	ServerNetworkGlobals.on_server_start_packet = OnServerStart.create(ServerNetworkGlobals.map_id, ServerNetworkGlobals.map_seed)
 	
@@ -103,19 +103,18 @@ func peer_disconnected(peer: ENetPacketPeer) -> void:
 	print("Successfully Disconnected", peer_id, "from server!")
 	on_peer_disconnected.emit(peer_id)
 	
-func start_client(ip_adress: String = server_ip, port : int = 42069):
-	if ip_adress!= "no ip":
+func start_client(ip_adress: String , port : int = 7001):
 		connection = ENetConnection.new()
 		var error : Error = connection.create_host(1)
 		if error:
 			print("Client starting failed" , error_string(error))
 			connection = null
+			get_tree().quit()
 			return
-		print("client started")
-		#variable for server from perspectove of clients
 		
+		#variable for server from perspectove of clients
 		server_peer = connection.connect_to_host(ip_adress, port)
-	
+		print("client started")
 	
 func disconnect_client() -> void: #When player hits disconnect button
 	if is_server: return
@@ -130,5 +129,6 @@ func connected_to_server(_peer: ENetPacketPeer) -> void:
 func disconnected_from_server() -> void:
 	print("successfully disconnected from server")
 	on_disconnected_to_server.emit()
+	get_tree().quit()
 	connection = null
 	

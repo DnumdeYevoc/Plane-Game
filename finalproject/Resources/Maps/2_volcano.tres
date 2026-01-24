@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_nnfuk"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
-offsets = PackedFloat32Array(0.4375, 0.55, 0.7375, 0.9375)
-colors = PackedColorArray(0.953951, 0, 0.0496959, 1, 0.13304, 0.137348, 0.1432, 1, 0, 0, 0, 1, 0.0940187, 0.0880624, 0.0760234, 1)
+offsets = PackedFloat32Array(0.4375, 0.55)
+colors = PackedColorArray(0.96168, 0, 0.00490029, 1, 0.0529427, 0.00636274, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
 gradient = SubResource("Gradient_onvjc")
@@ -39,15 +39,15 @@ name = "Volcano"
 id = 2
 noise = SubResource("FastNoiseLite_s13g3")
 material = SubResource("ShaderMaterial_l273t")
-size = Vector2i(1100, 1100)
-height_of_details = 100
-mountain_height = 200
+size = Vector2i(800, 800)
+height_of_details = 135
+mountain_height = 135
 steepness = 0.8
 water_color = Color(0.509804, 0.0235294, 0, 0.584314)
-water_glow_strength = 10.0
+water_glow_strength = 1.0
 drown_damage = 10
-sun_strength = 0.3
-sun_color = Color(0.597671, 0.597894, 0.544835, 1)
+sun_strength = 0.5
+sun_color = Color(0.999384, 0.339049, 0, 1)
 sky_material = SubResource("ProceduralSkyMaterial_onvjc")
-fog_color = Color(0, 0, 0, 1)
-fog_density = 0.0
+fog_color = Color(0.154876, 0.154876, 0.154876, 1)
+fog_density = 0.001

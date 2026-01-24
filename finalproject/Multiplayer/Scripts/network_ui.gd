@@ -1,6 +1,6 @@
 extends Control
 @onready var start_server: Button = $ServerButtons/StartServer
-@onready var join_server: Button = $HBoxContainer/JoinServer
+@onready var join_server_container: HBoxContainer = $JoinServerContainer
 
 @onready var client_buttons: HBoxContainer = $ClientButtons
 @onready var server_buttons: HBoxContainer = $ServerButtons
@@ -15,10 +15,9 @@ extends Control
 @onready var spectate: Button = $ClientButtons/Spectate
 @onready var respawn: Button = $ClientButtons/Respawn
 
-
-
 var plane_type : int = -1
 var spectate_id : int = 0
+
 func _ready() -> void:
 	plane_type = 0
 	seed_button.text = "Randomize Seed"
@@ -49,18 +48,21 @@ func on_plane_popup_pressed(id):
 	plane_display.update_display()
 
 func _on_start_server_pressed() -> void:
-	NetworkHandler.start_server()
-	var join_ip_text := Label.new()
-	join_ip_text.text= str("IP = ", NetworkHandler.my_ip)
+	NetworkHandler.start_server(NetworkHandler.my_ip)
+	var join_ip_text := LineEdit.new()
+	join_ip_text.position = Vector2(50,50)
+	join_ip_text.text= str("IP : ", NetworkHandler.my_ip)
 	join_ip_text.theme = load("res://Textures/new_theme.tres")
+	join_ip_text.editable = false
+	join_ip_text.expand_to_text_length = true
 	add_sibling(join_ip_text)
-	
-	visible = false
+	queue_free()
+
 	
 
 func _on_join_server_client_pressed() -> void:
 	NetworkHandler.plane_type = plane_type
-	NetworkHandler.start_client()
+	NetworkHandler.start_client(NetworkHandler.server_ip)
 	
 	visible = false
 
@@ -72,11 +74,14 @@ func _on_randomize_seed_pressed() -> void:
 
 func on_death()->void:
 	visible = true
+	map_list.visible = false
 	server_buttons.visible = false
 	client_buttons.visible = true
-	join_server.visible = false
+	join_server_container.visible = false
 	spectate.visible = true
 	respawn.visible = true
+
+	
 
 func _on_spectate_pressed() -> void:
 	spectate.text = "Spectate Next"
@@ -99,4 +104,3 @@ func remote_respawn(id,type)->void:
 
 func _on_server_i_ptext_text_changed(new_text: String) -> void:
 	NetworkHandler.server_ip = new_text
-	print(new_text)

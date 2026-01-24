@@ -23,7 +23,7 @@ var state : int = -1
 var remote_ids: Array[int]
 
 var map_id : int
-var seed: int
+
 var world: Node3D
 
 func _ready() -> void:
