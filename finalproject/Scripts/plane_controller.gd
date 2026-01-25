@@ -117,12 +117,14 @@ var updated_rotation_z : float
 var updated_rotation_y : float
 #handle multiplayer
 func _enter_tree() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.connect(client_handle_shot)
 	ClientNetworkGlobals.handle_hit.connect(client_handle_hit)
 	
 func _exit_tree() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.disconnect(client_handle_shot)
@@ -529,8 +531,8 @@ func shoot() -> void:
 				bullet.rotation = rotation
 				bullet.shooter_id = owner_id
 				
-				
-				projectile_manager.add_child(bullet)
+				if projectile_manager != null:
+					projectile_manager.add_child(bullet)
 			
 
 func rotate_plane(delta)->Vector3:
@@ -576,7 +578,7 @@ func get_person_input(delta) ->Vector3:
 	#gravity
 	if not is_on_floor():
 		if parachute_on:
-			g_dir -= gravity/10
+			g_dir = -gravity/10 *100
 		else:
 			g_dir -= gravity/2
 	
@@ -584,10 +586,9 @@ func get_person_input(delta) ->Vector3:
 		if is_on_floor():
 			g_dir = 1.0
 		#swimming
-		if global_position.y <=14:
+		if global_position.y <=28:
 			g_dir =0.5
 	
-
 	similar_inputs()
 	dir.y = g_dir*delta*60*800/cur_speed
 	return dir
@@ -627,7 +628,7 @@ func similar_inputs()->void:
 	if Input.is_action_just_pressed("shoot"):
 		shoot()
 	#handle water/ droawning
-	if global_position.y <= 14:
+	if global_position.y <= 28:
 		cur_speed *=0.9
 		
 		drown_timer +=1

@@ -11,6 +11,7 @@ extends Control
 @onready var map_list: MenuButton = $MapList
 @onready var plane_selector: MenuButton = $PlaneSelector
 @onready var plane_display: SubViewport = $SubViewportContainer/PlaneDisplay
+@onready var set_name: LineEdit = $Name
 
 @onready var spectate: Button = $ClientButtons/Spectate
 @onready var respawn: Button = $ClientButtons/Respawn
@@ -45,10 +46,9 @@ func on_world_popup_pressed(id):
 func on_plane_popup_pressed(id):
 	#change display
 	plane_type= id
-	
 	plane_display.set_resource(id)
 	plane_display.update_display()
-
+	
 func _on_start_server_pressed() -> void:
 	NetworkHandler.start_server(NetworkHandler.my_ip)
 	var join_ip_text := LineEdit.new()
@@ -58,11 +58,12 @@ func _on_start_server_pressed() -> void:
 	join_ip_text.editable = false
 	join_ip_text.expand_to_text_length = true
 	add_sibling(join_ip_text)
-
+	
 	leaderboard.visible = true
 	leaderboard.add_theme_font_size_override("font_size", 40)
 	
 	leaderboard.position.y = 50
+	leaderboard.position.x -=50
 	
 	
 	queue_free()
@@ -91,6 +92,7 @@ func on_death()->void:
 	join_server_container.visible = false
 	spectate.visible = true
 	respawn.visible = true
+	set_name.visible = false
 
 	
 

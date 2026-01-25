@@ -29,7 +29,7 @@ ServerNetworkGlobals="*res://Multiplayer/Scripts/server_network_globals.gd"
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 window/stretch/scale=0.75
-window/vsync/vsync_mode=0
+mouse_cursor/custom_image="uid://dtjihul7v8vr5"
 
 [global_group]
 

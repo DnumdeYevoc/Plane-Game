@@ -140,7 +140,7 @@ func generate_mesh():
 	mesh.mesh = array_mesh
 	mesh.mesh.surface_set_material(0, material)
 	
-	var chunk_size = 100
+	var chunk_size = 50
 	var chunk_amount = size/chunk_size
 	for x in chunk_amount.x:
 		for y in chunk_amount.y:
