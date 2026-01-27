@@ -1,0 +1,53 @@
+[gd_resource type="Resource" load_steps=8 format=3 uid="uid://bvg78r4mgxf8q"]
+
+[ext_resource type="Shader" uid="uid://dpiil60lthn21" path="res://land.gdshader" id="1_pyxy0"]
+[ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_2jkdv"]
+
+[sub_resource type="Gradient" id="Gradient_onvjc"]
+offsets = PackedFloat32Array(0.544, 0.602667, 0.666667, 0.797333)
+colors = PackedColorArray(0.596248, 0.745465, 1, 1, 0.677504, 0.784652, 1, 1, 0.855864, 0.933226, 1, 1, 0.855864, 0.933226, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
+resource_local_to_scene = true
+gradient = SubResource("Gradient_onvjc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_l273t"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_pyxy0")
+shader_parameter/height = 0.0
+shader_parameter/color_gradient = SubResource("GradientTexture1D_l273t")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_s13g3"]
+noise_type = 3
+frequency = 0.012
+fractal_octaves = 6
+fractal_gain = 0.3
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_onvjc"]
+sky_top_color = Color(0.720442, 0.862254, 0.956629, 1)
+sky_horizon_color = Color(0.523697, 0.802023, 1, 1)
+sky_curve = 0.166436
+ground_bottom_color = Color(0.52549, 0.803922, 1, 1)
+ground_horizon_color = Color(0.52549, 0.803922, 1, 1)
+sun_angle_max = 109.12
+sun_curve = 0.0861524
+
+[resource]
+script = ExtResource("2_2jkdv")
+name = "Snow"
+id = 4
+noise = SubResource("FastNoiseLite_s13g3")
+material = SubResource("ShaderMaterial_l273t")
+size = Vector2i(800, 800)
+height_of_details = 75
+mountain_height = 220
+steepness = 0.999
+water_color = Color(0.359226, 0.564323, 1, 0.776471)
+water_glow_strength = 0.5
+drown_damage = 1
+sun_strength = 1.0
+sun_color = Color(1, 1, 1, 1)
+sky_material = SubResource("ProceduralSkyMaterial_onvjc")
+fog_color = Color(1, 1, 1, 1)
+fog_density = 0.0

@@ -33,7 +33,10 @@ var environment : Environment
 var map_resource_list : Array = [
 	preload("res://Resources/Maps/0_beach.tres"),
 	preload("res://Resources/Maps/1_grass.tres"),
-	preload("res://Resources/Maps/2_volcano.tres")
+	preload("res://Resources/Maps/2_volcano.tres"),
+	preload("res://Resources/Maps/3_stone.tres"),
+	preload("res://Resources/Maps/4_snow.tres"),
+	preload("res://Resources/Maps/5_swamp.tres")
 ]
 
 func _ready() -> void:
@@ -60,7 +63,7 @@ func set_map_type(id: int)-> void:
 func set_resource_var() -> void:
 	#set resource var
 	size = map_resource.size
-	resolution =size.x/2
+	resolution =size.x/4
 	
 	noise = map_resource.noise
 	height = map_resource.height_of_details

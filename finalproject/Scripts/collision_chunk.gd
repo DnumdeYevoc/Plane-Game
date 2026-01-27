@@ -15,6 +15,8 @@ var player : CharacterBody3D
 var chunk_size : Vector2i
 
 func _ready() -> void:
+	ClientNetworkGlobals.on_death.connect(on_death)
+	ClientNetworkGlobals.on_spawn.connect(on_spawn)
 	disabled = true
 	chunk_size = world_size/chunk_amount
 	generate_mesh()
@@ -23,8 +25,8 @@ func _ready() -> void:
 func generate_mesh():
 	#collision mesh
 	var col_plane := PlaneMesh.new()
-	col_plane.subdivide_depth = (world_resolution/5)/chunk_amount.y
-	col_plane.subdivide_width = (world_resolution/5)/chunk_amount.x
+	col_plane.subdivide_depth = (world_resolution/2)/chunk_amount.y
+	col_plane.subdivide_width = (world_resolution/2)/chunk_amount.x
 	col_plane.size = chunk_size
 	var col_arrays := col_plane.get_mesh_arrays()
 	var col_vertex_array : PackedVector3Array= col_arrays[ArrayMesh.ARRAY_VERTEX]
@@ -47,17 +49,16 @@ func generate_mesh():
 
 func _physics_process(_delta: float) -> void:
 	#if within chunk + margin
-	if ! player :
-		if len( player_spawner.get_children()) != 0:
-			for p in player_spawner.get_children():
-				if p.is_authority:
-					player = p
-				else:
-					return
-		else:
-			return
 
+	if player== null:
+		return
 	if player.global_position.x >= (position.x-chunk_size.x/2) -margin and player.global_position.x <= (position.x + chunk_size.x/2)  + margin and player.global_position.z >= (position.z -chunk_size.y/2) - margin and player.global_position.z<= (position.z + chunk_size.y/2) + margin:
 		disabled = false
 	else:
 		disabled = true
+
+func on_death()->void:
+	player = null
+
+func on_spawn(p)-> void:
+	player = p

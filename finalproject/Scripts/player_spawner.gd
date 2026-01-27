@@ -21,6 +21,5 @@ func spawn_player(id: int, type :int = 1, state:int = 2) -> void:
 	player.plane_type = ClientNetworkGlobals.plane_resource_list[type]
 	#player.name = str(id) #optional
 	
-	
 	call_deferred("add_child",player)
 	

@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://rgfptr1p2so1" path="res://Scripts/map_template.gd" id="2_nnfuk"]
 
 [sub_resource type="Gradient" id="Gradient_onvjc"]
-offsets = PackedFloat32Array(0.469333, 0.490667, 0.568)
-colors = PackedColorArray(1, 0.364706, 0, 1, 0.96168, 0, 0.00490029, 1, 0.0529427, 0.00636274, 0, 1)
+offsets = PackedFloat32Array(0.469333, 0.488, 0.538667, 0.549333, 0.581333)
+colors = PackedColorArray(1, 0.364706, 0, 1, 0.999674, 0.152193, 0.11142, 1, 0.0760281, 3.56468e-07, 9.83281e-05, 1, 0.00280082, 1.39187e-08, 3.58057e-06, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
 gradient = SubResource("Gradient_onvjc")
@@ -23,15 +23,15 @@ fractal_octaves = 6
 fractal_gain = 0.3
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_onvjc"]
-sky_top_color = Color(0.0504966, 3.10443e-06, 0.28755, 1)
-sky_horizon_color = Color(0.0314772, 0.00754005, 0.0151255, 1)
+sky_top_color = Color(0.199497, 0.000363772, 0.507862, 1)
+sky_horizon_color = Color(0, 0.00784314, 0.0156863, 1)
 sky_curve = 0.878451
+sky_energy_multiplier = 2.0
 ground_bottom_color = Color(0, 0, 0, 1)
 ground_horizon_color = Color(0.0318189, 0.00738706, 0.0152878, 1)
 ground_curve = 0.355062
 sun_angle_max = 109.12
-sun_curve = 0.0294221
-energy_multiplier = 2.0
+sun_curve = 0.0512269
 
 [resource]
 script = ExtResource("2_nnfuk")
@@ -43,11 +43,11 @@ size = Vector2i(800, 800)
 height_of_details = 135
 mountain_height = 135
 steepness = 0.8
-water_color = Color(0.509804, 0.0235294, 0, 0.584314)
-water_glow_strength = 1.0
+water_color = Color(0.507519, 0.0337546, 0, 0.584314)
+water_glow_strength = 3.0
 drown_damage = 10
-sun_strength = 0.5
+sun_strength = 1.0
 sun_color = Color(0.999384, 0.339049, 0, 1)
 sky_material = SubResource("ProceduralSkyMaterial_onvjc")
-fog_color = Color(0.154876, 0.154876, 0.154876, 1)
+fog_color = Color(0.389287, 0.389287, 0.389287, 1)
 fog_density = 0.001

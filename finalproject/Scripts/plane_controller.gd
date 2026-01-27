@@ -117,14 +117,16 @@ var updated_rotation_z : float
 var updated_rotation_y : float
 #handle multiplayer
 func _enter_tree() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
+	if is_authority:
+		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	ServerNetworkGlobals.handle_player_position.connect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.connect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.connect(client_handle_shot)
 	ClientNetworkGlobals.handle_hit.connect(client_handle_hit)
 	
 func _exit_tree() -> void:
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	if is_authority:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	ServerNetworkGlobals.handle_player_position.disconnect(server_handle_player_position)
 	ClientNetworkGlobals.handle_player_position.disconnect(client_handle_player_position)
 	ClientNetworkGlobals.handle_shot.disconnect(client_handle_shot)
@@ -293,8 +295,12 @@ func die():
 	queue_free()
 	
 func _ready() -> void:
+	
 	floor_max_angle = deg_to_rad(75)
 	if is_authority:
+		#tell collision
+		
+		ClientNetworkGlobals.on_spawn.emit(self)
 		#make ray not collider with self
 		aim_cast.add_exception(self)
 		#random spawn position
@@ -565,7 +571,7 @@ func get_person_input(delta) ->Vector3:
 	#rotation of gun aim
 	aim_manager.rotation_degrees.x=rel_mouse_pos.y/3
 	aim_manager.rotation_degrees.y=rel_mouse_pos.x/7
-	aim_manager.rotation_degrees.x = clamp(aim_manager.rotation_degrees.x, -35, 75)
+	aim_manager.rotation_degrees.x = clamp(aim_manager.rotation_degrees.x, -80, 80)
 	aim_manager.rotation_degrees.y = clamp(aim_manager.rotation_degrees.y, -60, 60)
 	#left right
 	yaw_input = lerp(yaw_input, Input.get_action_strength("yaw_left")-Input.get_action_strength("yaw_right"), 12.0*delta)
@@ -693,7 +699,7 @@ func border_check()-> void:
 				disable_timer =1
 				cur_wall.append(wall)
 				
-			
+
 	if disable_timer <=0 and cur_wall != null:
 		for w in cur_wall:
 			w.visible = false

@@ -8,9 +8,11 @@ offsets = PackedFloat32Array(0.536, 0.608, 0.642667, 0.688)
 colors = PackedColorArray(0.798167, 0.678829, 0.451936, 1, 3.36915e-07, 0.529464, 0.122347, 1, 0, 0.354706, 0.0644328, 1, 5.41471e-08, 0.268098, 0.0391762, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_l273t"]
+resource_local_to_scene = true
 gradient = SubResource("Gradient_onvjc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_l273t"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_grkge")
 shader_parameter/height = 0.0

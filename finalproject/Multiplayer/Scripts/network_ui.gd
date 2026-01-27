@@ -62,7 +62,7 @@ func _on_start_server_pressed() -> void:
 	leaderboard.visible = true
 	leaderboard.add_theme_font_size_override("font_size", 40)
 	
-	leaderboard.position.y = 50
+	leaderboard.position.y = 150
 	leaderboard.position.x -=50
 	
 	

@@ -8,9 +8,12 @@ signal handle_shot(shot : Shoot)
 signal handle_hit(hit : Hit)
 signal on_death()
 signal respawn()
+signal on_spawn(player:Node3D)
 signal client_leaderboard_on_kill(killed :int, killer : int)
 signal client_leaderboard_add_player(ids: Array[int])
 signal client_leaderboard_set_name(id:int, player_name:String)
+
+
 var plane_resource_list : Array = [
 	preload("res://Resources/Planes/cardinal_0.tres"),
 	preload("res://Resources/Planes/raven_1.tres"),
